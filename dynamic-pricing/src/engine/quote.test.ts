@@ -45,7 +45,7 @@ describe("illustrative Houston October Saturday", () => {
 
   it("explains each adjustment in plain language", () => {
     const ids = quote.adjustments.map((item) => item.id);
-    expect(ids).toEqual(["season", "day", "lead", "inquiry", "utilization", "travel", "history", "objective", "corridor"]);
+    expect(ids).toEqual(["season", "day", "lead", "inquiry", "utilization", "scarcity", "travel", "history", "objective", "corridor"]);
     for (const adjustment of quote.adjustments) {
       expect(adjustment.explanation.length).toBeGreaterThan(20);
     }
@@ -111,8 +111,10 @@ describe("corridor clamping", () => {
 
   it("respects a tighter corridor from settings", () => {
     const config = createDefaultConfig();
-    config.maxReduction = 0.1;
-    config.maxPremium = 0.1;
+    const marco = config.tiers.find((tier) => tier.id === "marco");
+    if (!marco) throw new Error("missing Marco tier");
+    marco.maxReduction = 0.1;
+    marco.maxPremium = 0.1;
     const quote = price(NOTES_EXAMPLE, config);
     expect(quote.clamped).toBe("ceiling");
     expect(quote.ceiling).toBe(11850);
@@ -522,10 +524,13 @@ describe("budget fit", () => {
 
   it("uses the packages configured in settings, including hours and photographers", () => {
     const config = createDefaultConfig();
-    config.packages = [
+    const marco = config.tiers.find((tier) => tier.id === "marco");
+    if (!marco) throw new Error("missing Marco tier");
+    marco.packages = [
       { id: "signature", name: "Signature", price: 10800, detail: "9 hours, 2 photographers", hours: 9, photographers: 2 },
       { id: "solo", name: "Solo afternoon", price: 3600, detail: "", hours: 3, photographers: 1 },
     ];
+    marco.defaultPackageId = "signature";
     const quote = price({ ...LOW_SEASON, clientBudget: 4000 }, config);
     expect(quote.suggestedQuote).toBeGreaterThanOrEqual(quote.floor);
     if (quote.budgetFit.status !== "below_floor") throw new Error(quote.budgetFit.status);
@@ -543,6 +548,74 @@ describe("budget fit", () => {
     expect(quote.budgetFit.alternatives).toEqual([]);
     expect(quote.budgetFit.gapNote).toContain("No package");
     expect(quote.budgetFit.gapNote).toContain("$1,000");
+  });
+});
+
+describe("offering tiers", () => {
+  it("prices the associate placeholder on its own base and corridor", () => {
+    const quote = price({ ...LOW_SEASON, tierId: "associate", packageId: "associate-signature" });
+    expect(quote.tierName).toBe("Associate");
+    expect(quote.tierPlaceholder).toBe(true);
+    expect(quote.basePrice).toBe(6400);
+    expect(quote.dateCapacity).toBe(4);
+    expect(quote.suggestedQuote).toBe(5550);
+    expect(quote.floor).toBe(5150);
+    expect(quote.ceiling).toBe(7350);
+  });
+
+  it("holds charge standard at the associate base", () => {
+    const quote = price({
+      ...LOW_SEASON,
+      tierId: "associate",
+      packageId: "associate-signature",
+      chargeStandard: true,
+    });
+    expect(quote.suggestedQuote).toBe(6400);
+    expect(quote.minimumAcceptable).toBeGreaterThanOrEqual(6400);
+    expect(quote.standardRateHeld).toBe(true);
+    expect(quote.suggestedQuote).not.toBe(10800);
+  });
+
+  it("calculates monthly fill and same-date scarcity separately for each tier", () => {
+    const shared = {
+      eventDate: "2027-02-04",
+      inquiryDate: "2026-08-01",
+      marketId: "houston",
+      qualifiedInquiries: 1,
+      bookedDates: 3,
+      travelDaysBlocked: 1,
+      bookedOnDate: 1,
+    };
+    const marco = price({ ...shared, tierId: "marco", packageId: "signature", targetCapacity: 4 });
+    const associate = price({
+      ...shared,
+      tierId: "associate",
+      packageId: "associate-signature",
+      targetCapacity: 16,
+    });
+    expect(marco.utilization).toBeCloseTo(0.75, 5);
+    expect(associate.utilization).toBeCloseTo(3 / 16, 5);
+    expect(marco.adjustments.find((item) => item.id === "scarcity")?.percent).toBeCloseTo(0.06, 5);
+    expect(associate.adjustments.find((item) => item.id === "scarcity")?.percent).toBeCloseTo(0.015, 5);
+    expect(marco.adjustments.find((item) => item.id === "scarcity")?.explanation).toContain("Marco (lead)");
+    expect(associate.adjustments.find((item) => item.id === "scarcity")?.explanation).toContain("Associate");
+    expect(marco.suggestedQuote).not.toBe(associate.suggestedQuote);
+  });
+
+  it("does not let Marco's decided quotes nudge an associate price", () => {
+    const wins = Array.from({ length: 4 }, () => ({
+      marketId: "houston",
+      outcome: "booked" as const,
+      tierId: "marco",
+    }));
+    expect(price({ ...NOTES_EXAMPLE, history: wins }).suggestedQuote).toBe(12650);
+    const associate = price({
+      ...NOTES_EXAMPLE,
+      tierId: "associate",
+      packageId: "associate-signature",
+      history: wins,
+    });
+    expect(associate.adjustments.find((item) => item.id === "history")?.percent).toBe(0);
   });
 });
 

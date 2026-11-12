@@ -5,12 +5,18 @@ describe("sanitizeConfig", () => {
   it("returns the testing defaults for garbage", () => {
     const config = sanitizeConfig(null);
     expect(config.homeMarketId).toBe("houston");
-    expect(config.packages.find((item) => item.id === "signature")?.price).toBe(10800);
-    expect(config.packages.find((item) => item.id === "signature")).toMatchObject({ hours: 9, photographers: 2 });
-    expect(config.packages.find((item) => item.id === "classic")).toMatchObject({ hours: 6, photographers: 1 });
+    const marco = config.tiers.find((tier) => tier.id === "marco");
+    const associate = config.tiers.find((tier) => tier.id === "associate");
+    expect(marco?.packages.find((item) => item.id === "signature")?.price).toBe(10800);
+    expect(marco?.packages.find((item) => item.id === "signature")).toMatchObject({ hours: 9, photographers: 2 });
+    expect(marco?.packages.find((item) => item.id === "classic")).toMatchObject({ hours: 6, photographers: 1 });
+    expect(marco?.dateCapacity).toBe(1);
+    expect(associate?.placeholder).toBe(true);
+    expect(associate?.dateCapacity).toBe(4);
+    expect(associate?.packages.find((item) => item.id === "associate-signature")?.price).toBe(6400);
     expect(config.markets.find((item) => item.id === "houston")?.demandIndex[9]).toBe(135);
-    expect(config.maxReduction).toBe(0.15);
-    expect(config.maxPremium).toBe(0.2);
+    expect(marco?.maxReduction).toBe(0.15);
+    expect(marco?.maxPremium).toBe(0.2);
     expect(config.objective).toBe("balanced");
   });
 
@@ -28,7 +34,7 @@ describe("sanitizeConfig", () => {
         },
       ],
     });
-    expect(edited.maxPremium).toBe(0.3);
+    expect(edited.tiers.find((tier) => tier.id === "marco")?.maxPremium).toBe(0.3);
     expect(edited.objective).toBe("maximize_revenue");
     expect(edited.markets[0].id).toBe("houston");
     expect(edited.markets[0].demandIndex).toHaveLength(12);
@@ -37,7 +43,7 @@ describe("sanitizeConfig", () => {
 
   it("does not let callers mutate the next default config", () => {
     const first = createDefaultConfig();
-    first.packages[2].price = 1;
-    expect(createDefaultConfig().packages[2].price).toBe(10800);
+    first.tiers[0].packages[2].price = 1;
+    expect(createDefaultConfig().tiers[0].packages[2].price).toBe(10800);
   });
 });

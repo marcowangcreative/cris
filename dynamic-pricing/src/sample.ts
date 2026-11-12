@@ -1,18 +1,24 @@
 import type { BookingRecord } from "./records";
 
 function sample(
-  record: Omit<BookingRecord, "sample" | "snapshot" | "approvedAt" | "modelQuote" | "chargeStandard" | "clientBudget" | "manualPrice" | "discountAvoided"> & {
+  record: Omit<BookingRecord, "sample" | "snapshot" | "approvedAt" | "modelQuote" | "chargeStandard" | "clientBudget" | "manualPrice" | "discountAvoided" | "tierId" | "tierName" | "bookedOnDate"> & {
     approvedAt: string;
     modelQuote?: number;
     chargeStandard?: boolean;
     clientBudget?: number | null;
     manualPrice?: number | null;
     discountAvoided?: number;
+    tierId?: string;
+    tierName?: string;
+    bookedOnDate?: number;
   },
 ): BookingRecord {
   const modelQuote = record.modelQuote ?? record.quotedPrice;
   return {
     ...record,
+    tierId: record.tierId ?? "marco",
+    tierName: record.tierName ?? "Marco (lead)",
+    bookedOnDate: record.bookedOnDate ?? 0,
     modelQuote,
     chargeStandard: record.chargeStandard ?? false,
     clientBudget: record.clientBudget ?? null,
@@ -154,6 +160,27 @@ export function createSampleHistory(): BookingRecord[] {
       clientBudget: 14000,
       chargeStandard: true,
       discountAvoided: 1450,
+    }),
+    sample({
+      id: "sample-associate-placeholder",
+      couple: "Noah & June (sample)",
+      eventDate: "2026-11-07",
+      inquiryDate: "2026-03-01",
+      marketId: "houston",
+      packageId: "associate-signature",
+      packageName: "Associate signature",
+      packagePrice: 6400,
+      quotedPrice: 6400,
+      outcome: "pending",
+      notes: "SAMPLE — PLACEHOLDER associate rate. Not a real couple and not a real associate price.",
+      travelDaysBlocked: 1,
+      qualifiedInquiries: 1,
+      bookedDates: 2,
+      targetCapacity: 16,
+      bookedOnDate: 1,
+      approvedAt: "2026-03-01T18:00:00.000Z",
+      tierId: "associate",
+      tierName: "Associate",
     }),
   ];
 }

@@ -4,6 +4,7 @@ import {
   formatLongDate,
   formatMoney,
   formatPercent,
+  findTier,
   formatSignedMoney,
   quotePrice,
   todayISO,
@@ -16,11 +17,13 @@ interface QuoteForm {
   couple: string;
   eventDate: string;
   inquiryDate: string;
+  tierId: string;
   marketId: string;
   packageId: string;
   qualifiedInquiries: number;
   bookedDates: number;
   targetCapacity: number;
+  bookedOnDate: number;
   travelDaysBlocked: number;
   notes: string;
   clientBudget: string;
@@ -35,11 +38,13 @@ function octoberForm(): QuoteForm {
     couple: "",
     eventDate: "2027-10-16",
     inquiryDate: "2026-11-12",
+    tierId: "marco",
     marketId: "houston",
     packageId: "signature",
     qualifiedInquiries: 1,
     bookedDates: 3,
     targetCapacity: 5,
+    bookedOnDate: 0,
     travelDaysBlocked: 1,
     notes: "",
     clientBudget: "",
@@ -53,11 +58,13 @@ function budgetForm(): QuoteForm {
     couple: "",
     eventDate: "2027-08-04",
     inquiryDate: "2027-02-04",
+    tierId: "marco",
     marketId: "houston",
     packageId: "signature",
     qualifiedInquiries: 1,
     bookedDates: 3,
     targetCapacity: 5,
+    bookedOnDate: 0,
     travelDaysBlocked: 1,
     notes: "",
     clientBudget: "15000",
@@ -72,15 +79,18 @@ function underFloorForm(): QuoteForm {
 
 function blankForm(config: PricingConfig): QuoteForm {
   const market = config.markets.find((item) => item.id === config.homeMarketId) ?? config.markets[0];
+  const tier = findTier(config);
   return {
     couple: "",
     eventDate: "",
     inquiryDate: todayISO(),
+    tierId: tier?.id ?? config.defaultTierId,
     marketId: market.id,
-    packageId: config.defaultPackageId,
+    packageId: tier?.defaultPackageId ?? "",
     qualifiedInquiries: 1,
     bookedDates: 0,
-    targetCapacity: config.defaultTargetCapacity,
+    targetCapacity: tier?.monthlyCapacity ?? 4,
+    bookedOnDate: 0,
     travelDaysBlocked: market.typicalTravelDays,
     notes: "",
     clientBudget: "",
@@ -117,14 +127,16 @@ export function QuoteDesk({
 
   useEffect(() => {
     setForm((current) => {
+      const tier = config.tiers.some((item) => item.id === current.tierId) ? findTier(config, current.tierId) : findTier(config);
       const marketId = config.markets.some((item) => item.id === current.marketId) ? current.marketId : config.homeMarketId;
-      const packageId = config.packages.some((item) => item.id === current.packageId)
+      const packageId = tier?.packages.some((item) => item.id === current.packageId)
         ? current.packageId
-        : config.defaultPackageId;
-      if (marketId === current.marketId && packageId === current.packageId) return current;
-      return { ...current, marketId, packageId };
+        : tier?.defaultPackageId ?? current.packageId;
+      const tierId = tier?.id ?? current.tierId;
+      if (marketId === current.marketId && packageId === current.packageId && tierId === current.tierId) return current;
+      return { ...current, marketId, packageId, tierId };
     });
-  }, [config, form.marketId, form.packageId]);
+  }, [config, form.marketId, form.packageId, form.tierId]);
 
   const budget = moneyOrNull(form.clientBudget);
   const manual = moneyOrNull(form.manualPrice);
@@ -137,11 +149,13 @@ export function QuoteDesk({
       {
         eventDate: form.eventDate,
         inquiryDate: form.inquiryDate,
+        tierId: form.tierId,
         marketId: form.marketId,
         packageId: form.packageId,
         qualifiedInquiries: form.qualifiedInquiries,
         bookedDates: form.bookedDates,
         targetCapacity: form.targetCapacity,
+        bookedOnDate: form.bookedOnDate,
         travelDaysBlocked: Math.max(1, form.travelDaysBlocked),
         clientBudget: budget,
         chargeStandard: form.chargeStandard,
@@ -150,6 +164,7 @@ export function QuoteDesk({
           marketId: record.marketId,
           outcome: record.outcome,
           sample: record.sample,
+          tierId: record.tierId,
         })),
       },
       config,
@@ -161,6 +176,23 @@ export function QuoteDesk({
     setSaved(null);
     setCopied(false);
     setForm((current) => ({ ...current, ...patch }));
+  }
+
+  function chooseTier(tierId: string) {
+    setPreset("custom");
+    setSaved(null);
+    setForm((current) => {
+      const previous = findTier(config, current.tierId);
+      const next = findTier(config, tierId);
+      const followTarget = previous !== undefined && current.targetCapacity === previous.monthlyCapacity;
+      const packageOk = next?.packages.some((item) => item.id === current.packageId) ?? false;
+      return {
+        ...current,
+        tierId,
+        packageId: packageOk ? current.packageId : next?.defaultPackageId ?? current.packageId,
+        targetCapacity: followTarget && next ? next.monthlyCapacity : current.targetCapacity,
+      };
+    });
   }
 
   function chooseMarket(marketId: string) {
@@ -195,6 +227,9 @@ export function QuoteDesk({
       couple: form.couple.trim(),
       eventDate: form.eventDate,
       inquiryDate: form.inquiryDate,
+      tierId: quote.tierId,
+      tierName: quote.tierName,
+      bookedOnDate: form.bookedOnDate,
       marketId: quote.marketId,
       packageId: quote.packageId,
       packageName: quote.packageName,
@@ -257,7 +292,10 @@ export function QuoteDesk({
   }
 
   const quote = result && result.ok ? result.quote : null;
+  const selectedTier = findTier(config, form.tierId);
+  const tierPackages = selectedTier?.packages ?? [];
   const utilization = form.targetCapacity > 0 ? Math.round((form.bookedDates / form.targetCapacity) * 100) : null;
+  const dateFill = selectedTier && selectedTier.dateCapacity > 0 ? Math.round((form.bookedOnDate / selectedTier.dateCapacity) * 100) : null;
 
   return (
     <div className="desk">
@@ -298,6 +336,24 @@ export function QuoteDesk({
           </p>
         ) : null}
 
+        <div className="preset-row" role="group" aria-label="Offering tier">
+          {config.tiers.map((tier) => (
+            <button
+              key={tier.id}
+              type="button"
+              className={form.tierId === tier.id ? "chip on" : "chip"}
+              onClick={() => chooseTier(tier.id)}
+            >
+              {tier.name}
+            </button>
+          ))}
+        </div>
+        {selectedTier?.placeholder ? (
+          <p className="banner">
+            {selectedTier.name} is seeded with placeholder prices and capacities. Edit them in Settings before you send a real quote. {selectedTier.note}
+          </p>
+        ) : null}
+
         <label className="field">
           <span>Couple</span>
           <input value={form.couple} onChange={(event) => edit({ couple: event.target.value })} placeholder="Names, for your log only" autoComplete="off" />
@@ -329,7 +385,7 @@ export function QuoteDesk({
           <label className="field">
             <span>Package</span>
             <select value={form.packageId} onChange={(event) => edit({ packageId: event.target.value })}>
-              {config.packages.map((item) => (
+              {tierPackages.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.name} — {formatMoney(item.price)}
                   {item.hours ? ` · ${item.hours} hours` : ""}
@@ -362,10 +418,10 @@ export function QuoteDesk({
               onChange={(event) => edit({ bookedDates: whole(event.target.value, 0) })}
               onWheel={(event) => event.currentTarget.blur()}
             />
-            <small>Already booked that month.</small>
+            <small>Booked this month for {selectedTier?.name ?? "this tier"}.</small>
           </label>
           <label className="field">
-            <span>Target capacity</span>
+            <span>Monthly target</span>
             <input
               type="number"
               min={0}
@@ -374,9 +430,25 @@ export function QuoteDesk({
               onChange={(event) => edit({ targetCapacity: whole(event.target.value, 0) })}
               onWheel={(event) => event.currentTarget.blur()}
             />
-            <small>{utilization === null ? "Set a monthly target." : `${utilization}% of the monthly target.`}</small>
+            <small>{utilization === null ? "Set a monthly target." : `${utilization}% of this tier's month.`}</small>
           </label>
         </div>
+        <label className="field">
+          <span>Booked on this date</span>
+          <input
+            type="number"
+            min={0}
+            step={1}
+            value={form.bookedOnDate}
+            onChange={(event) => edit({ bookedOnDate: whole(event.target.value, 0) })}
+            onWheel={(event) => event.currentTarget.blur()}
+          />
+          <small>
+            {selectedTier
+              ? `${selectedTier.name} can cover ${selectedTier.dateCapacity} wedding${selectedTier.dateCapacity === 1 ? "" : "s"} on one date.${dateFill === null ? "" : ` ${dateFill}% of those slots are filled.`}`
+              : "How many of this tier are already booked that day."}
+          </small>
+        </label>
         <label className="field">
           <span>Days blocked, including travel</span>
           <input
@@ -442,7 +514,7 @@ export function QuoteDesk({
         {quote ? (
           <>
             <article className="quote-card">
-              <p className="kicker">Suggested quote</p>
+              <p className="kicker">Suggested quote{quote.tierName ? ` · ${quote.tierName}` : ""}</p>
               <p className="figure">{formatMoney(quote.suggestedQuote)}</p>
               <p className="versus">
                 {Math.abs(quote.suggestedQuote - quote.basePrice) < 1

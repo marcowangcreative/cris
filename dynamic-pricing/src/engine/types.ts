@@ -86,20 +86,34 @@ export interface PricingWeights {
   historyNudge: number;
 }
 
+/** A way the studio sells a wedding: Marco as lead, or an associate under the brand. */
+export interface OfferingTier {
+  id: string;
+  name: string;
+  note: string;
+  /** True when the prices and capacities are placeholders Marco still needs to replace. */
+  placeholder: boolean;
+  /** 0.15 means a quote may fall to 15% below that tier's package base. */
+  maxReduction: number;
+  /** 0.20 means a quote may rise to 20% above that tier's package base. */
+  maxPremium: number;
+  packages: PackageDef[];
+  defaultPackageId: string;
+  /** How many weddings this tier can cover on one date. Marco is 1. */
+  dateCapacity: number;
+  /** Weddings this tier aims to book in a month. */
+  monthlyCapacity: number;
+}
+
 export interface PricingConfig {
   version: 1;
-  packages: PackageDef[];
+  tiers: OfferingTier[];
+  defaultTierId: string;
   markets: MarketDef[];
   homeMarketId: string;
-  defaultPackageId: string;
-  /** 0.15 means the quote may fall to 15% below the package base. */
-  maxReduction: number;
-  /** 0.20 means the quote may rise to 20% above the package base. */
-  maxPremium: number;
   objective: Objective;
   /** Suggested quotes and floors round to this dollar increment. */
   roundTo: number;
-  defaultTargetCapacity: number;
   weights: PricingWeights;
 }
 
@@ -108,17 +122,25 @@ export interface HistorySignal {
   outcome: Outcome;
   /** Sample rows are demo data and never move the price. */
   sample?: boolean;
+  /** Rows without a tier count only toward the default tier. */
+  tierId?: string;
 }
 
 export interface QuoteInput {
   eventDate: string;
   inquiryDate: string;
   marketId: string;
+  /** Which offering is being quoted. Omit to use the default tier. */
+  tierId?: string;
   packageId: string;
   /** Qualified inquiries for this date, including the couple being quoted. */
   qualifiedInquiries: number;
+  /** Weddings this tier has already booked in the event's month. */
   bookedDates: number;
+  /** Monthly target for this tier. */
   targetCapacity: number;
+  /** Weddings this tier already has on the event date. Omit for zero. */
+  bookedOnDate?: number;
   /** Calendar days the job blocks, including travel. 1 is a local shoot day. */
   travelDaysBlocked: number;
   history?: HistorySignal[];
@@ -162,6 +184,11 @@ export interface Quote {
   packageName: string;
   packageDetail: string;
   basePrice: number;
+  tierId: string;
+  tierName: string;
+  tierPlaceholder: boolean;
+  dateCapacity: number;
+  bookedOnDate: number;
   marketId: string;
   marketName: string;
   marketRegion: string;

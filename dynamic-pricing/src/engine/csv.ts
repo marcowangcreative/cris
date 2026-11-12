@@ -19,6 +19,8 @@ export interface CsvBooking {
   manualPrice?: number;
   /** Demand-model quote before a standard-rate hold, kept for a backtest. */
   modelQuote?: number;
+  tier?: string;
+  bookedOnDate?: number;
 }
 
 export interface CsvError {
@@ -43,6 +45,8 @@ export const CSV_COLUMNS = [
   "charge_standard",
   "manual_price",
   "model_quote",
+  "tier",
+  "booked_on_date",
 ] as const;
 
 const REQUIRED = ["event_date", "inquiry_date", "package", "quoted_price", "outcome", "notes"] as const;
@@ -59,7 +63,7 @@ const REQUIRED = ["event_date", "inquiry_date", "package", "quoted_price", "outc
  *
  * Optional columns, after the required ones:
  * market, couple, travel_days, inquiries, booked_dates, target_capacity,
- * client_budget, charge_standard, manual_price, model_quote
+ * client_budget, charge_standard, manual_price, model_quote, tier, booked_on_date
  *
  * charge_standard is yes or no. model_quote is the demand-model price before
  * a standard-rate hold, so a backtest can see what the hold kept.
@@ -69,7 +73,7 @@ export function csvFormatDescription(): string {
     "Required columns: event_date, inquiry_date, package, quoted_price, outcome, notes.",
     "Dates use YYYY-MM-DD. outcome is booked, lost, or pending.",
     "quoted_price can include $ and commas.",
-    "Optional columns: market, couple, travel_days, inquiries, booked_dates, target_capacity, client_budget, charge_standard, manual_price, model_quote.",
+    "Optional columns: market, couple, travel_days, inquiries, booked_dates, target_capacity, client_budget, charge_standard, manual_price, model_quote, tier, booked_on_date.",
     "charge_standard is yes or no. model_quote is the price before a standard-rate hold.",
   ].join(" ");
 }
@@ -95,6 +99,8 @@ export function toCsv(records: CsvBooking[]): string {
         record.chargeStandard === undefined ? "" : record.chargeStandard ? "yes" : "no",
         record.manualPrice ?? "",
         record.modelQuote ?? "",
+        record.tier ?? "",
+        record.bookedOnDate ?? "",
       ]
         .map(escapeCell)
         .join(","),
@@ -181,6 +187,9 @@ export function parseCsv(text: string): { records: CsvBooking[]; errors: CsvErro
     assignOptionalNumber(record, "clientBudget", "client_budget", cell("client_budget"), line, errors);
     assignOptionalNumber(record, "manualPrice", "manual_price", cell("manual_price"), line, errors);
     assignOptionalNumber(record, "modelQuote", "model_quote", cell("model_quote"), line, errors);
+    assignOptionalNumber(record, "bookedOnDate", "booked_on_date", cell("booked_on_date"), line, errors);
+    const tier = optionalText(cell("tier"));
+    if (tier) record.tier = tier;
     const flag = cell("charge_standard");
     if (flag) {
       const normalized = flag.toLowerCase();
@@ -196,7 +205,7 @@ export function parseCsv(text: string): { records: CsvBooking[]; errors: CsvErro
 
 function assignOptionalNumber(
   record: CsvBooking,
-  key: "travelDaysBlocked" | "qualifiedInquiries" | "bookedDates" | "targetCapacity" | "clientBudget" | "manualPrice" | "modelQuote",
+  key: "travelDaysBlocked" | "qualifiedInquiries" | "bookedDates" | "targetCapacity" | "clientBudget" | "manualPrice" | "modelQuote" | "bookedOnDate",
   label: string,
   raw: string,
   line: number,

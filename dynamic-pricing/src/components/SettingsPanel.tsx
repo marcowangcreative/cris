@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createDefaultConfig, formatMoney, type MarketDef, type PackageDef, type PricingConfig, type PricingWeights } from "../engine";
+import { createDefaultConfig, formatMoney, type MarketDef, type OfferingTier, type PackageDef, type PricingConfig, type PricingWeights } from "../engine";
 import { uniqueId } from "../ids";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -12,14 +12,20 @@ const OBJECTIVES = [
 
 export function SettingsPanel({ config, onChange }: { config: PricingConfig; onChange: (config: PricingConfig) => void }) {
   const [marketId, setMarketId] = useState(config.homeMarketId);
+  const [tierId, setTierId] = useState(config.defaultTierId);
   const [confirmReset, setConfirmReset] = useState(false);
   const market = config.markets.find((item) => item.id === marketId) ?? config.markets[0];
-  const basePackage = config.packages.find((item) => item.id === config.defaultPackageId) ?? config.packages[0];
-  const low = basePackage.price * (1 - config.maxReduction);
-  const high = basePackage.price * (1 + config.maxPremium);
+  const tier = config.tiers.find((item) => item.id === tierId) ?? config.tiers[0];
+  const basePackage = tier.packages.find((item) => item.id === tier.defaultPackageId) ?? tier.packages[0];
+  const low = basePackage.price * (1 - tier.maxReduction);
+  const high = basePackage.price * (1 + tier.maxPremium);
 
   function patch(next: Partial<PricingConfig>) {
     onChange({ ...config, ...next });
+  }
+
+  function patchTier(next: Partial<OfferingTier>) {
+    patch({ tiers: config.tiers.map((item) => (item.id === tier.id ? { ...item, ...next } : item)) });
   }
 
   function patchWeight<K extends keyof PricingWeights>(key: K, value: PricingWeights[K]) {
@@ -27,7 +33,7 @@ export function SettingsPanel({ config, onChange }: { config: PricingConfig; onC
   }
 
   function updatePackage(id: string, next: Partial<PackageDef>) {
-    patch({ packages: config.packages.map((item) => (item.id === id ? { ...item, ...next } : item)) });
+    patchTier({ packages: tier.packages.map((item) => (item.id === id ? { ...item, ...next } : item)) });
   }
 
   function updateMarket(id: string, next: Partial<MarketDef>) {
@@ -41,7 +47,7 @@ export function SettingsPanel({ config, onChange }: { config: PricingConfig; onC
       </p>
 
       <section className="panel">
-        <h2>Objective and corridor</h2>
+        <h2>Objective</h2>
         <fieldset className="objectives">
           <legend>Primary objective</legend>
           {OBJECTIVES.map((option) => (
@@ -60,61 +66,144 @@ export function SettingsPanel({ config, onChange }: { config: PricingConfig; onC
             </label>
           ))}
         </fieldset>
-        <div className="field-row three">
-          <PercentField label="Maximum below the base" value={config.maxReduction} onChange={(maxReduction) => patch({ maxReduction })} />
-          <PercentField label="Maximum above the base" value={config.maxPremium} onChange={(maxPremium) => patch({ maxPremium })} />
-          <label className="field">
-            <span>Round to</span>
-            <input
-              type="number"
-              min={1}
-              step={1}
-              value={config.roundTo}
-              onChange={(event) => {
-                if (Number.isFinite(event.target.valueAsNumber)) patch({ roundTo: Math.max(1, Math.round(event.target.valueAsNumber)) });
-              }}
-              onWheel={(event) => event.currentTarget.blur()}
-            />
-            <small>Dollars. $50 is the default.</small>
-          </label>
-        </div>
-        <p className="corridor">
-          {basePackage.name} corridor before rounding: {formatMoney(low)} to {formatMoney(high)}.
-        </p>
         <label className="field narrow">
-          <span>Default monthly target</span>
+          <span>Round to</span>
           <input
             type="number"
             min={1}
             step={1}
-            value={config.defaultTargetCapacity}
+            value={config.roundTo}
             onChange={(event) => {
-              if (Number.isFinite(event.target.valueAsNumber)) {
-                patch({ defaultTargetCapacity: Math.max(1, Math.round(event.target.valueAsNumber)) });
-              }
+              if (Number.isFinite(event.target.valueAsNumber)) patch({ roundTo: Math.max(1, Math.round(event.target.valueAsNumber)) });
             }}
             onWheel={(event) => event.currentTarget.blur()}
           />
-          <small>Used when you start a blank inquiry.</small>
+          <small>Dollars. $50 is the default for every tier.</small>
         </label>
       </section>
 
       <section className="panel">
         <div className="section-head">
-          <h2>Packages</h2>
+          <h2>Offering tiers</h2>
           <button
             type="button"
             className="ghost dark"
             onClick={() => {
-              const id = uniqueId("package", config.packages.map((item) => item.id));
-              patch({ packages: [...config.packages, { id, name: "New package", price: 6000, detail: "", hours: 6, photographers: 1 }] });
+              const id = uniqueId("tier", config.tiers.map((item) => item.id));
+              const packageId = `${id}-signature`;
+              const created: OfferingTier = {
+                id,
+                name: "New tier",
+                note: "PLACEHOLDER — edit this tier before quoting.",
+                placeholder: true,
+                maxReduction: 0.15,
+                maxPremium: 0.15,
+                dateCapacity: 2,
+                monthlyCapacity: 8,
+                defaultPackageId: packageId,
+                packages: [{ id: packageId, name: "Signature", price: 5000, detail: "PLACEHOLDER", hours: 8, photographers: 1 }],
+              };
+              patch({ tiers: [...config.tiers, created] });
+              setTierId(id);
+            }}
+          >
+            Add tier
+          </button>
+        </div>
+        <div className="preset-row">
+          {config.tiers.map((item) => (
+            <button key={item.id} type="button" className={item.id === tier.id ? "chip on" : "chip"} onClick={() => setTierId(item.id)}>
+              {item.name}
+            </button>
+          ))}
+        </div>
+        {tier.placeholder ? <p className="banner">Placeholder tier. The prices and capacities below are starting numbers, not a real rate card.</p> : null}
+        <div className="field-row">
+          <label className="field">
+            <span>Name</span>
+            <input value={tier.name} onChange={(event) => patchTier({ name: event.target.value })} />
+          </label>
+          <label className="check">
+            <input
+              type="radio"
+              name="default-tier"
+              checked={config.defaultTierId === tier.id}
+              onChange={() => patch({ defaultTierId: tier.id })}
+            />
+            <span>Default tier for a new inquiry</span>
+          </label>
+        </div>
+        <label className="field">
+          <span>Note</span>
+          <textarea rows={2} value={tier.note} onChange={(event) => patchTier({ note: event.target.value })} />
+        </label>
+        <div className="field-row three">
+          <PercentField label="Maximum below the base" value={tier.maxReduction} onChange={(maxReduction) => patchTier({ maxReduction })} />
+          <PercentField label="Maximum above the base" value={tier.maxPremium} onChange={(maxPremium) => patchTier({ maxPremium })} />
+          <p className="corridor">
+            {basePackage.name} corridor before rounding: {formatMoney(low)} to {formatMoney(high)}.
+          </p>
+        </div>
+        <div className="field-row">
+          <label className="field">
+            <span>Weddings on one date</span>
+            <input
+              type="number"
+              min={1}
+              step={1}
+              value={tier.dateCapacity}
+              onChange={(event) => {
+                if (Number.isFinite(event.target.valueAsNumber)) patchTier({ dateCapacity: Math.max(1, Math.round(event.target.valueAsNumber)) });
+              }}
+              onWheel={(event) => event.currentTarget.blur()}
+            />
+            <small>Marco can shoot one. Associates can cover several on the same day.</small>
+          </label>
+          <label className="field">
+            <span>Monthly target</span>
+            <input
+              type="number"
+              min={1}
+              step={1}
+              value={tier.monthlyCapacity}
+              onChange={(event) => {
+                if (Number.isFinite(event.target.valueAsNumber)) patchTier({ monthlyCapacity: Math.max(1, Math.round(event.target.valueAsNumber)) });
+              }}
+              onWheel={(event) => event.currentTarget.blur()}
+            />
+            <small>Used when a blank inquiry starts on this tier. Fill is booked divided by this number.</small>
+          </label>
+        </div>
+        <button
+          type="button"
+          className="text-button"
+          disabled={config.tiers.length === 1}
+          onClick={() => {
+            const tiers = config.tiers.filter((item) => item.id !== tier.id);
+            patch({ tiers, defaultTierId: config.defaultTierId === tier.id ? tiers[0].id : config.defaultTierId });
+            setTierId(tiers[0].id);
+          }}
+        >
+          Remove tier
+        </button>
+      </section>
+
+      <section className="panel">
+        <div className="section-head">
+          <h2>{tier.name} packages</h2>
+          <button
+            type="button"
+            className="ghost dark"
+            onClick={() => {
+              const id = uniqueId("package", tier.packages.map((item) => item.id));
+              patchTier({ packages: [...tier.packages, { id, name: "New package", price: 6000, detail: "", hours: 6, photographers: 1 }] });
             }}
           >
             Add package
           </button>
         </div>
         <ul className="edit-list">
-          {config.packages.map((item) => (
+          {tier.packages.map((item) => (
             <li key={item.id}>
               <label className="field">
                 <span>Name</span>
@@ -171,20 +260,20 @@ export function SettingsPanel({ config, onChange }: { config: PricingConfig; onC
                 <input
                   type="radio"
                   name="default-package"
-                  checked={config.defaultPackageId === item.id}
-                  onChange={() => patch({ defaultPackageId: item.id })}
+                  checked={tier.defaultPackageId === item.id}
+                  onChange={() => patchTier({ defaultPackageId: item.id })}
                 />
-                <span>Default</span>
+                <span>Base package</span>
               </label>
               <button
                 type="button"
                 className="text-button"
-                disabled={config.packages.length === 1}
+                disabled={tier.packages.length === 1}
                 onClick={() => {
-                  const packages = config.packages.filter((pkg) => pkg.id !== item.id);
-                  patch({
+                  const packages = tier.packages.filter((pkg) => pkg.id !== item.id);
+                  patchTier({
                     packages,
-                    defaultPackageId: config.defaultPackageId === item.id ? packages[0].id : config.defaultPackageId,
+                    defaultPackageId: tier.defaultPackageId === item.id ? packages[0].id : tier.defaultPackageId,
                   });
                 }}
               >
@@ -391,7 +480,7 @@ export function SettingsPanel({ config, onChange }: { config: PricingConfig; onC
         {confirmReset ? (
           <p className="confirm-row">
             Reset every weight, package, and market to the testing defaults? Booking history stays.
-            <button type="button" className="text-button" onClick={() => { onChange(createDefaultConfig()); setConfirmReset(false); setMarketId("houston"); }}>
+            <button type="button" className="text-button" onClick={() => { onChange(createDefaultConfig()); setConfirmReset(false); setMarketId("houston"); setTierId("marco"); }}>
               Reset defaults
             </button>
             <button type="button" className="text-button" onClick={() => setConfirmReset(false)}>

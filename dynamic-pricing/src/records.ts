@@ -17,6 +17,8 @@ export interface BookingRecord {
   couple: string;
   eventDate: string;
   inquiryDate: string;
+  tierId: string;
+  tierName: string;
   marketId: string;
   packageId: string;
   packageName: string;
@@ -28,6 +30,7 @@ export interface BookingRecord {
   qualifiedInquiries: number;
   bookedDates: number;
   targetCapacity: number;
+  bookedOnDate: number;
   sample: boolean;
   approvedAt: string;
   /** Demand-model price before a standard-rate hold or manual price. */
@@ -41,6 +44,7 @@ export interface BookingRecord {
 }
 
 export function normalizeRecord(record: BookingRecord): BookingRecord {
+  const tierId = typeof record.tierId === "string" && record.tierId ? record.tierId : "marco";
   const modelQuote = typeof record.modelQuote === "number" && Number.isFinite(record.modelQuote)
     ? record.modelQuote
     : record.quotedPrice;
@@ -49,6 +53,9 @@ export function normalizeRecord(record: BookingRecord): BookingRecord {
     : Math.max(0, Math.round(record.quotedPrice - modelQuote));
   return {
     ...record,
+    tierId,
+    tierName: typeof record.tierName === "string" && record.tierName ? record.tierName : tierId === "marco" ? "Marco (lead)" : tierId,
+    bookedOnDate: typeof record.bookedOnDate === "number" && Number.isFinite(record.bookedOnDate) ? record.bookedOnDate : 0,
     modelQuote,
     chargeStandard: record.chargeStandard === true,
     clientBudget: typeof record.clientBudget === "number" ? record.clientBudget : null,

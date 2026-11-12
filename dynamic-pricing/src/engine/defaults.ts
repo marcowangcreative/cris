@@ -2,6 +2,7 @@ import type {
   LeadBand,
   MarketDef,
   Objective,
+  OfferingTier,
   PackageDef,
   PricingConfig,
   PricingWeights,
@@ -132,19 +133,76 @@ export const DEFAULT_WEIGHTS: PricingWeights = {
   historyNudge: 0.02,
 };
 
+/** Clearly not real rates. Marco replaces these before an associate quote goes to a couple. */
+const ASSOCIATE_PACKAGES: PackageDef[] = [
+  {
+    id: "associate-petite",
+    name: "Associate petite",
+    price: 3200,
+    detail: "PLACEHOLDER — 4 hours, 1 associate photographer",
+    hours: 4,
+    photographers: 1,
+  },
+  {
+    id: "associate-classic",
+    name: "Associate classic",
+    price: 4800,
+    detail: "PLACEHOLDER — 6 hours, 1 associate photographer",
+    hours: 6,
+    photographers: 1,
+  },
+  {
+    id: "associate-signature",
+    name: "Associate signature",
+    price: 6400,
+    detail: "PLACEHOLDER — 8 hours, 1 associate photographer",
+    hours: 8,
+    photographers: 1,
+  },
+];
+
+const DEFAULT_TIERS: OfferingTier[] = [
+  {
+    id: "marco",
+    name: "Marco (lead)",
+    note: "Marco shoots the wedding. One lead photographer, and only one wedding on a date.",
+    placeholder: false,
+    maxReduction: 0.15,
+    maxPremium: 0.2,
+    packages: DEFAULT_PACKAGES,
+    defaultPackageId: "signature",
+    dateCapacity: 1,
+    monthlyCapacity: 4,
+  },
+  {
+    id: "associate",
+    name: "Associate",
+    note: "PLACEHOLDER values. These are not real associate rates. Edit the packages, the corridor, and how many associates can cover one date before you quote a couple.",
+    placeholder: true,
+    maxReduction: 0.2,
+    maxPremium: 0.15,
+    packages: ASSOCIATE_PACKAGES,
+    defaultPackageId: "associate-signature",
+    dateCapacity: 4,
+    monthlyCapacity: 16,
+  },
+];
+
 const DEFAULT_CONFIG: PricingConfig = {
   version: 1,
-  packages: DEFAULT_PACKAGES,
+  tiers: DEFAULT_TIERS,
+  defaultTierId: "marco",
   markets: DEFAULT_MARKETS,
   homeMarketId: "houston",
-  defaultPackageId: "signature",
-  maxReduction: 0.15,
-  maxPremium: 0.2,
   objective: "balanced",
   roundTo: 50,
-  defaultTargetCapacity: 4,
   weights: DEFAULT_WEIGHTS,
 };
+
+export function findTier(config: PricingConfig, tierId?: string): OfferingTier | undefined {
+  const id = tierId || config.defaultTierId;
+  return config.tiers.find((tier) => tier.id === id) ?? config.tiers.find((tier) => tier.id === config.defaultTierId) ?? config.tiers[0];
+}
 
 export function createDefaultConfig(): PricingConfig {
   return structuredClone(DEFAULT_CONFIG);
@@ -283,10 +341,66 @@ function sanitizeWeights(value: unknown, fallback: PricingWeights): PricingWeigh
   return weights;
 }
 
+function sanitizeTier(value: unknown, fallback: OfferingTier): OfferingTier | null {
+  if (!isRecord(value)) return null;
+  const id = typeof value.id === "string" ? value.id.trim() : "";
+  const name = typeof value.name === "string" ? value.name.trim() : "";
+  if (!id || !name) return null;
+  const packages = sanitizePackages(value.packages, fallback.packages);
+  const defaultPackageId = packages.some((item) => item.id === value.defaultPackageId)
+    ? String(value.defaultPackageId)
+    : packages.some((item) => item.id === fallback.defaultPackageId)
+      ? fallback.defaultPackageId
+      : packages[0].id;
+  return {
+    id,
+    name,
+    note: typeof value.note === "string" ? value.note.trim() : fallback.note,
+    placeholder: value.placeholder === true,
+    maxReduction: finiteNumber(value.maxReduction, fallback.maxReduction, 0, 0.8),
+    maxPremium: finiteNumber(value.maxPremium, fallback.maxPremium, 0, 1.5),
+    packages,
+    defaultPackageId,
+    dateCapacity: Math.round(finiteNumber(value.dateCapacity, fallback.dateCapacity, 1, 30)),
+    monthlyCapacity: Math.round(finiteNumber(value.monthlyCapacity, fallback.monthlyCapacity, 1, 60)),
+  };
+}
+
+function sanitizeTiers(value: unknown, legacy: Record<string, unknown>, fallback: OfferingTier[]): OfferingTier[] {
+  if (Array.isArray(value)) {
+    const tiers: OfferingTier[] = [];
+    const ids = new Set<string>();
+    for (const item of value) {
+      const tier = sanitizeTier(item, fallback[0]);
+      if (!tier || ids.has(tier.id)) continue;
+      ids.add(tier.id);
+      tiers.push(tier);
+    }
+    if (tiers.length > 0) return tiers;
+  }
+  const seeded = structuredClone(fallback);
+  const marco = seeded.find((tier) => tier.id === "marco") ?? seeded[0];
+  if (Array.isArray(legacy.packages)) {
+    marco.packages = sanitizePackages(legacy.packages, marco.packages);
+    marco.maxReduction = finiteNumber(legacy.maxReduction, marco.maxReduction, 0, 0.8);
+    marco.maxPremium = finiteNumber(legacy.maxPremium, marco.maxPremium, 0, 1.5);
+    if (typeof legacy.defaultPackageId === "string" && marco.packages.some((item) => item.id === legacy.defaultPackageId)) {
+      marco.defaultPackageId = legacy.defaultPackageId;
+    }
+    if (legacy.defaultTargetCapacity !== undefined) {
+      marco.monthlyCapacity = Math.round(finiteNumber(legacy.defaultTargetCapacity, marco.monthlyCapacity, 1, 60));
+    }
+  } else if (legacy.maxPremium !== undefined || legacy.maxReduction !== undefined) {
+    marco.maxReduction = finiteNumber(legacy.maxReduction, marco.maxReduction, 0, 0.8);
+    marco.maxPremium = finiteNumber(legacy.maxPremium, marco.maxPremium, 0, 1.5);
+  }
+  return seeded;
+}
+
 export function sanitizeConfig(value: unknown): PricingConfig {
   const defaults = createDefaultConfig();
   if (!isRecord(value)) return defaults;
-  const packages = sanitizePackages(value.packages, defaults.packages);
+  const tiers = sanitizeTiers(value.tiers, value, defaults.tiers);
   const markets = sanitizeMarkets(value.markets, defaults.markets);
   const homeMarketId =
     typeof value.homeMarketId === "string" && markets.some((market) => market.id === value.homeMarketId)
@@ -294,26 +408,22 @@ export function sanitizeConfig(value: unknown): PricingConfig {
       : markets.some((market) => market.id === defaults.homeMarketId)
         ? defaults.homeMarketId
         : markets[0].id;
-  const defaultPackageId =
-    typeof value.defaultPackageId === "string" && packages.some((item) => item.id === value.defaultPackageId)
-      ? value.defaultPackageId
-      : packages.some((item) => item.id === defaults.defaultPackageId)
-        ? defaults.defaultPackageId
-        : packages[0].id;
+  const defaultTierId = tiers.some((tier) => tier.id === value.defaultTierId)
+    ? String(value.defaultTierId)
+    : tiers.some((tier) => tier.id === defaults.defaultTierId)
+      ? defaults.defaultTierId
+      : tiers[0].id;
   const objective = OBJECTIVES.includes(value.objective as Objective)
     ? (value.objective as Objective)
     : defaults.objective;
   return {
     version: 1,
-    packages,
+    tiers,
+    defaultTierId,
     markets,
     homeMarketId,
-    defaultPackageId,
-    maxReduction: finiteNumber(value.maxReduction, defaults.maxReduction, 0, 0.8),
-    maxPremium: finiteNumber(value.maxPremium, defaults.maxPremium, 0, 1.5),
     objective,
     roundTo: Math.round(finiteNumber(value.roundTo, defaults.roundTo, 1, 1000)),
-    defaultTargetCapacity: Math.round(finiteNumber(value.defaultTargetCapacity, defaults.defaultTargetCapacity, 1, 31)),
     weights: sanitizeWeights(value.weights, defaults.weights),
   };
 }

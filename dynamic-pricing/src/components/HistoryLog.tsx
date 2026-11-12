@@ -23,6 +23,8 @@ function toExport(records: BookingRecord[], config: PricingConfig): CsvBooking[]
     outcome: record.outcome,
     notes: record.notes,
     market: config.markets.find((item) => item.id === record.marketId)?.name ?? record.marketId,
+    tier: record.tierName,
+    bookedOnDate: record.bookedOnDate,
     couple: record.couple,
     travelDaysBlocked: record.travelDaysBlocked,
     qualifiedInquiries: record.qualifiedInquiries,
@@ -37,14 +39,19 @@ function toExport(records: BookingRecord[], config: PricingConfig): CsvBooking[]
 
 function fromCsv(rows: CsvBooking[], config: PricingConfig): BookingRecord[] {
   return rows.map((row) => {
+    const tier =
+      config.tiers.find((item) => item.name.toLowerCase() === (row.tier ?? "").toLowerCase()) ??
+      config.tiers.find((item) => item.id.toLowerCase() === (row.tier ?? "").toLowerCase()) ??
+      config.tiers.find((item) => item.id === config.defaultTierId) ??
+      config.tiers[0];
     const market =
       config.markets.find((item) => item.name.toLowerCase() === (row.market ?? "").toLowerCase()) ??
       config.markets.find((item) => item.id.toLowerCase() === (row.market ?? "").toLowerCase()) ??
       config.markets.find((item) => item.id === config.homeMarketId) ??
       config.markets[0];
-    const byName = config.packages.find((item) => item.name.toLowerCase() === row.packageName.toLowerCase());
+    const byName = tier.packages.find((item) => item.name.toLowerCase() === row.packageName.toLowerCase());
     const numeric = Number(row.packageName.replace(/[$,\s]/g, ""));
-    const byPrice = config.packages.find((item) => item.price === numeric);
+    const byPrice = tier.packages.find((item) => item.price === numeric);
     const selected = byName ?? byPrice;
     const modelQuote = row.modelQuote ?? row.quotedPrice;
     return {
@@ -52,6 +59,8 @@ function fromCsv(rows: CsvBooking[], config: PricingConfig): BookingRecord[] {
       couple: row.couple ?? "",
       eventDate: row.eventDate,
       inquiryDate: row.inquiryDate,
+      tierId: tier.id,
+      tierName: tier.name,
       marketId: market.id,
       packageId: selected?.id ?? "custom",
       packageName: selected?.name ?? row.packageName,
@@ -62,7 +71,8 @@ function fromCsv(rows: CsvBooking[], config: PricingConfig): BookingRecord[] {
       travelDaysBlocked: row.travelDaysBlocked ?? market.typicalTravelDays,
       qualifiedInquiries: row.qualifiedInquiries ?? 1,
       bookedDates: row.bookedDates ?? 0,
-      targetCapacity: row.targetCapacity ?? config.defaultTargetCapacity,
+      targetCapacity: row.targetCapacity ?? tier.monthlyCapacity,
+      bookedOnDate: row.bookedOnDate ?? 0,
       sample: false,
       approvedAt: new Date().toISOString(),
       modelQuote,
@@ -218,7 +228,7 @@ export function HistoryLog({
         </ul>
       ) : null}
       <p className="hint">
-        Required columns: event_date, inquiry_date, package, quoted_price, outcome, notes. Optional: market, couple, travel_days, inquiries, booked_dates, target_capacity, client_budget, charge_standard, manual_price, model_quote. Outcome is booked, lost, or pending. Dates are YYYY-MM-DD.
+        Required columns: event_date, inquiry_date, package, quoted_price, outcome, notes. Optional: market, couple, tier, travel_days, inquiries, booked_dates, target_capacity, booked_on_date, client_budget, charge_standard, manual_price, model_quote. Outcome is booked, lost, or pending. Dates are YYYY-MM-DD.
       </p>
 
       {visible.length === 0 ? (
@@ -233,7 +243,7 @@ export function HistoryLog({
                   <div>
                     <h3>{record.couple || "Untitled inquiry"}</h3>
                     <p>
-                      {formatLongDate(record.eventDate)} · {market?.name ?? record.marketId} · {record.packageName}
+                      {formatLongDate(record.eventDate)} · {record.tierName} · {market?.name ?? record.marketId} · {record.packageName}
                     </p>
                   </div>
                   <p className="log-price">{formatMoney(record.quotedPrice)}</p>

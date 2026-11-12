@@ -19,6 +19,7 @@
  * quotes stay at the number that was recorded.
  */
 import { dayName, daysBetween, formatISODate, monthName, offPeakAlternative, parseISODate, weekdayAlternative } from "./dates";
+import { findTier } from "./defaults";
 import { clamp, formatMoney, formatPercent, roundDownToIncrement, roundToIncrement, roundUpToIncrement } from "./money";
 import type {
   Adjustment,
@@ -26,6 +27,7 @@ import type {
   BudgetFit,
   ConfidenceLevel,
   HistorySignal,
+  OfferingTier,
   PackageDef,
   PricingConfig,
   PricingWeights,
@@ -46,11 +48,14 @@ export function seasonalPercent(index: number, weights: PricingWeights): number 
   return ((index - 100) / 35) * weights.seasonalityPer35Points;
 }
 
-export function corridorBounds(base: number, config: PricingConfig): CorridorBounds {
-  const floorExact = base * (1 - config.maxReduction);
-  const ceilingExact = base * (1 + config.maxPremium);
-  const floor = roundUpToIncrement(floorExact, config.roundTo);
-  const ceiling = roundDownToIncrement(ceilingExact, config.roundTo);
+export function corridorBounds(
+  base: number,
+  limits: { maxReduction: number; maxPremium: number; roundTo: number },
+): CorridorBounds {
+  const floorExact = base * (1 - limits.maxReduction);
+  const ceilingExact = base * (1 + limits.maxPremium);
+  const floor = roundUpToIncrement(floorExact, limits.roundTo);
+  const ceiling = roundDownToIncrement(ceilingExact, limits.roundTo);
   return { floorExact, ceilingExact, floor, ceiling };
 }
 
@@ -95,6 +100,17 @@ function utilizationAdjustment(
   return { percent, utilization, raw, capped: Math.abs(percent - raw) > 1e-9 };
 }
 
+function dateScarcity(
+  bookedOnDate: number,
+  dateCapacity: number,
+  weights: PricingWeights,
+): { percent: number; fill: number | null } {
+  if (dateCapacity <= 0) return { percent: 0, fill: null };
+  const fill = bookedOnDate / dateCapacity;
+  const raw = Math.max(0, fill) * weights.utilizationFull;
+  return { percent: clamp(raw, 0, Math.abs(weights.utilizationCap)), fill };
+}
+
 function leadAdjustment(
   days: number,
   premiumSaturday: boolean,
@@ -122,12 +138,13 @@ function historyAdjustment(
   marketId: string,
   history: HistorySignal[] | undefined,
   weights: PricingWeights,
+  tierId: string,
+  defaultTierId: string,
 ): { percent: number; decided: number; booked: number; winRate: number | null; samples: number } {
-  const rows = history ?? [];
-  const samples = rows.filter((row) => row.sample && row.marketId === marketId).length;
-  const decidedRows = rows.filter(
-    (row) => !row.sample && row.marketId === marketId && (row.outcome === "booked" || row.outcome === "lost"),
-  );
+  const inTier = (row: HistorySignal) => (row.tierId ? row.tierId === tierId : tierId === defaultTierId);
+  const rows = (history ?? []).filter((row) => row.marketId === marketId && inTier(row));
+  const samples = rows.filter((row) => row.sample).length;
+  const decidedRows = rows.filter((row) => !row.sample && (row.outcome === "booked" || row.outcome === "lost"));
   const booked = decidedRows.filter((row) => row.outcome === "booked").length;
   const decided = decidedRows.length;
   const winRate = decided > 0 ? booked / decided : null;
@@ -186,21 +203,25 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
   if (!event) return fail("Enter an event date as YYYY-MM-DD.");
   if (!inquiry) return fail("Enter an inquiry date as YYYY-MM-DD.");
 
+  const tier = input.tierId ? config.tiers.find((item) => item.id === input.tierId) : findTier(config);
+  if (!tier) return fail("Choose an offering tier that exists in settings.");
   const market = config.markets.find((item) => item.id === input.marketId);
   if (!market) return fail("Choose a market that exists in settings.");
   if (market.demandIndex.length !== 12) return fail(`${market.name} needs a demand index for all 12 months.`);
 
-  const selectedPackage = config.packages.find((item) => item.id === input.packageId);
-  if (!selectedPackage) return fail("Choose a package that exists in settings.");
+  const selectedPackage = tier.packages.find((item) => item.id === input.packageId);
+  if (!selectedPackage) return fail(`Choose a ${tier.name} package that exists in settings.`);
   if (!(selectedPackage.price > 0)) return fail("The package price has to be above zero.");
 
   const inquiries = whole(input.qualifiedInquiries);
   const booked = whole(input.bookedDates);
   const target = whole(input.targetCapacity);
+  const bookedOnDate = input.bookedOnDate === undefined ? 0 : whole(input.bookedOnDate);
   const travelDays = whole(input.travelDaysBlocked);
   if (inquiries === null || inquiries < 0) return fail("Qualified inquiries cannot be negative.");
   if (booked === null || booked < 0) return fail("Booked dates cannot be negative.");
   if (target === null || target < 0) return fail("Target capacity cannot be negative.");
+  if (bookedOnDate === null || bookedOnDate < 0) return fail("Booked on this date cannot be negative.");
   if (travelDays === null || travelDays < 1) return fail("Travel days blocked has to be at least 1.");
   if (!(config.roundTo >= 1)) return fail("The rounding increment has to be at least $1.");
 
@@ -212,7 +233,11 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
   const clientBudget = budgetInput.amount;
   const enteredManual = manualInput.amount;
 
-  const bounds = corridorBounds(selectedPackage.price, config);
+  const bounds = corridorBounds(selectedPackage.price, {
+    maxReduction: tier.maxReduction,
+    maxPremium: tier.maxPremium,
+    roundTo: config.roundTo,
+  });
   if (bounds.floor > bounds.ceiling) {
     return fail("The rounding increment is wider than the price corridor. Use a smaller increment in settings.");
   }
@@ -227,11 +252,12 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
   const season = seasonalPercent(index, weights);
   const day = dayPercent(dayOfWeek, weights);
   const utilization = utilizationAdjustment(booked, target, weights);
+  const scarcity = dateScarcity(bookedOnDate, tier.dateCapacity, weights);
   const lead = leadAdjustment(days, premiumSaturday, utilization.utilization, weights);
   const inquiryPressure = inquiryAdjustment(inquiries, weights);
   const extraTravelDays = Math.max(0, travelDays - 1);
   const travel = extraTravelDays * weights.travelDay;
-  const history = historyAdjustment(market.id, input.history, weights);
+  const history = historyAdjustment(market.id, input.history, weights, tier.id, config.defaultTierId);
 
   const adjustments: Adjustment[] = [];
   const points = index - 100;
@@ -306,7 +332,7 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
     utilizationExplanation = "Target capacity is 0, so calendar utilization is left out. Set a monthly target when you want a full month to raise the quote.";
   } else {
     const percentBooked = Math.round(utilization.utilization * 100);
-    utilizationExplanation = `${booked} of ${target} target dates are booked (${percentBooked}%). Neutral is ${Math.round(weights.utilizationNeutral * 100)}%.`;
+    utilizationExplanation = `${booked} of ${target} ${tier.name} weddings are booked this month (${percentBooked}%). Neutral is ${Math.round(weights.utilizationNeutral * 100)}%.`;
     if (utilization.percent === 0) {
       utilizationExplanation += " Utilization does not move the price.";
     } else if (utilization.capped) {
@@ -320,6 +346,19 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
     label: "Calendar utilization",
     percent: utilization.percent,
     explanation: utilizationExplanation,
+  });
+
+  const scarcityPercentText = scarcity.fill === null ? "" : `${Math.round(scarcity.fill * 100)}%`;
+  adjustments.push({
+    id: "scarcity",
+    label: `${tier.name} date`,
+    percent: scarcity.percent,
+    explanation:
+      scarcity.fill === null
+        ? `${tier.name} has no date capacity set, so same-day scarcity is left out.`
+        : scarcity.percent === 0
+          ? `${bookedOnDate} of ${tier.dateCapacity} ${tier.name} slot${tier.dateCapacity === 1 ? "" : "s"} ${tier.dateCapacity === 1 ? "is" : "are"} booked on this date. An open date does not add a scarcity premium.`
+          : `${bookedOnDate} of ${tier.dateCapacity} ${tier.name} ${tier.dateCapacity === 1 ? "slot is" : "slots are"} booked on this date (${scarcityPercentText}). Date scarcity moves the quote ${formatPercent(scarcity.percent)}.`,
   });
 
   const travelExplanation =
@@ -355,7 +394,7 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
   });
 
   const beforeObjective =
-    season + day + lead.percent + inquiryPressure.percent + utilization.percent + travel + history.percent;
+    season + day + lead.percent + inquiryPressure.percent + utilization.percent + scarcity.percent + travel + history.percent;
   const afterObjective = applyObjective(beforeObjective, config);
   const objectiveDelta = afterObjective - beforeObjective;
   const objectiveExplanation =
@@ -371,17 +410,17 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
     explanation: objectiveExplanation,
   });
 
-  const afterCorridor = clamp(afterObjective, -config.maxReduction, config.maxPremium);
+  const afterCorridor = clamp(afterObjective, -tier.maxReduction, tier.maxPremium);
   let clamped: Quote["clamped"] = "none";
-  if (afterObjective > config.maxPremium + 1e-9) clamped = "ceiling";
-  else if (afterObjective < -config.maxReduction - 1e-9) clamped = "floor";
+  if (afterObjective > tier.maxPremium + 1e-9) clamped = "ceiling";
+  else if (afterObjective < -tier.maxReduction - 1e-9) clamped = "floor";
   const corridorDelta = afterCorridor - afterObjective;
   const corridorExplanation =
     clamped === "none"
-      ? `The combined adjustment fits inside the corridor, ${formatPercent(-config.maxReduction)} to ${formatPercent(config.maxPremium)} around the package base.`
+      ? `The combined adjustment fits inside the ${tier.name} corridor, ${formatPercent(-tier.maxReduction)} to ${formatPercent(tier.maxPremium)} around the package base.`
       : clamped === "ceiling"
-        ? `The combined adjustment was ${formatPercent(afterObjective)}, past the ${formatPercent(config.maxPremium)} ceiling. The quote stops at the top of the corridor.`
-        : `The combined adjustment was ${formatPercent(afterObjective)}, past the ${formatPercent(-config.maxReduction)} floor. The quote stops at the bottom of the corridor.`;
+        ? `The combined adjustment was ${formatPercent(afterObjective)}, past the ${tier.name} ${formatPercent(tier.maxPremium)} ceiling. The quote stops at the top of the corridor.`
+        : `The combined adjustment was ${formatPercent(afterObjective)}, past the ${tier.name} ${formatPercent(-tier.maxReduction)} floor. The quote stops at the bottom of the corridor.`;
   adjustments.push({
     id: "corridor",
     label: "Price corridor",
@@ -436,11 +475,12 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
     Math.max(lead.percent, 0) +
     Math.max(inquiryPressure.percent, 0) +
     Math.max(utilization.percent, 0) +
+    Math.max(scarcity.percent, 0) +
     Math.max(travel, 0) +
     Math.max(history.percent, 0);
   let standardAdjustment = applyObjective(positiveOnly, config);
   if (standardAdjustment < 0) standardAdjustment = 0;
-  if (standardAdjustment > config.maxPremium) standardAdjustment = config.maxPremium;
+  if (standardAdjustment > tier.maxPremium) standardAdjustment = tier.maxPremium;
   const baseFloor = roundUpToIncrement(selectedPackage.price, config.roundTo);
   let standardQuote = roundToIncrement(selectedPackage.price * (1 + standardAdjustment), config.roundTo);
   standardQuote = Math.max(baseFloor, Math.min(bounds.ceiling, standardQuote));
@@ -600,6 +640,11 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
     packageName: selectedPackage.name,
     packageDetail: selectedPackage.detail,
     basePrice: selectedPackage.price,
+    tierId: tier.id,
+    tierName: tier.name,
+    tierPlaceholder: tier.placeholder,
+    dateCapacity: tier.dateCapacity,
+    bookedOnDate,
     marketId: market.id,
     marketName: market.name,
     marketRegion: market.region,
@@ -640,6 +685,11 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
   return { ok: true, quote };
 }
 
+function tierOf(config: PricingConfig, input: QuoteInput): OfferingTier | undefined {
+  if (input.tierId) return config.tiers.find((item) => item.id === input.tierId);
+  return findTier(config);
+}
+
 function optionalDollars(
   value: number | null | undefined,
   label: string,
@@ -661,7 +711,8 @@ function buildSmallerPackage(
   clamped: Quote["clamped"],
 ): SmallerPackageOption | null {
   if (options?.packageFallback === false || clamped !== "floor") return null;
-  const cheaper = config.packages
+  const packages = tierOf(config, input)?.packages ?? [];
+  const cheaper = packages
     .filter((item) => item.id !== selectedPackage.id && item.price < selectedPackage.price - 0.01)
     .sort((a, b) => b.price - a.price)[0];
   if (!cheaper) return null;
@@ -713,8 +764,9 @@ function buildBudgetFit(
     };
   }
 
-  const selected = config.packages.find((item) => item.id === input.packageId) ?? null;
-  const cheaper = config.packages
+  const packages = tierOf(config, input)?.packages ?? [];
+  const selected = packages.find((item) => item.id === input.packageId) ?? null;
+  const cheaper = packages
     .filter((item) => item.id !== input.packageId && selected !== null && item.price < selected.price - 0.01)
     .sort((a, b) => b.price - a.price);
   const packageFits = cheaper

@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(30, 107, 69, 0.08), transparent 55%),
+    #f3eee4;
+}
+
+::selection {
+  background: #d7ecdf;
+}
+
+:focus-visible {
+  outline: 2px solid #1e6b45;
+  outline-offset: 2px;
+}
+
+input,
+select,
+button,
+textarea {
+  font: inherit;
+}
+
+.nums {
+  font-variant-numeric: tabular-nums;
+}

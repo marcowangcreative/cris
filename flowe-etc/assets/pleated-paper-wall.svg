@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <title>Placeholder for the pleated paper wall at flowe.etc</title>
+  <desc>A drawn pleat pattern standing in for the photograph the owner will supply. This is not a photo of the store.</desc>
+  <defs>
+    <pattern id="pleat" width="46" height="1000" patternUnits="userSpaceOnUse">
+      <rect width="46" height="1000" fill="#F7F4EF"/>
+      <rect width="16" height="1000" fill="#E4E1DC"/>
+      <rect x="16" width="20" height="1000" fill="#FAF8F5"/>
+      <rect x="36" width="10" height="1000" fill="#D5D0C8"/>
+      <rect width="1.5" height="1000" fill="#141414" opacity="0.55"/>
+      <rect x="36" width="1" height="1000" fill="#141414" opacity="0.28"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="1000" fill="url(#pleat)"/>
+</svg>

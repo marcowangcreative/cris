@@ -1,0 +1,69 @@
+{
+  "timezone": "America/Chicago",
+  "window_days": 7,
+  "date_order": "MDY",
+  "gmail_accounts": [
+    { "id": "inbox-a" },
+    { "id": "inbox-b" }
+  ],
+  "children": [
+    {
+      "id": "kid-a",
+      "name": "Kid A",
+      "grade": "2nd grade",
+      "program": "Example Elementary",
+      "sender_domains": ["example-elementary.test"],
+      "keywords": ["Kid A", "2nd grade", "Example Elementary"],
+      "whatsapp_groups": ["2nd Grade Room 12"]
+    },
+    {
+      "id": "kid-b",
+      "name": "Kid B",
+      "grade": "5th grade",
+      "program": "Example Middle",
+      "sender_domains": ["example-middle.test"],
+      "keywords": ["Kid B", "5th grade", "Example Middle"],
+      "whatsapp_groups": ["5th Grade Families"]
+    },
+    {
+      "id": "kid-c",
+      "name": "Kid C",
+      "grade": "Pre-K",
+      "program": "Example After-School",
+      "sender_domains": ["example-afterschool.test"],
+      "keywords": ["Kid C", "Pre-K", "Example After-School"],
+      "whatsapp_groups": ["Pre-K Parents"]
+    }
+  ],
+  "official_whatsapp_senders": ["Teacher Example", "Office Example", "Billing Example"],
+  "official_email_domains": [
+    "example-elementary.test",
+    "example-middle.test",
+    "example-afterschool.test",
+    "example-district.test",
+    "parentsquare.example.test"
+  ],
+  "also_include_sender_domains": ["example-district.test", "parentsquare.example.test"],
+  "ignore": {
+    "sender_domains": ["pickup.example-transport.test"],
+    "sender_addresses": ["noreply@pickup.example-transport.test"],
+    "subject_keywords": ["pickup confirmation", "daily pickup"],
+    "body_keywords": ["was picked up"]
+  },
+  "paths": {
+    "whatsapp_dir": "inbox/whatsapp",
+    "drop_dir": "inbox/drop",
+    "output_dir": "out"
+  },
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "base_url": "https://api.openai.com/v1"
+  },
+  "delivery": {
+    "mode": "file",
+    "to": "parent@example.test",
+    "from_account": "inbox-a",
+    "write_ics": true
+  }
+}

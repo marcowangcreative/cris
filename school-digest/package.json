@@ -1,0 +1,27 @@
+{
+  "name": "school-digest",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Weekly per-child digest of school email, forwarded notices, and exported WhatsApp chats.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "auth": "tsx src/cli.ts auth",
+    "digest": "tsx src/cli.ts digest",
+    "sample": "tsx src/cli.ts digest --config config.example.json --fixtures --as-of 2026-11-12T19:00:00-06:00 --extractor heuristic --deliver file --out-md sample-output.md --no-html --no-ics",
+    "test": "tsc --noEmit && node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "google-auth-library": "^9.15.1",
+    "mailparser": "^3.7.4"
+  },
+  "devDependencies": {
+    "@types/mailparser": "^3.4.6",
+    "@types/node": "^22.19.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

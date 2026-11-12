@@ -10,6 +10,10 @@ export interface PackageDef {
   /** Package price in dollars. */
   price: number;
   detail: string;
+  /** Coverage length. Null when the package does not specify it. */
+  hours: number | null;
+  /** Photographers on the job. Null when the package does not specify it. */
+  photographers: number | null;
 }
 
 export interface MarketDef {
@@ -207,6 +211,48 @@ export interface Quote {
   discountAvoided: number;
   /** Secondary. Null unless the demand model hit the floor and a cheaper package exists. */
   smallerPackage: SmallerPackageOption | null;
+  /**
+   * How the stated budget sits against this quote.
+   * A budget under the floor never lowers the quote. It offers other packages and dates.
+   */
+  budgetFit: BudgetFit;
 }
+
+export interface BudgetAlternative {
+  id: string;
+  kind: "package" | "weekday" | "off_peak";
+  label: string;
+  packageId: string;
+  packageName: string;
+  hours: number | null;
+  photographers: number | null;
+  eventDate: string;
+  dayName: string;
+  suggestedQuote: number;
+  explanation: string;
+}
+
+export type BudgetFit =
+  | { status: "none" }
+  | { status: "covers"; budget: number }
+  | {
+      status: "between";
+      budget: number;
+      /** suggestedQuote minus the budget. */
+      drop: number;
+      withinCorridor: boolean;
+      floor: number;
+      ceiling: number;
+    }
+  | {
+      status: "below_floor";
+      budget: number;
+      floor: number;
+      /** The price we will actually quote. Always at least the floor. */
+      quotedPrice: number;
+      alternatives: BudgetAlternative[];
+      /** Present when no configured option quotes at or under the budget. */
+      gapNote: string | null;
+    };
 
 export type QuoteResult = { ok: true; quote: Quote } | { ok: false; error: string };

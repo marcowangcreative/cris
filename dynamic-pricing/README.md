@@ -43,6 +43,10 @@ Put a password in front of it before real client names go in. Vercel password pr
 5. A peak Saturday (demand index 120 or higher: Houston’s March, April, May, October, November) is not quoted below the package base, unless the objective is fill dates, which may soften it to 97% of base.
 6. **Charge standard / no discount**, a **client budget at or above the base**, or a **manual price** then refuses to go under the package base. A low-season index does not discount a couple who can pay. Premiums above the base can stay. A manual price below the base is raised to the base.
 7. If the demand model hits the corridor floor, the next cheaper package is offered only as a **secondary** option. It does not replace a standard-rate hold.
+8. A stated budget is compared with the quote after that:
+   - At or above the suggested quote: the number does not change.
+   - Between the floor and the suggested quote: the desk shows how far the price would have to drop, and whether that number is still inside the corridor. The suggested quote stays put.
+   - Below the floor: the quote is never cut through the floor. The desk lists smaller packages (fewer hours, one photographer), a weekday, and an off-peak date whose prices fit the budget. Hours and photographer counts are edited in Settings.
 
 Houston’s illustrative index (100 = baseline): Jan 95, Feb 105, Mar 120, Apr 130, May 125, Jun 105, Jul 65, Aug 60, Sep 85, Oct 135, Nov 130, Dec 105. Aspen, Carmel, and New York ship with their own illustrative curves so seasonality is per market. Every weight lives on the Settings screen.
 

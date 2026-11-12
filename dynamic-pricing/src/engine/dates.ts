@@ -49,6 +49,38 @@ export function shortMonth(index: number): string {
   return monthName(index).slice(0, 3);
 }
 
+export function formatISODate(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+/** Thursday of the same weekend. Null when the event is already Monday through Thursday. */
+export function weekdayAlternative(event: Date): Date | null {
+  const day = event.getDay();
+  if (day >= 1 && day <= 4) return null;
+  let shift = 4 - day;
+  if (shift > 3) shift -= 7;
+  if (shift < -3) shift += 7;
+  return new Date(event.getFullYear(), event.getMonth(), event.getDate() + shift);
+}
+
+/** Same weekday in the softest month of the index. Null when the event is already that month. */
+export function offPeakAlternative(event: Date, demandIndex: number[]): Date | null {
+  if (demandIndex.length !== 12) return null;
+  let lowest = 0;
+  for (let month = 1; month < 12; month += 1) {
+    if (demandIndex[month] < demandIndex[lowest]) lowest = month;
+  }
+  if (lowest === event.getMonth()) return null;
+  const day = event.getDay();
+  for (let date = 1; date <= 28; date += 1) {
+    const candidate = new Date(event.getFullYear(), lowest, date);
+    if (candidate.getDay() === day) return candidate;
+  }
+  return null;
+}
+
 export function todayISO(now = new Date()): string {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");

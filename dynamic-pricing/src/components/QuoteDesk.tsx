@@ -28,7 +28,7 @@ interface QuoteForm {
   manualPrice: string;
 }
 
-type Preset = "october" | "budget" | "custom";
+type Preset = "october" | "budget" | "under-floor" | "custom";
 
 function octoberForm(): QuoteForm {
   return {
@@ -64,6 +64,10 @@ function budgetForm(): QuoteForm {
     chargeStandard: true,
     manualPrice: "",
   };
+}
+
+function underFloorForm(): QuoteForm {
+  return { ...octoberForm(), clientBudget: "8000" };
 }
 
 function blankForm(config: PricingConfig): QuoteForm {
@@ -180,6 +184,7 @@ export function QuoteDesk({
     setPreset(next);
     if (next === "october") setForm(octoberForm());
     if (next === "budget") setForm(budgetForm());
+    if (next === "under-floor") setForm(underFloorForm());
     if (next === "custom") setForm(blankForm(config));
   }
 
@@ -270,6 +275,9 @@ export function QuoteDesk({
           <button type="button" className={preset === "budget" ? "chip on" : "chip"} onClick={() => applyPreset("budget")}>
             Low-season, can pay
           </button>
+          <button type="button" className={preset === "under-floor" ? "chip on" : "chip"} onClick={() => applyPreset("under-floor")}>
+            Budget under the floor
+          </button>
           <button type="button" className="chip" onClick={() => applyPreset("custom")}>
             New inquiry
           </button>
@@ -282,6 +290,11 @@ export function QuoteDesk({
         {preset === "budget" ? (
           <p className="banner">
             Demo only. An August Wednesday whose budget covers the Signature rate. The demand index wants a discount. Charge standard keeps the quote at the base or higher.
+          </p>
+        ) : null}
+        {preset === "under-floor" ? (
+          <p className="banner">
+            Demo only. An October Saturday with an $8,000 budget, under the Signature floor. The quote does not drop through the floor. Smaller packages, a weekday, or an off-peak date are priced beside it.
           </p>
         ) : null}
 
@@ -319,7 +332,8 @@ export function QuoteDesk({
               {config.packages.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.name} — {formatMoney(item.price)}
-                  {item.detail ? ` · ${item.detail}` : ""}
+                  {item.hours ? ` · ${item.hours} hours` : ""}
+                  {item.photographers ? ` · ${item.photographers} photographer${item.photographers === 1 ? "" : "s"}` : item.detail ? ` · ${item.detail}` : ""}
                 </option>
               ))}
             </select>
@@ -488,7 +502,41 @@ export function QuoteDesk({
               <p className="lock">Approving locks this price. Changing settings later will not reprice it.</p>
               {saved ? <p className="saved" role="status">{saved}</p> : null}
             </article>
-            {quote.smallerPackage ? (
+            {quote.budgetFit.status === "between" ? (
+              <aside className="secondary" aria-label="Budget fit">
+                <p className="kicker">Budget fit</p>
+                <p>
+                  Meeting {formatMoney(quote.budgetFit.budget)} means dropping {formatMoney(quote.budgetFit.drop)} from {formatMoney(quote.suggestedQuote)}.
+                  {quote.budgetFit.withinCorridor
+                    ? ` That price is inside the corridor, ${formatMoney(quote.budgetFit.floor)} to ${formatMoney(quote.budgetFit.ceiling)}.`
+                    : ` That price is outside the corridor, ${formatMoney(quote.budgetFit.floor)} to ${formatMoney(quote.budgetFit.ceiling)}.`}
+                  {" "}The suggested quote stays {formatMoney(quote.suggestedQuote)}.
+                </p>
+              </aside>
+            ) : null}
+            {quote.budgetFit.status === "below_floor" ? (
+              <aside className="secondary" aria-label="Packages that fit the budget">
+                <p className="kicker">Below the floor</p>
+                <p>
+                  A {formatMoney(quote.budgetFit.budget)} budget is under the {formatMoney(quote.budgetFit.floor)} floor. This quote stays at {formatMoney(quote.suggestedQuote)}.
+                </p>
+                {quote.budgetFit.alternatives.length > 0 ? (
+                  <ul className="fit-list">
+                    {quote.budgetFit.alternatives.map((item) => (
+                      <li key={item.id}>
+                        <span>
+                          <strong>{formatMoney(item.suggestedQuote)}</strong>
+                          <small className="hint"> {item.label}. {item.explanation}</small>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>{quote.budgetFit.gapNote}</p>
+                )}
+              </aside>
+            ) : null}
+            {quote.smallerPackage && quote.budgetFit.status !== "below_floor" ? (
               <aside className="secondary">
                 <p className="kicker">Secondary package</p>
                 <p>

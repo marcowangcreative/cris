@@ -23,24 +23,32 @@ const DEFAULT_PACKAGES: PackageDef[] = [
     name: "Petite",
     price: 4800,
     detail: "Shorter coverage",
+    hours: 4,
+    photographers: 1,
   },
   {
     id: "classic",
     name: "Classic",
     price: 7200,
     detail: "A smaller wedding day",
+    hours: 6,
+    photographers: 1,
   },
   {
     id: "signature",
     name: "Signature",
     price: 10800,
     detail: "9 hours, 2 photographers",
+    hours: 9,
+    photographers: 2,
   },
   {
     id: "atelier",
     name: "Atelier",
     price: 13500,
     detail: "Extended coverage",
+    hours: 12,
+    photographers: 2,
   },
 ];
 
@@ -148,6 +156,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function optionalCount(value: unknown, max: number): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const number = finiteNumber(value, Number.NaN, 1, max);
+  return Number.isFinite(number) ? Math.round(number) : null;
+}
+
 function finiteNumber(value: unknown, fallback: number, min: number, max: number): number {
   const number = typeof value === "number" ? value : typeof value === "string" ? Number(value) : Number.NaN;
   if (!Number.isFinite(number)) return fallback;
@@ -166,7 +180,14 @@ function sanitizePackages(value: unknown, fallback: PackageDef[]): PackageDef[] 
     const detail = typeof item.detail === "string" ? item.detail.trim() : "";
     if (!id || !name || ids.has(id) || !Number.isFinite(price)) continue;
     ids.add(id);
-    packages.push({ id, name, price, detail });
+    packages.push({
+      id,
+      name,
+      price,
+      detail,
+      hours: optionalCount(item.hours, 24),
+      photographers: optionalCount(item.photographers, 10),
+    });
   }
   return packages.length > 0 ? packages : fallback;
 }

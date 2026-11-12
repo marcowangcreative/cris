@@ -458,6 +458,94 @@ describe("smaller package fallback", () => {
   });
 });
 
+describe("budget fit", () => {
+  it("leaves the quote alone when the budget covers the suggestion", () => {
+    const quote = price({ ...NOTES_EXAMPLE, clientBudget: 15000 });
+    expect(quote.suggestedQuote).toBe(12400);
+    expect(quote.budgetFit).toEqual({ status: "covers", budget: 15000 });
+  });
+
+  it("shows the drop when the budget sits between the floor and the quote", () => {
+    const quote = price({ ...NOTES_EXAMPLE, clientBudget: 11000 });
+    expect(quote.suggestedQuote).toBe(12400);
+    expect(quote.suggestedQuote).toBeGreaterThanOrEqual(quote.floor);
+    expect(quote.budgetFit).toMatchObject({
+      status: "between",
+      budget: 11000,
+      drop: 1400,
+      withinCorridor: true,
+      floor: 9200,
+      ceiling: 12950,
+    });
+    expect(quote.adjustments.find((item) => item.id === "budget-fit")?.explanation).toContain("inside the corridor");
+  });
+
+  it("never quotes below the floor when the budget does", () => {
+    const quote = price({ ...LOW_SEASON, clientBudget: 8000 });
+    expect(quote.modelQuote).toBe(9350);
+    expect(quote.suggestedQuote).toBe(9350);
+    expect(quote.suggestedQuote).toBeGreaterThanOrEqual(quote.floor);
+    expect(quote.suggestedQuote).toBeGreaterThan(8000);
+    expect(quote.budgetFit.status).toBe("below_floor");
+    if (quote.budgetFit.status !== "below_floor") return;
+    expect(quote.budgetFit.quotedPrice).toBe(quote.suggestedQuote);
+    expect(quote.budgetFit.floor).toBe(9200);
+    expect(quote.budgetFit.alternatives.length).toBeGreaterThan(0);
+    for (const alternative of quote.budgetFit.alternatives) {
+      expect(alternative.suggestedQuote).toBeLessThanOrEqual(8000);
+      expect(alternative.suggestedQuote).toBeGreaterThan(0);
+    }
+    const onePhotographer = quote.budgetFit.alternatives.find((item) => item.photographers === 1);
+    expect(onePhotographer?.hours).toBeLessThan(9);
+    expect(quote.adjustments.find((item) => item.id === "budget-fit")?.explanation).toContain("not cut to the budget");
+  });
+
+  it("prices a weekday and an off-peak date when a peak Saturday is under the floor", () => {
+    const quote = price({ ...NOTES_EXAMPLE, clientBudget: 8000 });
+    expect(quote.suggestedQuote).toBe(12400);
+    expect(quote.suggestedQuote).toBeGreaterThanOrEqual(quote.floor);
+    if (quote.budgetFit.status !== "below_floor") throw new Error(quote.budgetFit.status);
+    const kinds = quote.budgetFit.alternatives.map((item) => item.kind);
+    expect(kinds).toContain("package");
+    expect(kinds).toContain("weekday");
+    expect(kinds).toContain("off_peak");
+    const weekday = quote.budgetFit.alternatives.find((item) => item.kind === "weekday");
+    const offPeak = quote.budgetFit.alternatives.find((item) => item.kind === "off_peak");
+    expect(weekday?.dayName).toBe("Thursday");
+    expect(weekday?.eventDate).toBe("2027-10-14");
+    expect(offPeak?.eventDate.startsWith("2027-08-")).toBe(true);
+    expect(offPeak?.dayName).toBe("Saturday");
+    for (const alternative of quote.budgetFit.alternatives) {
+      expect(alternative.suggestedQuote).toBeLessThanOrEqual(8000);
+    }
+  });
+
+  it("uses the packages configured in settings, including hours and photographers", () => {
+    const config = createDefaultConfig();
+    config.packages = [
+      { id: "signature", name: "Signature", price: 10800, detail: "9 hours, 2 photographers", hours: 9, photographers: 2 },
+      { id: "solo", name: "Solo afternoon", price: 3600, detail: "", hours: 3, photographers: 1 },
+    ];
+    const quote = price({ ...LOW_SEASON, clientBudget: 4000 }, config);
+    expect(quote.suggestedQuote).toBeGreaterThanOrEqual(quote.floor);
+    if (quote.budgetFit.status !== "below_floor") throw new Error(quote.budgetFit.status);
+    const solo = quote.budgetFit.alternatives.find((item) => item.packageId === "solo");
+    expect(solo?.hours).toBe(3);
+    expect(solo?.photographers).toBe(1);
+    expect(solo?.suggestedQuote).toBeLessThanOrEqual(4000);
+    expect(quote.budgetFit.alternatives.some((item) => item.packageId === "classic")).toBe(false);
+  });
+
+  it("says so when even the smallest package is above the budget", () => {
+    const quote = price({ ...LOW_SEASON, clientBudget: 1000 });
+    expect(quote.suggestedQuote).toBeGreaterThanOrEqual(quote.floor);
+    if (quote.budgetFit.status !== "below_floor") throw new Error(quote.budgetFit.status);
+    expect(quote.budgetFit.alternatives).toEqual([]);
+    expect(quote.budgetFit.gapNote).toContain("No package");
+    expect(quote.budgetFit.gapNote).toContain("$1,000");
+  });
+});
+
 describe("quotePrice errors", () => {
   it("rejects a bad date, an unknown package, and a negative inquiry count", () => {
     expect(quotePrice({ ...NOTES_EXAMPLE, eventDate: "2027-02-31" }, createDefaultConfig()).ok).toBe(false);

@@ -107,7 +107,7 @@ export function SettingsPanel({ config, onChange }: { config: PricingConfig; onC
             className="ghost dark"
             onClick={() => {
               const id = uniqueId("package", config.packages.map((item) => item.id));
-              patch({ packages: [...config.packages, { id, name: "New package", price: 6000, detail: "" }] });
+              patch({ packages: [...config.packages, { id, name: "New package", price: 6000, detail: "", hours: 6, photographers: 1 }] });
             }}
           >
             Add package
@@ -129,6 +129,36 @@ export function SettingsPanel({ config, onChange }: { config: PricingConfig; onC
                   value={item.price}
                   onChange={(event) => {
                     if (Number.isFinite(event.target.valueAsNumber)) updatePackage(item.id, { price: event.target.valueAsNumber });
+                  }}
+                  onWheel={(event) => event.currentTarget.blur()}
+                />
+              </label>
+              <label className="field">
+                <span>Hours</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={24}
+                  step={1}
+                  value={item.hours ?? ""}
+                  onChange={(event) => {
+                    const next = event.target.valueAsNumber;
+                    updatePackage(item.id, { hours: Number.isFinite(next) ? Math.max(1, Math.round(next)) : null });
+                  }}
+                  onWheel={(event) => event.currentTarget.blur()}
+                />
+              </label>
+              <label className="field">
+                <span>Photographers</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={10}
+                  step={1}
+                  value={item.photographers ?? ""}
+                  onChange={(event) => {
+                    const next = event.target.valueAsNumber;
+                    updatePackage(item.id, { photographers: Number.isFinite(next) ? Math.max(1, Math.round(next)) : null });
                   }}
                   onWheel={(event) => event.currentTarget.blur()}
                 />

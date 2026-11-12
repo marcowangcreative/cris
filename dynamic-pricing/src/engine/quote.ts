@@ -10,18 +10,23 @@
  * manual price then refuses to discount below the package base. A soft demand
  * index does not cut the price for a couple who can pay the standard rate.
  * If the demand model instead hits the corridor floor, a cheaper package is
- * suggested only as a secondary option. The desk rounds to the configured
+ * suggested only as a secondary option. A stated budget under that floor never
+ * lowers the quote. The desk offers smaller packages, a weekday, or an
+ * off-peak date that fit the budget instead. The desk rounds to the configured
  * increment.
  *
  * This module does not read storage, the clock, or the network. Approved
  * quotes stay at the number that was recorded.
  */
-import { dayName, daysBetween, monthName, parseISODate } from "./dates";
+import { dayName, daysBetween, formatISODate, monthName, offPeakAlternative, parseISODate, weekdayAlternative } from "./dates";
 import { clamp, formatMoney, formatPercent, roundDownToIncrement, roundToIncrement, roundUpToIncrement } from "./money";
 import type {
   Adjustment,
+  BudgetAlternative,
+  BudgetFit,
   ConfidenceLevel,
   HistorySignal,
+  PackageDef,
   PricingConfig,
   PricingWeights,
   Quote,
@@ -166,6 +171,8 @@ function confidenceLevel(score: number): ConfidenceLevel {
 interface QuoteOptions {
   /** Internal. False while pricing a fallback package, so the suggestion cannot recurse. */
   packageFallback?: boolean;
+  /** Internal. False while pricing a budget alternative. */
+  budgetFit?: boolean;
 }
 
 export function earnedAboveModel(quotedPrice: number, modelQuote: number): number {
@@ -501,6 +508,7 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
 
   if (standardRateHeld && minimum < baseFloor) minimum = Math.min(baseFloor, suggested);
   if (minimum > suggested) minimum = suggested;
+  if (suggested < bounds.floor) suggested = bounds.floor;
 
   const discountAvoided = earnedAboveModel(suggested, modelQuote);
   let floorExplanation = premiumHeld
@@ -513,6 +521,34 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
   }
 
   const smallerPackage = buildSmallerPackage(input, config, options, selectedPackage, clamped);
+  const budgetFit = buildBudgetFit(input, config, options, {
+    budget: clientBudget,
+    suggested,
+    floor: bounds.floor,
+    ceiling: bounds.ceiling,
+    event,
+    demandIndex: market.demandIndex,
+  });
+  if (budgetFit.status === "between") {
+    adjustments.push({
+      id: "budget-fit",
+      label: "Budget fit",
+      percent: 0,
+      explanation: budgetFit.withinCorridor
+        ? `The stated budget is ${formatMoney(budgetFit.budget)}, ${formatMoney(budgetFit.drop)} under the ${formatMoney(suggested)} quote. That price is inside the corridor, ${formatMoney(budgetFit.floor)} to ${formatMoney(budgetFit.ceiling)}. The suggested quote stays put.`
+        : `The stated budget is ${formatMoney(budgetFit.budget)}, ${formatMoney(budgetFit.drop)} under the ${formatMoney(suggested)} quote. That price is outside the corridor, ${formatMoney(budgetFit.floor)} to ${formatMoney(budgetFit.ceiling)}. The suggested quote stays put.`,
+    });
+  } else if (budgetFit.status === "below_floor") {
+    const listed = budgetFit.alternatives
+      .map((item) => `${item.label} at ${formatMoney(item.suggestedQuote)}`)
+      .join("; ");
+    adjustments.push({
+      id: "budget-fit",
+      label: "Budget fit",
+      percent: 0,
+      explanation: `The stated budget is ${formatMoney(budgetFit.budget)}, below the ${formatMoney(budgetFit.floor)} floor. The quote stays at ${formatMoney(budgetFit.quotedPrice)} and is not cut to the budget.${listed ? ` Options that fit: ${listed}.` : ""}${budgetFit.gapNote ? ` ${budgetFit.gapNote}` : ""}`,
+    });
+  }
 
   const reasons = ["Seasonality and weights are testing assumptions, not a fit to past bookings"];
   let score = 46;
@@ -598,6 +634,7 @@ export function quotePrice(input: QuoteInput, config: PricingConfig, options?: Q
     standardRateNote,
     discountAvoided,
     smallerPackage,
+    budgetFit,
   };
 
   return { ok: true, quote };
@@ -637,7 +674,7 @@ function buildSmallerPackage(
       clientBudget: null,
     },
     config,
-    { packageFallback: false },
+    { packageFallback: false, budgetFit: false },
   );
   if (!alternative.ok) return null;
   return {
@@ -647,4 +684,155 @@ function buildSmallerPackage(
     suggestedQuote: alternative.quote.modelQuote,
     explanation: `Secondary. ${selectedPackage.name} hit its price floor, so cutting it further would cheapen the standard rate. ${cheaper.name} (${formatMoney(cheaper.price)}) is the next package down, and the demand model quotes it at ${formatMoney(alternative.quote.modelQuote)}. Use that only if this couple cannot pay the standard rate.`,
   };
+}
+
+function buildBudgetFit(
+  input: QuoteInput,
+  config: PricingConfig,
+  options: QuoteOptions | undefined,
+  context: {
+    budget: number | null;
+    suggested: number;
+    floor: number;
+    ceiling: number;
+    event: Date;
+    demandIndex: number[];
+  },
+): BudgetFit {
+  if (options?.budgetFit === false || context.budget === null) return { status: "none" };
+  const budget = context.budget;
+  if (budget + 0.001 >= context.suggested) return { status: "covers", budget };
+  if (budget + 0.001 >= context.floor) {
+    return {
+      status: "between",
+      budget,
+      drop: Math.max(0, Math.round(context.suggested - budget)),
+      withinCorridor: budget <= context.ceiling + 0.001,
+      floor: context.floor,
+      ceiling: context.ceiling,
+    };
+  }
+
+  const selected = config.packages.find((item) => item.id === input.packageId) ?? null;
+  const cheaper = config.packages
+    .filter((item) => item.id !== input.packageId && selected !== null && item.price < selected.price - 0.01)
+    .sort((a, b) => b.price - a.price);
+  const packageFits = cheaper
+    .map((item) => priceAlternative(input, config, item, input.eventDate))
+    .filter((item): item is BudgetAlternative => item !== null && item.suggestedQuote <= budget + 0.001)
+    .sort((a, b) => b.suggestedQuote - a.suggestedQuote);
+
+  const alternatives = [...packageFits];
+  const weekday = weekdayAlternative(context.event);
+  if (weekday) {
+    const best = richestFit(input, config, selected, cheaper, formatISODate(weekday), budget, context.suggested);
+    if (best) {
+      alternatives.push({
+        ...best,
+        kind: "weekday",
+        id: `weekday-${best.packageId}-${best.eventDate}`,
+        label: `Weekday · ${best.label}`,
+        explanation: `A weekday instead of the requested date. ${best.explanation}`,
+      });
+    }
+  }
+  const offPeak = offPeakAlternative(context.event, context.demandIndex);
+  if (offPeak) {
+    const best = richestFit(input, config, selected, cheaper, formatISODate(offPeak), budget, context.suggested);
+    if (best) {
+      alternatives.push({
+        ...best,
+        kind: "off_peak",
+        id: `off-peak-${best.packageId}-${best.eventDate}`,
+        label: `Off-peak · ${best.label}`,
+        explanation: `An off-peak date instead of the requested month. ${best.explanation}`,
+      });
+    }
+  }
+
+  let gapNote: string | null = null;
+  if (alternatives.length === 0) {
+    const probed = [selected, ...cheaper].filter((item): item is PackageDef => item !== null);
+    const quotes = probed
+      .map((item) => priceAlternative(input, config, item, input.eventDate))
+      .filter((item): item is BudgetAlternative => item !== null)
+      .sort((a, b) => a.suggestedQuote - b.suggestedQuote);
+    const lowest = quotes[0];
+    gapNote = lowest
+      ? `No package, weekday, or off-peak date in settings quotes at or under ${formatMoney(budget)}. The lowest quote for this request is ${lowest.packageName} at ${formatMoney(lowest.suggestedQuote)}.`
+      : `No package in settings quotes at or under ${formatMoney(budget)}.`;
+  }
+
+  return {
+    status: "below_floor",
+    budget,
+    floor: context.floor,
+    quotedPrice: context.suggested,
+    alternatives,
+    gapNote,
+  };
+}
+
+function richestFit(
+  input: QuoteInput,
+  config: PricingConfig,
+  selected: PackageDef | null,
+  cheaper: PackageDef[],
+  eventDate: string,
+  budget: number,
+  currentSuggested: number,
+): BudgetAlternative | null {
+  const candidates = [selected, ...cheaper].filter((item): item is PackageDef => item !== null);
+  let best: BudgetAlternative | null = null;
+  for (const item of candidates) {
+    const priced = priceAlternative(input, config, item, eventDate);
+    if (!priced) continue;
+    if (priced.suggestedQuote > budget + 0.001 || priced.suggestedQuote >= currentSuggested - 0.001) continue;
+    if (!best || priced.suggestedQuote > best.suggestedQuote) best = priced;
+  }
+  return best;
+}
+
+function priceAlternative(
+  input: QuoteInput,
+  config: PricingConfig,
+  item: PackageDef,
+  eventDate: string,
+): BudgetAlternative | null {
+  const result = quotePrice(
+    {
+      ...input,
+      packageId: item.id,
+      eventDate,
+      clientBudget: null,
+      chargeStandard: false,
+      manualPrice: null,
+    },
+    config,
+    { packageFallback: false, budgetFit: false },
+  );
+  if (!result.ok) return null;
+  const quote = result.quote;
+  const coverage = coverageLabel(item);
+  const when = `${quote.dayName}, ${quote.monthName} ${parseISODate(eventDate)?.getDate()}, ${parseISODate(eventDate)?.getFullYear()}`;
+  return {
+    id: `package-${item.id}-${eventDate}`,
+    kind: "package",
+    label: coverage ? `${item.name} · ${coverage}` : item.name,
+    packageId: item.id,
+    packageName: item.name,
+    hours: item.hours,
+    photographers: item.photographers,
+    eventDate,
+    dayName: quote.dayName,
+    suggestedQuote: quote.suggestedQuote,
+    explanation: `${item.name}${coverage ? ` (${coverage})` : ""} on ${when} quotes at ${formatMoney(quote.suggestedQuote)}.`,
+  };
+}
+
+function coverageLabel(item: PackageDef): string {
+  const parts: string[] = [];
+  if (item.hours) parts.push(`${item.hours} hour${item.hours === 1 ? "" : "s"}`);
+  if (item.photographers) parts.push(`${item.photographers} photographer${item.photographers === 1 ? "" : "s"}`);
+  return parts.join(", ");
 }

@@ -190,6 +190,9 @@ p { margin: 0; }
 .saved { margin-top: 10px; color: var(--good); }
 .quote-card .saved { color: #d5e6d8; }
 
+.fit-list { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; }
+.fit-list li { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 8px; }
+.fit-list strong { font-family: var(--serif); font-size: 1.2rem; }
 .secondary { background: #f7f1e6; }
 .secondary .kicker { color: var(--accent); }
 .rationale h2 { margin-bottom: 8px; }
@@ -231,7 +234,7 @@ th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line
 .corridor { margin: 4px 0 12px; }
 .field.narrow { max-width: 240px; }
 .edit-list, .bands, .log { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
-.edit-list li, .bands li { display: grid; grid-template-columns: 1.2fr 0.8fr 1.2fr auto auto; gap: 8px; align-items: end; }
+.edit-list li, .bands li { display: grid; grid-template-columns: 1.1fr 0.7fr 0.5fr 0.7fr 1fr auto auto; gap: 8px; align-items: end; }
 .bands li { grid-template-columns: 1.3fr 0.7fr 0.8fr; }
 .months, .weight-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
 .weight-grid { grid-template-columns: repeat(3, 1fr); margin-bottom: 12px; }

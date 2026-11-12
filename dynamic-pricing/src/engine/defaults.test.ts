@@ -6,6 +6,8 @@ describe("sanitizeConfig", () => {
     const config = sanitizeConfig(null);
     expect(config.homeMarketId).toBe("houston");
     expect(config.packages.find((item) => item.id === "signature")?.price).toBe(10800);
+    expect(config.packages.find((item) => item.id === "signature")).toMatchObject({ hours: 9, photographers: 2 });
+    expect(config.packages.find((item) => item.id === "classic")).toMatchObject({ hours: 6, photographers: 1 });
     expect(config.markets.find((item) => item.id === "houston")?.demandIndex[9]).toBe(135);
     expect(config.maxReduction).toBe(0.15);
     expect(config.maxPremium).toBe(0.2);

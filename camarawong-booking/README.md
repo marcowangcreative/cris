@@ -8,7 +8,7 @@ The public site stays on Squarespace. This app is the booking desk those buttons
 
 1. Choose a collection. The new **Corporate Portrait Station** is the cheapest tier and is meant to be finished online. Digital, Printed, and Custom can be booked the same way, and each one still has a “talk to us first” inquiry that does not hold a date.
 2. Pick an open date and start time. The calendar reads the real book: blocked dates, the daily event cap, and existing reservations.
-3. Give the event name, venue, guest count, load-in notes, on-site contact, and the email that receives the QR gallery.
+3. Give the event name, venue, guest count, load-in notes, on-site contact, and the email that receives the gallery link. Confirm the venue can offer about 12×12 ft, power, Wi-Fi for the iPad, and a table (or ask the studio to bring its 4 ft table). Ceiling height, outlet distance, and the load-in window are notes for the crew.
 4. Sign a short agreement by typing their name and checking the box. The signed text is stored with a timestamp.
 5. Pay. The corporate station is paid in full. The other collections pay the deposit in config. Stripe Checkout handles the card. A webhook marks the booking paid.
 6. Land on a confirmation page, get an email, and download an `.ics` file. Reminder emails go out 7 days before and 1 day before.

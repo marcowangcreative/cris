@@ -1,6 +1,7 @@
 import { formatDuration, formatLongDate, formatMoney, formatTimeRange, paymentSummary } from "@/lib/format";
 import { displayStatus } from "@/lib/status";
 import type { Booking } from "@/lib/types";
+import { venueNoteLines } from "@/lib/venue";
 
 /**
  * VSCO Workspace does not have a verified public API, so the desk copies this
@@ -19,6 +20,7 @@ export function vscoWorkspaceSummary(booking: Booking, now = new Date()): string
     `Guests: ${intake?.guestHeadcount ?? "—"}`,
     `On-site: ${intake?.onSiteContactName ?? "—"} · ${intake?.onSiteContactPhone ?? "—"}`,
     `Load-in / parking: ${intake?.loadInNotes || "—"}`,
+    ...(intake ? venueNoteLines(intake) : ["Venue notes: —"]),
     `QR gallery email: ${intake?.galleryEmail ?? "—"}`,
     `Client: ${intake?.clientName ?? "—"} · ${intake?.clientEmail ?? "—"}`,
     `Investment: ${formatMoney(booking.quote.totalCents)}`,

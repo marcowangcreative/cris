@@ -6,7 +6,7 @@ const steps = [
   ["01", "Choose", "Pick the station or a collection. Add an hour if the corporate set needs to stay up."],
   ["02", "Hold a date", "Open days and start times come from the studio book. A hold lasts twenty minutes."],
   ["03", "Sign and pay", "A short agreement, your name, and the amount due today. The date is not reserved until both are done."],
-  ["04", "We arrive", "Load-in notes are on the booking. Portraits go to the gallery email as a QR code."],
+  ["04", "On the iPad", "Guests view the gallery on the iPad and get photos by text or email, with share multiple."],
 ];
 
 export default function HomePage() {
@@ -77,6 +77,19 @@ export default function HomePage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="note" aria-labelledby="venue-title">
+        <h2 id="venue-title">What we need from the venue</h2>
+        <ul className="includes">
+          <li>About 12×12 ft of space</li>
+          <li>Power access</li>
+          <li>Reliable Wi-Fi, to text or email photos to guests from the iPad</li>
+          <li>A table for a laptop and an iPad. The studio table is 4 ft.</li>
+        </ul>
+        <p>
+          The booking also asks for ceiling height, how far the outlet is or whether there is a dedicated circuit, and the load-in window. A 65-inch umbrella on a stand stands taller than the backdrop, which is about 8 ft. Those answers are notes for the crew.
+        </p>
       </section>
 
       <section className="note">

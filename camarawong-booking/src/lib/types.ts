@@ -59,6 +59,8 @@ export type Quote = {
   includesPlaceholderPrice: boolean;
 };
 
+export type TableSource = "venue" | "studio";
+
 export type Intake = {
   clientName: string;
   clientEmail: string;
@@ -69,6 +71,22 @@ export type Intake = {
   onSiteContactName: string;
   onSiteContactPhone: string;
   galleryEmail: string;
+  /** Client confirmed the room is about 12×12 ft. */
+  venueSpace: boolean;
+  /** Client confirmed power is available. */
+  venuePower: boolean;
+  /** Client confirmed Wi-Fi reliable enough to send photos from the iPad. */
+  venueWifi: boolean;
+  /** Client confirmed a table for the laptop and iPad. */
+  venueTable: boolean;
+  /** Who supplies that table. Either answer is acceptable. */
+  tableSource: TableSource;
+  /** Note only. A low ceiling does not reject the booking. */
+  ceilingHeight: string;
+  /** Note only. Distance or a dedicated circuit. */
+  outletNotes: string;
+  /** Note only. When the crew can load in and set up. */
+  setupWindow: string;
 };
 
 export type SignedContract = {

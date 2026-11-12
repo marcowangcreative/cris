@@ -21,6 +21,14 @@ export function sampleIntake(overrides: Partial<Intake> = {}): Intake {
     onSiteContactName: "Jordan Blake",
     onSiteContactPhone: "(713) 555-0148",
     galleryEmail: "gallery@example.com",
+    venueSpace: true,
+    venuePower: true,
+    venueWifi: true,
+    venueTable: true,
+    tableSource: "venue",
+    ceilingHeight: "12 ft",
+    outletNotes: "Outlet on the west wall, about 15 ft from the setup.",
+    setupWindow: "3:00–4:00 PM",
     ...overrides,
   };
 }

@@ -14,7 +14,8 @@ import {
   formatTimestamp,
 } from "@/lib/format";
 import { quote } from "@/lib/pricing";
-import type { AvailabilityMonth, PackageDefinition, PublicBooking } from "@/lib/types";
+import type { AvailabilityMonth, PackageDefinition, PublicBooking, TableSource } from "@/lib/types";
+import { venueChecks } from "@/lib/venue";
 
 type Step = "date" | "details" | "agreement" | "payment";
 
@@ -35,6 +36,14 @@ type IntakeState = {
   onSiteContactName: string;
   onSiteContactPhone: string;
   galleryEmail: string;
+  venueSpace: boolean;
+  venuePower: boolean;
+  venueWifi: boolean;
+  venueTable: boolean;
+  tableSource: "" | TableSource;
+  ceilingHeight: string;
+  outletNotes: string;
+  setupWindow: string;
 };
 
 function emptyIntake(booking: PublicBooking | null): IntakeState {
@@ -48,6 +57,14 @@ function emptyIntake(booking: PublicBooking | null): IntakeState {
     onSiteContactName: booking?.intake?.onSiteContactName ?? "",
     onSiteContactPhone: booking?.intake?.onSiteContactPhone ?? "",
     galleryEmail: booking?.intake?.galleryEmail ?? "",
+    venueSpace: booking?.intake?.venueSpace ?? false,
+    venuePower: booking?.intake?.venuePower ?? false,
+    venueWifi: booking?.intake?.venueWifi ?? false,
+    venueTable: booking?.intake?.venueTable ?? false,
+    tableSource: booking?.intake?.tableSource ?? "",
+    ceilingHeight: booking?.intake?.ceilingHeight ?? "",
+    outletNotes: booking?.intake?.outletNotes ?? "",
+    setupWindow: booking?.intake?.setupWindow ?? "",
   };
 }
 
@@ -217,6 +234,14 @@ export function BookingWizard({
   async function saveDetails(event: FormEvent) {
     event.preventDefault();
     if (!booking) return;
+    if (!intake.venueSpace || !intake.venuePower || !intake.venueWifi || !intake.venueTable) {
+      setError("Confirm the space, power, Wi-Fi, and a table before continuing.");
+      return;
+    }
+    if (intake.tableSource !== "venue" && intake.tableSource !== "studio") {
+      setError("Tell us whether the venue provides the table.");
+      return;
+    }
     setPending(true);
     setError("");
     try {
@@ -446,6 +471,62 @@ export function BookingWizard({
               <Field id="eventName" label="Event name" value={intake.eventName} onChange={(value) => setIntake({ ...intake, eventName: value })} />
               <Field id="venueAddress" label="Venue address" value={intake.venueAddress} autoComplete="street-address" onChange={(value) => setIntake({ ...intake, venueAddress: value })} />
               <Field id="guestHeadcount" label="Guest headcount" value={intake.guestHeadcount} inputMode="numeric" onChange={(value) => setIntake({ ...intake, guestHeadcount: value })} />
+              <fieldset className="checks">
+                <legend>What we need from the venue</legend>
+                <p className="hint">Confirm the room can hold the station. These four are required.</p>
+                {venueChecks.map((item) => (
+                  <label className="agree" key={item.field}>
+                    <input
+                      type="checkbox"
+                      checked={intake[item.field]}
+                      onChange={(event) => setIntake({ ...intake, [item.field]: event.target.checked })}
+                    />
+                    <span>{item.label}</span>
+                  </label>
+                ))}
+                <p className="hint">Who provides the table? Ours is 4 ft.</p>
+                <label className="agree">
+                  <input
+                    type="radio"
+                    name="tableSource"
+                    checked={intake.tableSource === "venue"}
+                    onChange={() => setIntake({ ...intake, tableSource: "venue" })}
+                  />
+                  <span>The venue provides the table</span>
+                </label>
+                <label className="agree">
+                  <input
+                    type="radio"
+                    name="tableSource"
+                    checked={intake.tableSource === "studio"}
+                    onChange={() => setIntake({ ...intake, tableSource: "studio" })}
+                  />
+                  <span>Please bring your 4 ft table</span>
+                </label>
+              </fieldset>
+              <p className="hint">Ceiling height, the outlet, and the load-in window are notes for the crew. They do not block the booking.</p>
+              <label className="field" htmlFor="ceilingHeight">
+                <span>Ceiling height</span>
+                <input
+                  id="ceilingHeight"
+                  value={intake.ceilingHeight}
+                  onChange={(event) => setIntake({ ...intake, ceilingHeight: event.target.value })}
+                />
+                <p className="hint">A 65-inch umbrella on a stand stands taller than the backdrop, which is about 8 ft.</p>
+              </label>
+              <label className="field" htmlFor="outletNotes">
+                <span>Outlet distance or a dedicated circuit</span>
+                <textarea id="outletNotes" value={intake.outletNotes} onChange={(event) => setIntake({ ...intake, outletNotes: event.target.value })} />
+              </label>
+              <label className="field" htmlFor="setupWindow">
+                <span>Load-in / setup window</span>
+                <input
+                  id="setupWindow"
+                  value={intake.setupWindow}
+                  placeholder="For example, 3:00–4:00 PM"
+                  onChange={(event) => setIntake({ ...intake, setupWindow: event.target.value })}
+                />
+              </label>
               <label className="field" htmlFor="loadInNotes">
                 <span>Load-in and parking</span>
                 <textarea id="loadInNotes" value={intake.loadInNotes} onChange={(event) => setIntake({ ...intake, loadInNotes: event.target.value })} />

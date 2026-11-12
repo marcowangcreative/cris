@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDuration, formatLongDate, formatMoney, formatTimeRange, paymentSummary } from "@/lib/format";
+import { tableSourceLabel } from "@/lib/venue";
 import { getStore } from "@/lib/store";
 import { displayStatus } from "@/lib/status";
 
@@ -59,7 +60,14 @@ export default async function ConfirmationPage({ params }: { params: Promise<{ i
         <dd>
           {intake?.onSiteContactName} · {intake?.onSiteContactPhone}
         </dd>
+        <dt>Table</dt>
+        <dd>{tableSourceLabel(intake?.tableSource)}</dd>
+        <dt>Setup window</dt>
+        <dd>{intake?.setupWindow || "—"}</dd>
+        <dt>Ceiling</dt>
+        <dd>{intake?.ceilingHeight || "—"}</dd>
       </dl>
+      <p>Guests view the gallery on the iPad and get photos by text or email, with share multiple.</p>
       <p>A note is on its way to {intake?.clientEmail}. In preview mode, that note is printed in the server log. You’ll also hear from us a week before, and the day before.</p>
       <div className="actions">
         <a className="button" href={`/api/bookings/${booking.id}/calendar`}>

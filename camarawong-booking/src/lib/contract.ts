@@ -1,6 +1,7 @@
 import { studio } from "@/lib/config";
 import { formatDuration, formatLongDate, formatMoney, formatTimeRange, formatTimestamp } from "@/lib/format";
 import type { Booking } from "@/lib/types";
+import { venueNoteLines } from "@/lib/venue";
 
 export function renderContract(
   booking: Booking,
@@ -52,7 +53,12 @@ export function renderContract(
     balance,
     "",
     "Gallery",
-    `Guest portraits and the QR gallery go to ${intake.galleryEmail}.`,
+    "Guests view the gallery on the iPad and get photos by text or email, with share multiple.",
+    `The gallery link also goes to ${intake.galleryEmail}.`,
+    "",
+    "What we need from the venue",
+    ...venueNoteLines(intake),
+    "Ceiling height, outlet distance, and the load-in window are notes for the crew.",
     "",
     "On-site contact",
     `${intake.onSiteContactName} · ${intake.onSiteContactPhone}`,

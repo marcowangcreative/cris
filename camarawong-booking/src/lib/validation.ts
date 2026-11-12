@@ -1,6 +1,6 @@
 import { isRealDate } from "@/lib/civil-date";
 import { ValidationError } from "@/lib/errors";
-import type { AddonSelection, Inquiry, Intake } from "@/lib/types";
+import type { AddonSelection, Inquiry, Intake, TableSource } from "@/lib/types";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -63,6 +63,16 @@ export function parseAddonQuery(value: string | null): AddonSelection[] {
   });
 }
 
+function requiredConfirmation(value: unknown, label: string): true {
+  if (value !== true) throw new ValidationError(`Confirm ${label}.`);
+  return true;
+}
+
+function parseTableSource(value: unknown): TableSource {
+  if (value === "venue" || value === "studio") return value;
+  throw new ValidationError("Tell us whether the venue provides the table.");
+}
+
 export function parseIntake(value: unknown): Intake {
   const record = asRecord(value, "Event details");
   const guestHeadcount = Number(record.guestHeadcount);
@@ -79,6 +89,14 @@ export function parseIntake(value: unknown): Intake {
     onSiteContactName: requiredText(record.onSiteContactName, "On-site contact", 80),
     onSiteContactPhone: requiredPhone(record.onSiteContactPhone),
     galleryEmail: requiredEmail(record.galleryEmail, "Gallery email"),
+    venueSpace: requiredConfirmation(record.venueSpace, "about 12×12 ft of space"),
+    venuePower: requiredConfirmation(record.venuePower, "power access"),
+    venueWifi: requiredConfirmation(record.venueWifi, "reliable Wi-Fi for the iPad"),
+    venueTable: requiredConfirmation(record.venueTable, "a table for a laptop and an iPad"),
+    tableSource: parseTableSource(record.tableSource),
+    ceilingHeight: optionalText(record.ceilingHeight, 160),
+    outletNotes: optionalText(record.outletNotes, 400),
+    setupWindow: optionalText(record.setupWindow, 240),
   };
 }
 

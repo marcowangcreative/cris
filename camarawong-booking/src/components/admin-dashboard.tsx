@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { formatLongDate, formatMoney, formatTime, formatTimestamp, paymentSummary } from "@/lib/format";
 import type { Inquiry, PublicBooking, Settings } from "@/lib/types";
 import { vscoWorkspaceSummary } from "@/lib/vsco";
+import { tableSourceLabel } from "@/lib/venue";
 
 const FILTERS = [
   ["all", "All"],
@@ -195,6 +196,23 @@ export function AdminDashboard() {
                   </dd>
                   <dt>Load-in</dt>
                   <dd>{booking.intake?.loadInNotes || "—"}</dd>
+                  <dt>Space</dt>
+                  <dd>{booking.intake?.venueSpace ? "About 12×12 ft confirmed" : "Not confirmed"}</dd>
+                  <dt>Power</dt>
+                  <dd>{booking.intake?.venuePower ? "Confirmed" : "Not confirmed"}</dd>
+                  <dt>Wi-Fi</dt>
+                  <dd>{booking.intake?.venueWifi ? "Confirmed for the iPad" : "Not confirmed"}</dd>
+                  <dt>Table</dt>
+                  <dd>
+                    {booking.intake?.venueTable ? "Confirmed" : "Not confirmed"}
+                    {booking.intake?.tableSource ? ` · ${tableSourceLabel(booking.intake.tableSource)}` : ""}
+                  </dd>
+                  <dt>Ceiling</dt>
+                  <dd>{booking.intake?.ceilingHeight || "—"}</dd>
+                  <dt>Outlet</dt>
+                  <dd>{booking.intake?.outletNotes || "—"}</dd>
+                  <dt>Setup window</dt>
+                  <dd>{booking.intake?.setupWindow || "—"}</dd>
                   <dt>Gallery</dt>
                   <dd>{booking.intake?.galleryEmail ?? "—"}</dd>
                   <dt>Client</dt>

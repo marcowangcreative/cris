@@ -27,6 +27,14 @@ export function buildSeed(now: Date): Database {
     onSiteContactName: "Priya Shah",
     onSiteContactPhone: "(713) 555-0148",
     galleryEmail: "events@northshore.example",
+    venueSpace: true,
+    venuePower: true,
+    venueWifi: true,
+    venueTable: true,
+    tableSource: "venue",
+    ceilingHeight: "14 ft",
+    outletNotes: "Dedicated circuit on the ballroom wall.",
+    setupWindow: "3:00–4:00 PM",
   });
 
   let paid = planHold({
@@ -53,6 +61,14 @@ export function buildSeed(now: Date): Database {
     onSiteContactName: "Ellis Ward",
     onSiteContactPhone: "(832) 555-0172",
     galleryEmail: "harper@quinn.example",
+    venueSpace: true,
+    venuePower: true,
+    venueWifi: true,
+    venueTable: true,
+    tableSource: "studio",
+    ceilingHeight: "",
+    outletNotes: "Nearest outlet is across the lawn. Distance unknown.",
+    setupWindow: "During cocktail hour",
   });
 
   let pending = planHold({

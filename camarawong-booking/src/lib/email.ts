@@ -1,4 +1,5 @@
 import { studio } from "@/lib/config";
+import { venueNoteLines } from "@/lib/venue";
 import { formatLongDate, formatMoney, formatTimeRange, paymentSummary } from "@/lib/format";
 import type { Booking, Inquiry } from "@/lib/types";
 
@@ -97,9 +98,11 @@ export function confirmationMessages(booking: Booking): EmailMessage[] {
     "",
     ...eventBlock(booking),
     "",
-    `Guest portraits go to ${booking.intake.galleryEmail}.`,
+    "Guests view the gallery on the iPad and get photos by text or email, with share multiple.",
+    `The gallery link also goes to ${booking.intake.galleryEmail}.`,
     `On-site contact: ${booking.intake.onSiteContactName}, ${booking.intake.onSiteContactPhone}.`,
     booking.intake.loadInNotes ? `Load-in: ${booking.intake.loadInNotes}` : "",
+    ...venueNoteLines(booking.intake),
     "",
     "A reminder goes out seven days before, and again the day before.",
     "",
@@ -136,6 +139,7 @@ export function reminderMessage(booking: Booking, kind: "seven" | "one"): EmailM
     "",
     `On-site contact: ${booking.intake.onSiteContactName}, ${booking.intake.onSiteContactPhone}.`,
     booking.intake.loadInNotes ? `Load-in: ${booking.intake.loadInNotes}` : "Load-in notes: none on file.",
+    booking.intake.setupWindow ? `Setup window: ${booking.intake.setupWindow}` : "",
     "",
     "Reply to this note if the venue or the start time changed.",
     "",

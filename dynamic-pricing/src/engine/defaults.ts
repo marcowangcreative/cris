@@ -196,6 +196,7 @@ const DEFAULT_CONFIG: PricingConfig = {
   homeMarketId: "houston",
   objective: "balanced",
   roundTo: 50,
+  quoteValidDays: 14,
   weights: DEFAULT_WEIGHTS,
 };
 
@@ -424,6 +425,7 @@ export function sanitizeConfig(value: unknown): PricingConfig {
     homeMarketId,
     objective,
     roundTo: Math.round(finiteNumber(value.roundTo, defaults.roundTo, 1, 1000)),
+    quoteValidDays: Math.round(finiteNumber(value.quoteValidDays, defaults.quoteValidDays, 1, 365)),
     weights: sanitizeWeights(value.weights, defaults.weights),
   };
 }

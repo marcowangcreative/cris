@@ -6,6 +6,7 @@ import {
   formatPercent,
   findTier,
   formatSignedMoney,
+  quoteValidUntil,
   quotePrice,
   todayISO,
   type PricingConfig,
@@ -222,6 +223,7 @@ export function QuoteDesk({
 
   function approve(quote: Quote) {
     const quotedPrice = quote.suggestedQuote;
+    const approvedAt = new Date().toISOString();
     const record: BookingRecord = {
       id: crypto.randomUUID(),
       couple: form.couple.trim(),
@@ -242,7 +244,8 @@ export function QuoteDesk({
       bookedDates: form.bookedDates,
       targetCapacity: form.targetCapacity,
       sample: false,
-      approvedAt: new Date().toISOString(),
+      approvedAt,
+      validUntil: quoteValidUntil(approvedAt, config.quoteValidDays),
       modelQuote: quote.modelQuote,
       chargeStandard: quote.chargeStandard,
       clientBudget: quote.clientBudget,
@@ -571,7 +574,9 @@ export function QuoteDesk({
               <button type="button" className="ghost" onClick={() => copySummary(quote)}>
                 {copied ? "Copied" : "Copy summary"}
               </button>
-              <p className="lock">Approving locks this price. Changing settings later will not reprice it.</p>
+              <p className="lock">
+                Approving locks this price for {config.quoteValidDays} days. It is not recalculated when it expires. Start a new quote if you want a new number.
+              </p>
               {saved ? <p className="saved" role="status">{saved}</p> : null}
             </article>
             {quote.budgetFit.status === "between" ? (

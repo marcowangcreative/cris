@@ -1,4 +1,4 @@
-import type { Adjustment, ConfidenceLevel, Outcome } from "./engine";
+import { quoteValidUntil, type Adjustment, type ConfidenceLevel, type Outcome } from "./engine";
 
 export interface QuoteSnapshot {
   suggestedQuote: number;
@@ -33,6 +33,8 @@ export interface BookingRecord {
   bookedOnDate: number;
   sample: boolean;
   approvedAt: string;
+  /** When the sent price stops being the standing quote. The number is not recalculated. */
+  validUntil: string;
   /** Demand-model price before a standard-rate hold or manual price. */
   modelQuote: number;
   chargeStandard: boolean;
@@ -56,6 +58,7 @@ export function normalizeRecord(record: BookingRecord): BookingRecord {
     tierId,
     tierName: typeof record.tierName === "string" && record.tierName ? record.tierName : tierId === "marco" ? "Marco (lead)" : tierId,
     bookedOnDate: typeof record.bookedOnDate === "number" && Number.isFinite(record.bookedOnDate) ? record.bookedOnDate : 0,
+    validUntil: typeof record.validUntil === "string" && record.validUntil ? record.validUntil : quoteValidUntil(record.approvedAt, 14),
     modelQuote,
     chargeStandard: record.chargeStandard === true,
     clientBudget: typeof record.clientBudget === "number" ? record.clientBudget : null,

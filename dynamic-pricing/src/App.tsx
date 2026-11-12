@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { HistoryLog } from "./components/HistoryLog";
+import { hasOpenSession, LockScreen } from "./components/LockScreen";
 import { QuoteDesk } from "./components/QuoteDesk";
 import { SeasonalityChart } from "./components/SeasonalityChart";
 import { SettingsPanel } from "./components/SettingsPanel";
@@ -25,14 +26,21 @@ export function App() {
   const [config, setConfig] = useState<PricingConfig>(() => loadConfig());
   const [records, setRecords] = useState<BookingRecord[]>(() => loadHistory());
   const [tab, setTab] = useState<Tab>(() => readTab());
+  const [unlocked, setUnlocked] = useState(() => hasOpenSession());
 
   useEffect(() => {
+    if (!unlocked) return;
     saveConfig(config);
-  }, [config]);
+  }, [config, unlocked]);
 
   useEffect(() => {
+    if (!unlocked) return;
     saveHistory(records);
-  }, [records]);
+  }, [records, unlocked]);
+
+  if (!unlocked) {
+    return <LockScreen onUnlock={() => setUnlocked(true)} />;
+  }
 
   function select(next: Tab) {
     setTab(next);
@@ -77,7 +85,7 @@ export function App() {
           {tab === "settings" ? <SettingsPanel config={config} onChange={setConfig} /> : null}
         </main>
         <footer className="colophon">
-          <p>Revenue per available shooting date. Couples never see this screen.</p>
+          <p>Revenue per available shooting date. Couples never see this screen, and there is no public price.</p>
         </footer>
       </div>
     </>

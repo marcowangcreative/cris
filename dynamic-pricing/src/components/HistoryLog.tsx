@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { csvTemplate, formatLongDate, formatMoney, parseCsv, toCsv, type CsvBooking, type Outcome, type PricingConfig } from "../engine";
+import { backtestInquiries, csvTemplate, formatLongDate, formatMoney, isQuoteExpired, parseCsv, quoteValidUntil, toCsv, type BacktestInquiry, type CsvBooking, type Outcome, type PricingConfig } from "../engine";
 import type { BookingRecord } from "../records";
 
 function download(filename: string, text: string) {
@@ -75,6 +75,7 @@ function fromCsv(rows: CsvBooking[], config: PricingConfig): BookingRecord[] {
       bookedOnDate: row.bookedOnDate ?? 0,
       sample: false,
       approvedAt: new Date().toISOString(),
+      validUntil: quoteValidUntil(new Date().toISOString(), config.quoteValidDays),
       modelQuote,
       chargeStandard: row.chargeStandard ?? false,
       clientBudget: row.clientBudget ?? null,
@@ -101,6 +102,38 @@ function fromCsv(rows: CsvBooking[], config: PricingConfig): BookingRecord[] {
   });
 }
 
+function toInquiry(record: BookingRecord): BacktestInquiry {
+  return {
+    id: record.id,
+    label: record.couple || record.packageName,
+    outcome: record.outcome,
+    sample: record.sample,
+    eventDate: record.eventDate,
+    inquiryDate: record.inquiryDate,
+    tierId: record.tierId,
+    marketId: record.marketId,
+    packageId: record.packageId,
+    quotedPrice: record.quotedPrice,
+    qualifiedInquiries: record.qualifiedInquiries,
+    bookedDates: record.bookedDates,
+    targetCapacity: record.targetCapacity,
+    bookedOnDate: record.bookedOnDate,
+    travelDaysBlocked: record.travelDaysBlocked,
+    chargeStandard: record.chargeStandard,
+    clientBudget: record.clientBudget,
+  };
+}
+
+function QuoteValidity({ record }: { record: BookingRecord }) {
+  const expired = isQuoteExpired(record.validUntil);
+  const day = formatLongDate(record.validUntil.slice(0, 10));
+  return (
+    <span className={expired ? "pill" : "pill kept"}>
+      {expired ? `Expired ${day}. Price stays ${formatMoney(record.quotedPrice)}.` : `Valid through ${day}`}
+    </span>
+  );
+}
+
 function earned(rows: BookingRecord[]): number {
   return rows.reduce((total, row) => total + Math.max(0, row.discountAvoided), 0);
 }
@@ -125,6 +158,7 @@ export function HistoryLog({
   const realEarned = earned(real);
   const bookedEarned = earned(real.filter((record) => record.outcome === "booked"));
   const sampleEarned = earned(records.filter((record) => record.sample));
+  const backtest = useMemo(() => backtestInquiries(records.map(toInquiry), config), [config, records]);
 
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -160,6 +194,50 @@ export function HistoryLog({
 
   return (
     <section className="history">
+      <div className="panel backtest">
+        <h2>Backtest against the current model</h2>
+        <p>
+          Each past quote is priced again with today’s settings. The price you sent stays on the row. This comparison does not reprice it.
+        </p>
+        {backtest.lines.length === 0 ? (
+          <p className="hint">Import or approve a real inquiry to compare it with the model. Sample rows are left out.</p>
+        ) : (
+          <>
+            <p>
+              {backtest.bookedCount} booked {backtest.bookedCount === 1 ? "wedding was" : "weddings were"} quoted at{" "}
+              <strong>{formatMoney(backtest.bookedActual)}</strong>. The model would suggest <strong>{formatMoney(backtest.bookedModel)}</strong> for those same dates.
+              {" "}
+              {backtest.lostCount} lost {backtest.lostCount === 1 ? "inquiry was" : "inquiries were"} quoted at{" "}
+              <strong>{formatMoney(backtest.lostActual)}</strong> against a model total of <strong>{formatMoney(backtest.lostModel)}</strong>.
+            </p>
+            <div className="table-wrap">
+              <table>
+                <caption>Sent price versus what the engine would suggest now</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Inquiry</th>
+                    <th scope="col">Outcome</th>
+                    <th scope="col">Sent</th>
+                    <th scope="col">Model now</th>
+                    <th scope="col">Difference</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {backtest.lines.map((line) => (
+                    <tr key={line.id}>
+                      <th scope="row">{line.label}</th>
+                      <td>{line.outcome}</td>
+                      <td>{formatMoney(line.actual)}</td>
+                      <td>{line.model === null ? "—" : formatMoney(line.model)}</td>
+                      <td>{line.delta === null ? line.detail : formatMoney(line.delta)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </div>
       <div className="panel backtest">
         <h2>What standard-rate holds kept</h2>
         {real.length === 0 ? (
@@ -250,6 +328,7 @@ export function HistoryLog({
                 </div>
                 <div className="log-meta">
                   {record.sample ? <span className="pill">Sample</span> : null}
+                  <QuoteValidity record={record} />
                   {record.chargeStandard ? <span className="pill">Charge standard</span> : null}
                   {record.clientBudget !== null ? <span className="pill">Budget {formatMoney(record.clientBudget)}</span> : null}
                   {record.discountAvoided > 0 ? (

@@ -32,6 +32,23 @@ h2 { margin: 0 0 0.4rem; font-size: 1.55rem; }
 h3 { margin: 0; font-size: 1.15rem; }
 p { margin: 0; }
 
+.lock-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.lock-card {
+  width: min(440px, 100%);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 28px 22px;
+  box-shadow: var(--shadow);
+}
+.lock-card h1 { margin: 8px 0 12px; }
+.lock-error { color: var(--accent); margin: 8px 0; }
+.lock-card .approve { width: 100%; background: var(--ink); color: var(--cream); }
 .skip {
   position: absolute;
   left: 12px;

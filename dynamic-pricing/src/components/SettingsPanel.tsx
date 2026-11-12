@@ -80,6 +80,23 @@ export function SettingsPanel({ config, onChange }: { config: PricingConfig; onC
           />
           <small>Dollars. $50 is the default for every tier.</small>
         </label>
+        <label className="field narrow">
+          <span>Quote stays valid</span>
+          <input
+            type="number"
+            min={1}
+            max={365}
+            step={1}
+            value={config.quoteValidDays}
+            onChange={(event) => {
+              if (Number.isFinite(event.target.valueAsNumber)) {
+                patch({ quoteValidDays: Math.min(365, Math.max(1, Math.round(event.target.valueAsNumber))) });
+              }
+            }}
+            onWheel={(event) => event.currentTarget.blur()}
+          />
+          <small>Days. An approved price is not recalculated when this window ends.</small>
+        </label>
       </section>
 
       <section className="panel">

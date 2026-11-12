@@ -114,6 +114,8 @@ export interface PricingConfig {
   objective: Objective;
   /** Suggested quotes and floors round to this dollar increment. */
   roundTo: number;
+  /** How long an approved quote stays the price you sent, in days. */
+  quoteValidDays: number;
   weights: PricingWeights;
 }
 

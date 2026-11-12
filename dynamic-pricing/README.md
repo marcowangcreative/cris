@@ -4,17 +4,22 @@ Internal revenue desk for **Marco Wang Photography** (Houston). It recommends wh
 
 The goal is revenue per available shooting date: protect peak Saturdays, fill softer dates without cheapening the brand, and refuse a seasonal discount when the couple can pay the standard rate.
 
-The pricing engine in `src/engine/` is a pure module. It does not read the browser, the clock, or the network. The screens are a thin desk on top of it, so the same function can later drive an inquiry form, a proposal, or another studio’s account.
+The pricing engine in `src/engine/` is a pure module. It does not read the browser, the clock, or the network. The screens are a thin desk on top of it. This copy is for Marco Wang Photography in Houston, including associate weddings shot under that brand. It is not a subscription product for other studios. The engine is separate so it could be licensed later without rebuilding the math.
+
+Nothing here is client-facing. Couples never see a price, a multiplier, or the reasoning. A public instant-pricing page is a future idea only and is not part of this app.
 
 ## Run locally
 
+Copy `.env.example` to `.env` and set `PRICING_PASSWORD` to a password you choose. The desk stays locked until that variable is set. The password is not in the source.
+
 ```bash
 cd dynamic-pricing
+cp .env.example .env
 npm install
 npm run dev
 ```
 
-Open the URL Vite prints (usually `http://localhost:5173`).
+Open the URL Vite prints (usually `http://localhost:5173`). The same password works on a phone browser.
 
 ```bash
 npm test
@@ -30,9 +35,10 @@ The app is a static Vite build.
 1. Import the repo on Vercel.
 2. Set the project **Root Directory** to `dynamic-pricing`.
 3. Framework preset: **Vite**. Leave the build command as `npm run build` (typecheck plus Vite) or the default `vite build`. Output directory: `dist`.
-4. No environment variables are required.
+4. Set the environment variable `PRICING_PASSWORD` for Production and Preview. Do not commit it, and do not put it in client code. The unlock check reads that variable on the server (`/api/unlock`).
+5. A later host can be `pricing.marcowang.com`. Point that domain at this project when you are ready.
 
-Put a password in front of it before real client names go in. Vercel password protection, or an access proxy, is the right next step. This MVP stores quotes in the browser only.
+Quotes and settings stay in this browser’s `localStorage`. An approved quote keeps the price you sent until its validity window ends (14 days by default, editable in Settings). Expiry does not calculate a new price.
 
 ## How a quote is built
 
@@ -61,7 +67,7 @@ Neutral inputs: one qualified inquiry, 3 of 5 dates booked (the 60% utilization 
 | That same August date, with Charge standard on, or a budget of $10,800 or more | Model still $9,350 | **$10,800**. The desk flags “budget supports standard rate, discount not needed” when the budget covers the base, and records **$1,450** kept versus the model. |
 | That August date on the Associate tier (placeholder signature $6,400), charge standard | Model **$5,550** | **$6,400**. The hold uses the associate base. One of four associate slots filled is a smaller scarcity premium than Marco's only slot. |
 
-History sums that gap for real rows (sample rows are excluded) so a later backtest can show what the holds earned. Booked versus lost is a column you set yourself. The price on a row does not change when you change the outcome.
+History keeps the price you sent. The backtest on that screen prices each real row again with the current settings and shows the difference by outcome (booked or lost). It does not replace the sent price. Sample rows are excluded. The Marco (lead) corridor before rounding is **$9,180 to $12,960** on the $10,800 package (15% below, 20% above). Peak Saturdays in October, November, March, April, and May are the dates the model protects. July through September is the softer Houston stretch.
 
 ## CSV
 
@@ -86,10 +92,13 @@ market,couple,tier,travel_days,inquiries,booked_dates,target_capacity,booked_on_
 
 Quotes and settings live in `localStorage` in this browser. Clearing site data clears the desk.
 
-## Suggested next steps
+## Later integrations
 
-- Password protection before any real client name is entered.
-- Connect the booking calendar, CRM, and VSCO Workspace so utilization and inquiry pressure fill themselves.
-- Backtest against real bookings: import past quotes and compare `quoted_price` with `model_quote` by outcome, then retune the weights.
-- Keep this off the public website. Couples should not see the price move between visits.
-- A separate portrait model (golden hour, weekend sessions) once the wedding desk matches real closes.
+Not built. Listed here so the desk stays a private Houston tool until you choose otherwise:
+
+- VSCO Workspace, for inquiries and booked jobs
+- The studio calendar, so date capacity fills itself
+- The inquiry form, so a new lead opens a quote
+- Proposals, so an approved number can be sent without retyping
+
+A public page where couples see an instant price is a future idea only. This app does not show pricing math to clients.

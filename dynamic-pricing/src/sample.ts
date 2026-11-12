@@ -1,7 +1,8 @@
+import { quoteValidUntil } from "./engine";
 import type { BookingRecord } from "./records";
 
 function sample(
-  record: Omit<BookingRecord, "sample" | "snapshot" | "approvedAt" | "modelQuote" | "chargeStandard" | "clientBudget" | "manualPrice" | "discountAvoided" | "tierId" | "tierName" | "bookedOnDate"> & {
+  record: Omit<BookingRecord, "sample" | "snapshot" | "approvedAt" | "modelQuote" | "chargeStandard" | "clientBudget" | "manualPrice" | "discountAvoided" | "tierId" | "tierName" | "bookedOnDate" | "validUntil"> & {
     approvedAt: string;
     modelQuote?: number;
     chargeStandard?: boolean;
@@ -19,6 +20,7 @@ function sample(
     tierId: record.tierId ?? "marco",
     tierName: record.tierName ?? "Marco (lead)",
     bookedOnDate: record.bookedOnDate ?? 0,
+    validUntil: quoteValidUntil(record.approvedAt, 14),
     modelQuote,
     chargeStandard: record.chargeStandard ?? false,
     clientBudget: record.clientBudget ?? null,

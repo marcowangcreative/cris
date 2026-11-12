@@ -1,0 +1,6 @@
+[11/1/26, 9:00:00 AM] Teacher Example: Picture day was last week. This note is older than the digest window.
+[11/6/26, 8:00:00 AM] Messages and calls are end-to-end encrypted. No one outside of this chat can read or listen to them.
+[11/6/26, 8:12:04 AM] Teacher Example: Please return the signed field-trip permission slip by Friday, November 13. The bus fee is $12.
+[11/6/26, 8:20:11 AM] Parent One: I saw the office note too — field trip permission slips are due November 13 and the bus fee is $12.
+[11/6/26, 8:22:40 AM] Parent Two: Did anyone find a blue water bottle after recess?
+[11/7/26, 4:01:33 PM] Teacher Example: No school Monday, November 16 (teacher work day). The science project is due Friday, November 20. Please send a labeled folder for it.

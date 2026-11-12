@@ -1,0 +1,8 @@
+node_modules/
+dist/
+out/
+tokens/
+inbox/
+config.json
+.env
+*.log

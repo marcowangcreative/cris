@@ -1,0 +1,8 @@
+From: "Pickup Example" <noreply@pickup.example-transport.test>
+To: parent@example.test
+Subject: Daily pickup confirmation
+Date: Thu, 12 Nov 2026 15:10:00 -0600
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Kid C was picked up at 3:05 PM. This daily pickup confirmation is routine noise.

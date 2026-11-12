@@ -1,0 +1,8 @@
+From: "ParentSquare Example" <notify@parentsquare.example.test>
+To: parent@example.test
+Subject: Conference sign-up for 2nd grade
+Date: Mon, 09 Nov 2026 18:05:00 -0600
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Please reply with a preferred conference time. Sign-up closes November 14 for 2nd grade.

@@ -1,0 +1,53 @@
+# Example only. Copy this file to .github/workflows/school-digest.yml
+# at the repository root when you want the schedule to run.
+# Leaving it here means this public repo does not execute it.
+name: School digest
+
+on:
+  schedule:
+    # GitHub cron is UTC. 7:00 PM America/Chicago is 00:00 UTC Monday during
+    # daylight time and 01:00 UTC Monday during standard time. The script
+    # exits unless local time is Sunday 19:00 in America/Chicago, so only
+    # one of these runs produces a digest.
+    - cron: "0 0 * * 1"
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: school-digest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: school-digest/package-lock.json
+      - run: npm ci
+      - name: Build the digest
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_PROVIDER: openai
+          LLM_MODEL: gpt-4o-mini
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          # JSON object keyed by gmail account id. Values are the token files
+          # from `npm run auth`. Do not commit them.
+          SCHOOL_DIGEST_TOKENS_JSON: ${{ secrets.SCHOOL_DIGEST_TOKENS_JSON }}
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            npm run digest -- --scheduled --deliver file
+          else
+            npm run digest -- --deliver file
+          fi
+      - uses: actions/upload-artifact@v4
+        if: hashFiles('school-digest/out/digest.md') != ''
+        with:
+          name: school-digest
+          path: |
+            school-digest/out/digest.md
+            school-digest/out/digest.html
+            school-digest/out/digest.ics

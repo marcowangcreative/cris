@@ -1,5 +1,7 @@
 /** Concept B lives under this prefix. Concept A, Atelier, stays at the root. */
 export const APOTHECARY_HOME = "/apothecary";
+/** Concept C, Editorial. */
+export const EDITORIAL_HOME = "/editorial";
 
 export function isApothecaryPath(pathname: string): boolean {
   return pathname === APOTHECARY_HOME || pathname.startsWith(`${APOTHECARY_HOME}/`);
@@ -14,6 +16,23 @@ export function apothecaryHome(value: FormDataEntryValue | null): typeof APOTHEC
 export function apothecaryPath(value: FormDataEntryValue | null): string | null {
   const raw = String(value ?? "");
   if (!isApothecaryPath(raw)) return null;
+  if (raw.includes("..") || raw.includes("\\") || raw.includes("://") || raw.includes("//")) {
+    return null;
+  }
+  return raw;
+}
+
+export function isEditorialPath(pathname: string): boolean {
+  return pathname === EDITORIAL_HOME || pathname.startsWith(`${EDITORIAL_HOME}/`);
+}
+
+export function editorialHome(value: FormDataEntryValue | null): typeof EDITORIAL_HOME | null {
+  return String(value ?? "") === EDITORIAL_HOME ? EDITORIAL_HOME : null;
+}
+
+export function editorialPath(value: FormDataEntryValue | null): string | null {
+  const raw = String(value ?? "");
+  if (!isEditorialPath(raw)) return null;
   if (raw.includes("..") || raw.includes("\\") || raw.includes("://") || raw.includes("//")) {
     return null;
   }

@@ -1,7 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { apothecaryHome, apothecaryPath, isApothecaryPath } from "@/lib/concept";
+import {
+  apothecaryHome,
+  apothecaryPath,
+  editorialHome,
+  editorialPath,
+  isApothecaryPath,
+  isEditorialPath,
+} from "@/lib/concept";
 
 const root = path.resolve(__dirname, "..");
 
@@ -38,6 +45,40 @@ describe("concept switcher", () => {
     expect(source).not.toMatch(/2,?400|3,?600/);
     const weddings = fs.readFileSync(
       path.join(root, "src/app/apothecary/weddings/page.tsx"),
+      "utf8",
+    );
+    expect(weddings).not.toContain("$");
+  });
+
+  it("links Editorial from the switcher and keeps its return path inside concept C", () => {
+    const footer = fs.readFileSync(path.join(root, "src/components/shell.tsx"), "utf8");
+    const editorial = fs.readFileSync(
+      path.join(root, "src/components/editorial/shell.tsx"),
+      "utf8",
+    );
+    expect(footer).toContain('href="/editorial"');
+    expect(editorial).toContain('href="/"');
+    expect(editorial).toContain('href="/apothecary"');
+    expect(isEditorialPath("/editorial")).toBe(true);
+    expect(isEditorialPath("/editorial/portal")).toBe(true);
+    expect(isEditorialPath("/apothecary")).toBe(false);
+    expect(isApothecaryPath("/editorial")).toBe(false);
+    expect(editorialHome("/editorial")).toBe("/editorial");
+    expect(editorialHome("/editorial/portal")).toBeNull();
+    expect(editorialPath("/editorial/weddings")).toBe("/editorial/weddings");
+    expect(editorialPath("/apothecary")).toBeNull();
+    expect(editorialPath("https://example.com/editorial")).toBeNull();
+  });
+
+  it("does not copy the lookbook references, and publishes no bridal price", () => {
+    const files = walk(path.join(root, "src/app/editorial")).concat(
+      walk(path.join(root, "src/components/editorial")),
+    );
+    const source = files.map((file) => fs.readFileSync(file, "utf8")).join("\n");
+    expect(source).not.toMatch(/aim[eé]|leon dore|del[ií]rio|valentino/i);
+    expect(source).not.toMatch(/2,?400|3,?600/);
+    const weddings = fs.readFileSync(
+      path.join(root, "src/app/editorial/weddings/page.tsx"),
       "utf8",
     );
     expect(weddings).not.toContain("$");

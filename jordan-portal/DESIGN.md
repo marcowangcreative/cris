@@ -89,3 +89,17 @@ Heading sizes in their stylesheet step from 2rem up to 3rem for heading-01. The 
 - The client home is a prescription card: number, formula, toner, service, last visit, next. Avery’s formula lines are sample text for the mockup.
 - Photographs are the same local Unsplash files as Atelier, set inside a framed specimen mat with a caption. The demo line sits in the footer, not a banner.
 - No script face.
+- The footer switcher also links to Editorial, in the same small caps as the Atelier link.
+
+## Concept C — Editorial
+
+A third layout, at `/editorial`. The references are a fashion lookbook poster, a campaign web page, and a magazine spread with marker writing. None of their names, logos, copy, or pictures are used.
+
+- Newsprint `#f3f0e7` with a fine print grain. Ink `#161513`. Tomato `#d7261e` for the script and one color block. Hot pink `#e2186a` for marker notes. Cobalt `#1d3fbf` and marigold `#f0b429` for the other blocks. Small type stays black on paper. Pink and tomato are for large marks, not body copy.
+- Captions are Barlow, 11px, weight 500, tracking 0.28em, uppercase: “JW SS/27”, “Houston, TX”.
+- The wordmark is Great Vibes, tomato, large enough to cross the photo grid, rotated slightly. Permanent Marker is the only handwriting, used for short notes over pictures.
+- The landing is a mixed grid: photographs with different crops, three solid blocks, a dashed hand outline, stars, a cross, and an arrow. Those marks are inline drawings, not borrowed artwork.
+- Before and after sit in a black film strip. One photograph is full-bleed with marker text across it.
+- The published release is a drop poster: the month, a script count of the real dates, and a pink scribble through each held day. Choosing a day still does not reserve it.
+- The client record and the desk stay on the same paper and the small sans, with one marker word each. They are lists, not a second poster.
+- The demo line is in the footer. Atelier and Apothecary stay on their own routes.

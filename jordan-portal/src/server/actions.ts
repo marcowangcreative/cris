@@ -26,7 +26,7 @@ import {
 } from "@/lib/domain/studio";
 import { chicagoDayInterval } from "@/lib/domain/time";
 import type { WeddingStatus } from "@/lib/types";
-import { apothecaryHome, apothecaryPath } from "@/lib/concept";
+import { apothecaryHome, apothecaryPath, editorialHome, editorialPath } from "@/lib/concept";
 import { clearActorCookie, requireAdmin, requireClient, setActorCookie } from "./session";
 
 function assertDemo(): void {
@@ -51,7 +51,7 @@ async function finish(pathName: string, work: () => Promise<void>, anchor = ""):
 
 export async function logout(formData?: FormData): Promise<void> {
   await clearActorCookie();
-  redirect(apothecaryPath(formData?.get("next") ?? null) ?? "/");
+  redirect(apothecaryPath(formData?.get("next") ?? null) ?? editorialPath(formData?.get("next") ?? null) ?? "/");
 }
 
 export async function demoSignIn(formData: FormData): Promise<void> {
@@ -59,7 +59,7 @@ export async function demoSignIn(formData: FormData): Promise<void> {
   const db = readDemoDb();
   const staffId = String(formData.get("staffId") ?? "");
   const clientId = String(formData.get("clientId") ?? "");
-  const home = apothecaryHome(formData.get("next"));
+  const home = apothecaryHome(formData.get("next")) ?? editorialHome(formData.get("next"));
   if (staffId && db.staff.some((staff) => staff.id === staffId)) {
     await setActorCookie({ role: "admin", staffId });
     redirect(home ? `${home}/admin` : "/admin");
@@ -129,7 +129,7 @@ export async function submitInquiry(formData: FormData): Promise<void> {
   } catch (error) {
     message = error instanceof Error ? error.message : "Could not save the inquiry.";
   }
-  const next = apothecaryPath(formData.get("next"));
+  const next = apothecaryPath(formData.get("next")) ?? editorialPath(formData.get("next"));
   const inquiryPath = next ?? "/weddings";
   if (message) redirect(`${inquiryPath}?error=${encodeURIComponent(message)}`);
   redirect(next ? `${next}/received` : "/weddings/received");

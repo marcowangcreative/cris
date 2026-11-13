@@ -103,6 +103,8 @@ export function SiteFooter() {
       </p>
       <p className="mt-3 text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">
         <Link href="/apothecary">Apothecary</Link>
+        {" · "}
+        <Link href="/editorial">Editorial</Link>
       </p>
     </footer>
   );

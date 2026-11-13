@@ -63,6 +63,8 @@ export function ApothecaryFooter() {
       ) : null}
       <p className="rx-jost" style={{ marginTop: "1rem" }}>
         <Link href="/">Atelier</Link>
+        {" · "}
+        <Link href="/editorial">Editorial</Link>
       </p>
     </footer>
   );

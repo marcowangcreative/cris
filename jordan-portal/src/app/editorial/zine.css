@@ -1,0 +1,408 @@
+/* Concept C only. Atelier and Apothecary do not import this file. */
+
+.zine {
+  --zine-paper: #f3f0e7;
+  --zine-ink: #161513;
+  --zine-tomato: #d7261e;
+  --zine-tomato-deep: #8f1418;
+  --zine-pink: #e2186a;
+  --zine-cobalt: #1d3fbf;
+  --zine-marigold: #f0b429;
+  min-height: 100vh;
+  background-color: var(--zine-paper);
+  background-image:
+    radial-gradient(rgba(22, 21, 19, 0.045) 0.6px, transparent 0.65px),
+    radial-gradient(rgba(215, 38, 30, 0.03) 0.5px, transparent 0.55px);
+  background-size: 3px 3px, 5px 5px;
+  color: var(--zine-ink);
+  font-family: var(--font-zine-sans), "Barlow", Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
+}
+
+.zine h1,
+.zine h2,
+.zine h3 {
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.zine a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.zine-kicker {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.zine-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 1.25rem;
+  padding: 1.1rem 1rem 0.85rem;
+}
+
+.zine-top nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+}
+
+.zine-sheet {
+  width: min(76rem, calc(100% - 1.25rem));
+  margin: 0 auto;
+  padding-bottom: 2.5rem;
+}
+
+.zine-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+@media (min-width: 800px) {
+  .zine-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.7rem;
+  }
+}
+
+.zine-card {
+  position: relative;
+  min-height: 11rem;
+  overflow: hidden;
+  background: #e7e2d6;
+}
+
+.zine-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 13.5rem;
+  object-fit: cover;
+}
+
+.zine-card-tall img {
+  min-height: 17rem;
+}
+
+@media (min-width: 800px) {
+  .zine-card img,
+  .zine-card-tall img {
+    min-height: 16rem;
+  }
+
+  .zine-card-tall {
+    grid-row: span 1;
+  }
+}
+
+.zine-block {
+  display: flex;
+  min-height: 13.5rem;
+  align-items: flex-end;
+  padding: 0.8rem;
+  color: #f7f4ee;
+}
+
+.zine-block-marigold {
+  background: var(--zine-marigold);
+  color: var(--zine-ink);
+}
+
+.zine-block-tomato {
+  background: var(--zine-tomato);
+}
+
+.zine-block-cobalt {
+  background: var(--zine-cobalt);
+}
+
+.zine-script {
+  position: absolute;
+  z-index: 3;
+  right: -2%;
+  top: 34%;
+  left: -4%;
+  margin: 0;
+  color: var(--zine-tomato);
+  font-family: var(--font-script), "Great Vibes", cursive;
+  font-size: clamp(5.4rem, 20vw, 13rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.78;
+  text-align: center;
+  text-transform: none;
+  pointer-events: none;
+  transform: rotate(-8deg);
+}
+
+.zine-mark {
+  position: absolute;
+  z-index: 2;
+  color: var(--zine-pink);
+  pointer-events: none;
+}
+
+.zine-dash {
+  position: absolute;
+  inset: 6% 10%;
+  z-index: 2;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.zine-note {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  color: var(--zine-pink);
+  font-family: var(--font-marker), "Permanent Marker", cursive;
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  text-transform: none;
+  pointer-events: none;
+}
+
+.zine-columns {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.4rem;
+  padding: 0 0.2rem;
+}
+
+@media (min-width: 800px) {
+  .zine-columns {
+    grid-template-columns: 0.7fr 1.3fr 1fr;
+    gap: 2rem;
+  }
+}
+
+.zine-columns p {
+  margin: 0.35rem 0 0;
+  max-width: 28rem;
+}
+
+.zine-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(22, 21, 19, 0.2);
+}
+
+.zine-bleed {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+.zine-bleed img {
+  display: block;
+  width: 100%;
+  max-height: 78vh;
+  object-fit: cover;
+  aspect-ratio: 16 / 10;
+}
+
+.zine-bleed .zine-note {
+  right: 6%;
+  bottom: 12%;
+  max-width: 12rem;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  transform: rotate(-8deg);
+}
+
+.zine-film {
+  display: grid;
+  grid-template-columns: 1.1rem 1fr 1fr 1.1rem;
+  align-items: stretch;
+  margin: 1.5rem 0;
+  background: #111;
+  padding: 0.45rem 0;
+}
+
+.zine-sprocket {
+  background-image: radial-gradient(circle, #f3f0e7 42%, transparent 46%);
+  background-size: 100% 1.35rem;
+  background-repeat: repeat-y;
+  background-position: center;
+}
+
+.zine-film figure {
+  margin: 0;
+  padding: 0 0.2rem;
+}
+
+.zine-film img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.zine-film figcaption {
+  margin-top: 0.35rem;
+  color: #f3f0e7;
+  text-align: center;
+}
+
+.zine-drop {
+  width: min(36rem, 100%);
+  margin: 1rem auto 0;
+  padding: 1.5rem 1rem 1rem;
+  text-align: center;
+}
+
+.zine-drop h1 {
+  margin: 0.4rem 0 0;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+}
+
+.zine-drop-count {
+  margin: 0.2rem 0 1rem;
+  color: var(--zine-tomato);
+  font-family: var(--font-script), "Great Vibes", cursive;
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: none;
+}
+
+.zine-dates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+@media (min-width: 640px) {
+  .zine-dates {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.zine-dates li {
+  position: relative;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(22, 21, 19, 0.15);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.zine-dates .is-held {
+  color: #6d6860;
+}
+
+.zine-dates .is-held::after {
+  content: "";
+  position: absolute;
+  top: 46%;
+  right: -2%;
+  left: -2%;
+  height: 0.42em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16' preserveAspectRatio='none'%3E%3Cpath d='M1 9 C 18 3, 30 14, 48 7 S 78 2, 119 10' fill='none' stroke='%23e2186a' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+}
+
+.zine-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--zine-ink);
+  background: var(--zine-ink);
+  color: var(--zine-paper);
+  padding: 0.75rem 1rem;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.zine-button:hover {
+  background: transparent;
+  color: var(--zine-ink);
+}
+
+.zine .btn {
+  border-color: var(--zine-ink);
+  border-radius: 0;
+  background: var(--zine-ink);
+  color: var(--zine-paper);
+  font-family: var(--font-zine-sans), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.zine .btn:hover {
+  background: transparent;
+  color: var(--zine-ink);
+}
+
+.zine input,
+.zine textarea,
+.zine select {
+  border: 0;
+  border-bottom: 1px solid var(--zine-ink);
+  background: transparent;
+  color: var(--zine-ink);
+  font-family: var(--font-zine-sans), sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.zine .apothecary-form legend {
+  font-family: var(--font-zine-sans), sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.zine-quiet {
+  width: min(40rem, 100%);
+  margin: 0 auto;
+}
+
+.zine-rule {
+  height: 1px;
+  margin: 1rem 0;
+  background: rgba(22, 21, 19, 0.2);
+}
+
+.zine-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(22, 21, 19, 0.16);
+}
+
+.zine-star {
+  color: var(--zine-pink);
+  font-family: var(--font-marker), cursive;
+}

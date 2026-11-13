@@ -100,6 +100,6 @@ A third layout, at `/editorial`. The references are a fashion lookbook poster, a
 - The wordmark is Berkshire Swash in oxblood, stretched across the photo grid and rotated slightly. Permanent Marker is the only handwriting, used for short notes over pictures.
 - The landing is a mixed grid of hair photographs (no bridal pictures) with three solid blocks, a dashed hand outline, stars, a cross, and an arrow. Weddings are a type line, “Weddings & Bridal — inquire”, linking to the inquiry. Those marks are inline drawings, not borrowed artwork.
 - Before and after sit in an oxblood film strip. One photograph is full-bleed with marker text across it.
-- The published release is a drop poster: the month, an ochre script count of the real dates, and an oxblood scribble through each held day. Choosing a day still does not reserve it.
+- The published release is a drop poster: the month, an ochre script count of the real dates, and an oxblood scribble through each held day. Open days come from the shared availability adapter (fake by default). Choosing one shows 10:00 a.m. and the $1,200 / $600 summary here. Confirmation is a labeled fake handoff unless Calendly env vars are set. Choosing a day still does not reserve it.
 - The client record and the desk stay on the same paper and the small sans, with one marker word each. They are lists, not a second poster.
 - The demo line is in the footer. Atelier and Apothecary stay on their own routes.

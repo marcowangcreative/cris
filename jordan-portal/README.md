@@ -70,7 +70,23 @@ Configure this before any real date is sold. The portal does not create the Cale
 - [ ] Webhook subscription for `invitee.created` and `invitee.canceled`, pointed at `/api/webhooks/calendly`, signed with `CALENDLY_WEBHOOK_SIGNING_SECRET`.
 - [ ] Weddings are not booked on the transformation event.
 
-`NEXT_PUBLIC_CALENDLY_TRANSFORMATION_URL` is the Reserve a date link.
+`NEXT_PUBLIC_CALENDLY_TRANSFORMATION_URL` is the public scheduling link for that event.
+
+### Editorial calendar
+
+The Editorial release poster is our calendar. Open and held days come from an availability adapter. The default is the fake adapter, built from the published demo release. No Calendly call is made, and no token is stored in the repo.
+
+Choosing an open date shows the time and the $1,200 minimum with the $600 deposit on this site. Confirmation and the deposit are the only steps handed to Calendly. In the default demo that handoff is a panel labeled **Fake confirmation**. It does not open Calendly and it does not charge anything.
+
+To read live availability instead:
+
+1. In Calendly, turn on payments for the transformation event type and connect Stripe. The deposit amount is $600, required before the invitee is confirmed. This app still never sees the card.
+2. Set `CALENDLY_EVENT_TYPE_URI` to that event type’s API URI (`https://api.calendly.com/event_types/...`).
+3. Set `CALENDLY_TOKEN` to a personal access token. Keep it server-only. Do not commit it, and do not put it in a `NEXT_PUBLIC_` variable.
+4. Set `NEXT_PUBLIC_CALENDLY_TRANSFORMATION_URL` to the same event’s public link.
+5. Restart the server. `/api/availability` and the Editorial poster then use the Calendly adapter. An open time opens the Calendly popup, or the direct slot link, with bone, ink, and oxblood colors. The other concepts are unchanged.
+
+If either `CALENDLY_TOKEN` or `CALENDLY_EVENT_TYPE_URI` is missing, the fake adapter stays on.
 
 ## Boulevard checkout SOP
 

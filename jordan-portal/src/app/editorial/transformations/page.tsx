@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { DateTime } from "luxon";
+import { ReleaseBooking } from "@/components/editorial/release-booking";
 import { ZineFrame } from "@/components/editorial/shell";
-import { evaluateReleaseDates } from "@/lib/domain/availability";
+import { loadAvailability } from "@/lib/booking/load";
 import { monthLabel } from "@/lib/domain/time";
 import { readDemoDb } from "@/lib/demo/store";
 import { publicCopy } from "@/lib/content";
@@ -10,20 +10,12 @@ import { getConfig, RULES } from "@/lib/rules";
 
 export const metadata = { title: "The drop" };
 
-export default function EditorialTransformations() {
+export default async function EditorialTransformations() {
   const db = readDemoDb();
   const batch =
     db.release_batches.find((item) => item.status === "published") ??
     db.release_batches[0];
-  const evaluations = batch
-    ? evaluateReleaseDates(db, batch.id, DateTime.now()).filter((item) => item)
-    : [];
-  const dates = batch
-    ? evaluations.filter((item) => {
-        const day = DateTime.fromISO(item.date, { zone: "America/Chicago" });
-        return batch.weekdays.includes(day.weekday);
-      })
-    : [];
+  const availability = await loadAvailability();
   const calendly = getConfig().calendlyTransformationUrl;
   const title = batch ? monthLabel(batch.target_year, batch.target_month) : "Release";
   return (
@@ -59,20 +51,15 @@ export default function EditorialTransformations() {
       <section id="drop" className="zine-drop">
         <p className="zine-kicker">JW SS/27</p>
         <h1>{title.split(" ")[0]} Release</h1>
-        <p className="zine-drop-count">— {dates.length} dates</p>
-        <ul className="zine-dates">
-          {dates.map((item) => (
-            <li key={item.date} className={item.available ? "" : "is-held"}>
-              {DateTime.fromISO(item.date).toFormat("ccc d")}
-              {item.available ? "" : " held"}
-            </li>
-          ))}
-        </ul>
-        <p style={{ marginTop: "1.25rem" }}>
-          <a className="zine-button" href={calendly}>
-            Reserve a date
-          </a>
+        <p className="zine-drop-count">— {availability.days.length} dates</p>
+        <p className="zine-kicker">
+          {availability.source === "mock" ? "Sample calendar" : "Live calendar"}
         </p>
+        <ReleaseBooking
+          days={availability.days}
+          live={availability.source === "calendly"}
+          eventUrl={calendly}
+        />
         <p className="zine-kicker" style={{ marginTop: "1rem", letterSpacing: "0.06em", textTransform: "none" }}>
           {publicCopy.bookingTerms}
         </p>

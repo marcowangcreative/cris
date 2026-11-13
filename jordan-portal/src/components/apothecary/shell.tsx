@@ -65,6 +65,8 @@ export function ApothecaryFooter() {
         <Link href="/">Atelier</Link>
         {" · "}
         <Link href="/editorial">Editorial</Link>
+        {" · "}
+        <Link href="/maison">Maison</Link>
       </p>
     </footer>
   );

@@ -30,6 +30,26 @@ export function editorialHome(value: FormDataEntryValue | null): typeof EDITORIA
   return String(value ?? "") === EDITORIAL_HOME ? EDITORIAL_HOME : null;
 }
 
+/** Concept D, Maison. */
+export const MAISON_HOME = "/maison";
+
+export function isMaisonPath(pathname: string): boolean {
+  return pathname === MAISON_HOME || pathname.startsWith(`${MAISON_HOME}/`);
+}
+
+export function maisonHome(value: FormDataEntryValue | null): typeof MAISON_HOME | null {
+  return String(value ?? "") === MAISON_HOME ? MAISON_HOME : null;
+}
+
+export function maisonPath(value: FormDataEntryValue | null): string | null {
+  const raw = String(value ?? "");
+  if (!isMaisonPath(raw)) return null;
+  if (raw.includes("..") || raw.includes("\\") || raw.includes("://") || raw.includes("//")) {
+    return null;
+  }
+  return raw;
+}
+
 export function editorialPath(value: FormDataEntryValue | null): string | null {
   const raw = String(value ?? "");
   if (!isEditorialPath(raw)) return null;

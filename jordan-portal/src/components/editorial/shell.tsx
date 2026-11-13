@@ -48,6 +48,8 @@ export function ZineFooter() {
         <Link href="/">Atelier</Link>
         {" · "}
         <Link href="/apothecary">Apothecary</Link>
+        {" · "}
+        <Link href="/maison">Maison</Link>
       </span>
     </footer>
   );

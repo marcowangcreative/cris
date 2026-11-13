@@ -53,19 +53,21 @@ export function buildHandoff(input: {
   eventUrl: string;
   date: string;
   time: string;
+  colors?: { background: string; text: string; primary: string };
 }): Handoff {
   const summary = summarizeSelection(input.date, input.time);
   if (!input.live) {
     return { mode: "mock", label: FAKE_CONFIRMATION, summary };
   }
+  const colors = input.colors ?? EDITORIAL_CALENDLY_COLORS;
   const local = DateTime.fromISO(`${input.date}T${input.time}`, {
     zone: "America/Chicago",
   });
   const iso = local.toFormat("yyyy-MM-dd'T'HH:mm:ssZZ");
   const base = input.eventUrl.replace(/\/$/, "");
   const url = new URL(`${base}/${iso}`);
-  url.searchParams.set("background_color", EDITORIAL_CALENDLY_COLORS.background);
-  url.searchParams.set("text_color", EDITORIAL_CALENDLY_COLORS.text);
-  url.searchParams.set("primary_color", EDITORIAL_CALENDLY_COLORS.primary);
+  url.searchParams.set("background_color", colors.background);
+  url.searchParams.set("text_color", colors.text);
+  url.searchParams.set("primary_color", colors.primary);
   return { mode: "live", url: url.toString(), summary };
 }

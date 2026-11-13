@@ -8,6 +8,9 @@ import {
   editorialPath,
   isApothecaryPath,
   isEditorialPath,
+  isMaisonPath,
+  maisonHome,
+  maisonPath,
 } from "@/lib/concept";
 
 const root = path.resolve(__dirname, "..");
@@ -68,6 +71,42 @@ describe("concept switcher", () => {
     expect(editorialPath("/editorial/weddings")).toBe("/editorial/weddings");
     expect(editorialPath("/apothecary")).toBeNull();
     expect(editorialPath("https://example.com/editorial")).toBeNull();
+  });
+
+  it("links Maison from the switcher and keeps its return path inside concept D", () => {
+    const footer = fs.readFileSync(path.join(root, "src/components/shell.tsx"), "utf8");
+    const maison = fs.readFileSync(
+      path.join(root, "src/components/maison/shell.tsx"),
+      "utf8",
+    );
+    expect(footer).toContain('href="/maison"');
+    expect(maison).toContain('href="/"');
+    expect(maison).toContain('href="/apothecary"');
+    expect(maison).toContain('href="/editorial"');
+    expect(isMaisonPath("/maison")).toBe(true);
+    expect(isMaisonPath("/maison/portal")).toBe(true);
+    expect(isMaisonPath("/editorial")).toBe(false);
+    expect(isEditorialPath("/maison")).toBe(false);
+    expect(maisonHome("/maison")).toBe("/maison");
+    expect(maisonHome("/maison/portal")).toBeNull();
+    expect(maisonPath("/maison/weddings")).toBe("/maison/weddings");
+    expect(maisonPath("/editorial")).toBeNull();
+    expect(maisonPath("https://example.com/maison")).toBeNull();
+  });
+
+  it("does not copy the scroll-film reference, and publishes no bridal price", () => {
+    const files = walk(path.join(root, "src/app/maison")).concat(
+      walk(path.join(root, "src/components/maison")),
+    );
+    const source = files.map((file) => fs.readFileSync(file, "utf8")).join("\n");
+    expect(source).not.toMatch(/alaba|real madrid|through the lens|his craft/i);
+    expect(source).not.toMatch(/2,?400|3,?600/);
+    const weddings = fs.readFileSync(
+      path.join(root, "src/app/maison/weddings/page.tsx"),
+      "utf8",
+    );
+    expect(weddings).not.toContain("$");
+    expect(weddings).not.toMatch(/gown|bridal-1600/);
   });
 
   it("does not copy the lookbook references, and publishes no bridal price", () => {

@@ -103,3 +103,14 @@ A third layout, at `/editorial`. The references are a fashion lookbook poster, a
 - The published release is a drop poster: the month, a tomato script count of the real dates, and a pink scribble through each held day. Open days come from the shared availability adapter (fake by default). Choosing one shows 10:00 a.m. and the $1,200 / $600 summary here. Confirmation is a labeled fake handoff unless Calendly env vars are set. Choosing a day still does not reserve it.
 - The client record and the desk stay on the same paper and the small sans, with one marker word each. They are lists, not a second poster.
 - The demo line is in the footer. Atelier and Apothecary stay on their own routes.
+
+## Concept D — Maison
+
+A fourth layout, at `/maison`. The pacing is borrowed from a cinematic personal site: a thin fixed nav, a portrait with oversized initials, type large enough to leave the frame, a sticky stack of one repeated word, a slow text band, and a drifting row of stills. None of that site’s names, copy, logos, or pictures are used.
+
+- Ivory `#f6f1ea`, champagne `#e6d5c3`, blush `#e7cfc6`, nude `#c9a892`, espresso `#2c211c`. A fine grain and two warm washes of light sit over the paper.
+- Display type is Cormorant Garamond, including italic, at a scale that fills the viewport. Outfit at weight 300 carries the nav and the small lines.
+- Motion is slow. The repeated word settles as the section pins. The text band and the stills drift. `prefers-reduced-motion` leaves every word and picture in place, with no drift.
+- Photographs are the existing hair studies. No bridal pictures. Weddings are the line “Weddings & Bridal — inquire”.
+- The open days use the shared availability adapter. Choosing a date shows 10:00 a.m. and the $1,200 / $600 summary. Confirmation is the labeled fake handoff unless Calendly env vars are set.
+- The other three concepts keep their own pages. Each footer now also links here.

@@ -105,6 +105,8 @@ export function SiteFooter() {
         <Link href="/apothecary">Apothecary</Link>
         {" · "}
         <Link href="/editorial">Editorial</Link>
+        {" · "}
+        <Link href="/maison">Maison</Link>
       </p>
     </footer>
   );

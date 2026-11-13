@@ -101,6 +101,9 @@ export function SiteFooter() {
       <p className="mt-3 text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">
         Houston · America/Chicago · jordanwangco.com
       </p>
+      <p className="mt-3 text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">
+        <Link href="/apothecary">Apothecary</Link>
+      </p>
     </footer>
   );
 }

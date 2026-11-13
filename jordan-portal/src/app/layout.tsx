@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Inter_Tight } from "next/font/google";
+import { isApothecaryPath } from "@/lib/concept";
 import { getConfig } from "@/lib/rules";
 import { liveSupabaseConfigured } from "@/lib/supabase/server";
 import "./globals.css";
@@ -17,12 +19,20 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
   const demo = getConfig().demoMode;
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const apothecary = isApothecaryPath(pathname);
   return (
     <html lang="en" className={`${sans.variable} h-full`}>
-      <body className="min-h-full bg-white text-black antialiased">
-        {demo ? (
+      <body
+        className={
+          apothecary
+            ? "min-h-full bg-[#f4efe6] text-[#2b2222] antialiased"
+            : "min-h-full bg-white text-black antialiased"
+        }
+      >
+        {demo && !apothecary ? (
           <p className="border-b border-[#e5e7eb] px-4 py-2 text-center text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">
             Demo studio. Fictional clients. No live payments, calendars, or email.
             {liveSupabaseConfigured()

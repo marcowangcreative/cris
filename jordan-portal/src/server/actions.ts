@@ -26,6 +26,7 @@ import {
 } from "@/lib/domain/studio";
 import { chicagoDayInterval } from "@/lib/domain/time";
 import type { WeddingStatus } from "@/lib/types";
+import { apothecaryHome, apothecaryPath } from "@/lib/concept";
 import { clearActorCookie, requireAdmin, requireClient, setActorCookie } from "./session";
 
 function assertDemo(): void {
@@ -48,9 +49,9 @@ async function finish(pathName: string, work: () => Promise<void>, anchor = ""):
   redirect(`${pathName}?saved=1${anchor}`);
 }
 
-export async function logout(): Promise<void> {
+export async function logout(formData?: FormData): Promise<void> {
   await clearActorCookie();
-  redirect("/");
+  redirect(apothecaryPath(formData?.get("next") ?? null) ?? "/");
 }
 
 export async function demoSignIn(formData: FormData): Promise<void> {
@@ -58,13 +59,14 @@ export async function demoSignIn(formData: FormData): Promise<void> {
   const db = readDemoDb();
   const staffId = String(formData.get("staffId") ?? "");
   const clientId = String(formData.get("clientId") ?? "");
+  const home = apothecaryHome(formData.get("next"));
   if (staffId && db.staff.some((staff) => staff.id === staffId)) {
     await setActorCookie({ role: "admin", staffId });
-    redirect("/admin");
+    redirect(home ? `${home}/admin` : "/admin");
   }
   if (clientId && db.clients.some((client) => client.id === clientId)) {
     await setActorCookie({ role: "client", clientId });
-    redirect("/portal");
+    redirect(home ? `${home}/portal` : "/portal");
   }
   redirect("/login?error=That demo profile is not in the seed.");
 }
@@ -127,8 +129,10 @@ export async function submitInquiry(formData: FormData): Promise<void> {
   } catch (error) {
     message = error instanceof Error ? error.message : "Could not save the inquiry.";
   }
-  if (message) redirect(`/weddings?error=${encodeURIComponent(message)}`);
-  redirect("/weddings/received");
+  const next = apothecaryPath(formData.get("next"));
+  const inquiryPath = next ?? "/weddings";
+  if (message) redirect(`${inquiryPath}?error=${encodeURIComponent(message)}`);
+  redirect(next ? `${next}/received` : "/weddings/received");
 }
 
 export async function saveIntakeAction(formData: FormData): Promise<void> {

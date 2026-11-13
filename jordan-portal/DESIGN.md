@@ -1,5 +1,9 @@
 # Design notes
 
+Two concepts share one product. Atelier is the default. Apothecary is a separate layout at `/apothecary`, linked from the Atelier footer. Neither concept uses another house’s name, logo, crest, copy, or photography.
+
+## Concept A — Atelier
+
 Measured 13 Nov 2026 from the live collection, home, and product pages used as a system reference. The product does not use that brand’s name, logo, copy, or photography.
 
 ## Type
@@ -48,3 +52,40 @@ No green, rose, ochre, or orange in the system.
 - Imagery is full-bleed photography inside the tile, `object-cover`, with no caption on the picture. The gray field (`#f2f2f2`) only shows while a photo loads. The files in `public/images` are stock stand-ins; swap them for photographs of Jordan. Credits are in `IMAGE_CREDITS.md`. No drawings, crests, or ornaments.
 - The release calendar uses the same 12px face, hairline cells, black for an open day and gray for a held day.
 - The client record and the studio desk stay on this type scale. They read as a receipt and a list, not a dashboard.
+- A 12px footer link, “Apothecary”, opens concept B. It uses the same gray as the line above it.
+
+## Concept B — Apothecary
+
+A separate layout, not a reskin. Measured 13 Nov 2026 from the live body-and-hair collection used as a type reference. The product does not use that house’s name, logo, crest, copy, or images.
+
+Their licensed faces are Garamond Premier Pro (display, text, and caption optical sizes), Adobe Garamond Pro, Futura PT with Jost as the fallback, and a script used as a decorative token. On the collection page itself the computed type is almost entirely Garamond. Futura / Jost is set on the newsletter form. The script token is not used in that view, so this concept skips it.
+
+Free equivalents: **EB Garamond** (roman and italic, 400 and 600) for every Garamond role, including the nav, because the measured nav is the caption cut in sentence case. **Jost** for the sans roles: tiny labels, buttons, and the first-access form.
+
+### Measured type
+
+Root size is 16px. Ink on the reference page is `rgb(43, 34, 34)` (`#2b2222`). Muted copy is `rgb(113, 98, 98)` (`#716262`). The reference page background is `rgb(254, 252, 252)`. This concept keeps the measured ink and muted color, and uses a parchment ground instead of that near-white, because the apothecary brief asks for paper.
+
+| Role | Their face | Size | Weight | Tracking | Line height | Case | Color |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Collection title, desktop | garamond-premier-pro-display | 48px (3rem) | 600 | 0.1em (4.8px) | 1.2 (57.6px) | uppercase | `#2b2222` |
+| Same title, narrow | display token, heading-01 | 32px (2rem) | 600 | 0.1em | 1.2 | uppercase | `#2b2222` |
+| Nav and UI | garamond-premier-pro-caption | 18px | 400 | 0.08em (1.44px) | 1.35 (24.3px) | sentence | `#2b2222` |
+| Body and product name | garamond-premier-pro | 18px | 400 | 0.01em (0.18px) | 1.35 | sentence | `#2b2222` |
+| Italic note | garamond-premier-pro | 18px | 400 italic | 0.01em | 1.35 | sentence | `#716262` |
+| Small label token | garamond-premier-pro | 12px | 400 | 0.03em | 1.2 | as set | `#2b2222` |
+| Newsletter sans | Futura PT, Jost | form only | | | | | |
+
+Heading sizes in their stylesheet step from 2rem up to 3rem for heading-01. The collection `h1` computed at 1440px is the 48px row. Display can go to 4.25rem elsewhere; this page does not use that size, so neither do we.
+
+### What this concept uses
+
+- Parchment `#f4efe6` with a light paper grain. Primary ink and frames `#1c3a30`. Body text `#2b2222`. Muted text `#716262`. Brass `#8c7344` only on the small rule ornament and the selected ledger day.
+- Titles: EB Garamond 600, uppercase, 32px on a phone and 48px from 768px, tracking 0.1em, line-height 1.2, in the green.
+- Nav: EB Garamond 18px, sentence case, tracking 0.08em, line-height 1.35. Centered under a framed “JW” monogram. The name “Jordan Wang” is only in the hero.
+- Body: EB Garamond 18px, sentence case, tracking 0.01em, line-height 1.35.
+- Jost 12px, weight 500, tracking 0.1em, uppercase, for numbers, field labels, and specimen captions. Buttons are Jost 14px, tracking 0.08em, sentence case, green fill.
+- Double rules with a concave corner notch. Services are a catalogue with dotted leaders. The release month is a ledger; held days are struck through. The next unpublished release has a countdown and a first-access field that stores nothing and sends nothing.
+- The client home is a prescription card: number, formula, toner, service, last visit, next. Avery’s formula lines are sample text for the mockup.
+- Photographs are the same local Unsplash files as Atelier, set inside a framed specimen mat with a caption. The demo line sits in the footer, not a banner.
+- No script face.

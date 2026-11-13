@@ -1,9 +1,10 @@
 import { submitInquiry } from "@/server/actions";
 import { SubmitButton } from "./ui";
 
-export function WeddingForm() {
+export function WeddingForm({ returnTo }: { returnTo?: string }) {
   return (
     <form action={submitInquiry} className="apothecary-form space-y-12">
+      {returnTo ? <input type="hidden" name="next" value={returnTo} /> : null}
       <fieldset className="grid gap-6 md:grid-cols-2">
         <legend className="mb-6 font-serif text-3xl">About you</legend>
         <Field label="Name" name="fullName" required />

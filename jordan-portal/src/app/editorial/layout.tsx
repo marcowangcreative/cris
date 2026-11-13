@@ -1,4 +1,4 @@
-import { Barlow, Berkshire_Swash, Permanent_Marker } from "next/font/google";
+import { Barlow, Caveat_Brush } from "next/font/google";
 import "./zine.css";
 
 const sans = Barlow({
@@ -7,18 +7,12 @@ const sans = Barlow({
   variable: "--font-zine-sans",
 });
 
-const script = Berkshire_Swash({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-script",
-});
-
-const marker = Permanent_Marker({
+const marker = Caveat_Brush({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-marker",
 });
 
 export default function EditorialLayout({ children }: LayoutProps<"/editorial">) {
-  return <div className={`${sans.variable} ${script.variable} ${marker.variable}`}>{children}</div>;
+  return <div className={`${sans.variable} ${marker.variable}`}>{children}</div>;
 }

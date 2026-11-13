@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Arrow, Cross, DashedFigure, Star } from "@/components/editorial/marks";
 import { ZineFrame } from "@/components/editorial/shell";
+import { MarkerWordmark } from "@/components/editorial/wordmark";
 
 export const metadata = { title: "Editorial" };
 
@@ -64,7 +65,7 @@ export default function EditorialHome() {
         <div className="zine-block zine-block-pink">
           <p className="zine-kicker">The whole<br />day</p>
         </div>
-        <p className="zine-script">Jordan</p>
+        <MarkerWordmark className="zine-script" />
       </div>
       <div className="zine-columns">
         <p className="zine-kicker">JW SS/27</p>

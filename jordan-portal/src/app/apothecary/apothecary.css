@@ -1,0 +1,454 @@
+/* Concept B only. Concept A does not import this file. */
+
+.rx {
+  --rx-ink: #1c3a30;
+  --rx-black: #2b2222;
+  --rx-muted: #716262;
+  --rx-cream: #f4efe6;
+  --rx-brass: #8c7344;
+  --rx-notch: 36px;
+  min-height: 100vh;
+  background-color: var(--rx-cream);
+  background-image:
+    radial-gradient(rgba(28, 58, 48, 0.035) 0.6px, transparent 0.65px),
+    radial-gradient(rgba(140, 115, 68, 0.045) 0.5px, transparent 0.55px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
+  color: var(--rx-black);
+  font-family: var(--font-garamond), "EB Garamond", Palatino, "Palatino Linotype", serif;
+  font-size: 1.125rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+}
+
+.rx h1,
+.rx h2,
+.rx h3 {
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.rx a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rx a:hover {
+  color: var(--rx-ink);
+}
+
+.rx-header {
+  padding: 1.75rem 1.25rem 1rem;
+  text-align: center;
+}
+
+.rx-mark {
+  display: inline-block;
+  color: var(--rx-ink);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.rx-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.35rem 1.5rem;
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+}
+
+.rx-nav form {
+  display: inline;
+}
+
+.rx-nav-button {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.rx-main {
+  width: min(72rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.5rem 0 3rem;
+}
+
+.rx h1.rx-display,
+.rx h2.rx-title {
+  color: var(--rx-ink);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.rx h1.rx-display {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.rx h2.rx-title {
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+@media (min-width: 768px) {
+  .rx h1.rx-display {
+    font-size: 3rem;
+  }
+
+  .rx h2.rx-title {
+    font-size: 2.625rem;
+  }
+}
+
+.rx-italic {
+  font-style: italic;
+  font-size: 1.125rem;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+}
+
+.rx-body {
+  max-width: 38rem;
+  margin-inline: auto;
+  font-size: 1.125rem;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+}
+
+.rx-muted {
+  color: var(--rx-muted);
+}
+
+.rx-jost {
+  font-family: var(--font-jost), "Jost", "Futura", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.rx-center {
+  text-align: center;
+}
+
+.rx-frame {
+  position: relative;
+  padding: calc(var(--rx-notch) * 0.45) 1.25rem;
+}
+
+.rx-frame-tight {
+  --rx-notch: 18px;
+  display: inline-block;
+  padding: 0.45rem 0.85rem 0.4rem;
+}
+
+.rx-notch {
+  position: absolute;
+  width: var(--rx-notch);
+  height: var(--rx-notch);
+  color: var(--rx-ink);
+}
+
+.rx-notch-tl { top: 0; left: 0; }
+.rx-notch-tr { top: 0; right: 0; transform: scaleX(-1); }
+.rx-notch-bl { bottom: 0; left: 0; transform: scaleY(-1); }
+.rx-notch-br { right: 0; bottom: 0; transform: scale(-1); }
+
+.rx-rule {
+  position: absolute;
+  background: var(--rx-ink);
+  pointer-events: none;
+}
+
+.rx-rule-x {
+  right: var(--rx-notch);
+  left: var(--rx-notch);
+  height: 1px;
+}
+
+.rx-rule-y {
+  top: var(--rx-notch);
+  bottom: var(--rx-notch);
+  width: 1px;
+}
+
+.rx-rule-top { top: 2px; }
+.rx-rule-top-in { top: 7px; }
+.rx-rule-bottom { bottom: 2px; }
+.rx-rule-bottom-in { bottom: 7px; }
+.rx-rule-left { left: 2px; }
+.rx-rule-left-in { left: 7px; }
+.rx-rule-right { right: 2px; }
+.rx-rule-right-in { right: 7px; }
+
+.rx-frame-tight .rx-rule-top,
+.rx-frame-tight .rx-rule-bottom { }
+.rx-frame-tight .rx-rule-top-in { top: 5px; }
+.rx-frame-tight .rx-rule-bottom-in { bottom: 5px; }
+.rx-frame-tight .rx-rule-left-in { left: 5px; }
+.rx-frame-tight .rx-rule-right-in { right: 5px; }
+
+.rx-ornament {
+  display: block;
+  width: 9rem;
+  height: 0.9rem;
+  margin: 0.85rem auto;
+  color: var(--rx-brass);
+}
+
+.rx-catalogue {
+  width: min(40rem, 100%);
+  margin: 2rem auto 0;
+}
+
+.rx-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(28, 58, 48, 0.18);
+  font-size: 1.125rem;
+}
+
+.rx-line .rx-jost {
+  flex: 0 0 auto;
+  color: var(--rx-ink);
+}
+
+.rx-dots {
+  flex: 1 1 auto;
+  border-bottom: 1px dotted var(--rx-ink);
+  transform: translateY(-0.28em);
+  min-width: 1.25rem;
+}
+
+.rx-price {
+  font-variant-numeric: oldstyle-nums;
+}
+
+.rx-specimen {
+  margin: 0;
+}
+
+.rx-specimen img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.rx-specimen figcaption {
+  margin-top: 0.7rem;
+  text-align: center;
+}
+
+.rx-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .rx-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.rx-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rx-ink);
+  background: var(--rx-ink);
+  color: var(--rx-cream);
+  padding: 0.8rem 1.2rem;
+  font-family: var(--font-jost), "Jost", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.rx-button:hover {
+  background: transparent;
+  color: var(--rx-ink);
+}
+
+.rx .btn {
+  border-color: var(--rx-ink);
+  background: var(--rx-ink);
+  color: var(--rx-cream);
+  font-family: var(--font-jost), "Jost", sans-serif;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.rx .btn:hover {
+  background: transparent;
+  color: var(--rx-ink);
+}
+
+.rx input,
+.rx textarea,
+.rx select {
+  border: 0;
+  border-bottom: 1px solid var(--rx-ink);
+  color: var(--rx-black);
+  font-family: var(--font-garamond), "EB Garamond", serif;
+  font-size: 1.125rem;
+  letter-spacing: 0.01em;
+}
+
+.rx .apothecary-form legend {
+  font-family: var(--font-garamond), "EB Garamond", serif;
+  font-size: 1.5rem;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.rx-ledger {
+  margin-top: 1.5rem;
+}
+
+.rx-weekdays,
+.rx-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+
+.rx-weekdays {
+  margin-bottom: 0.35rem;
+  color: var(--rx-muted);
+  text-align: center;
+}
+
+.rx-day {
+  min-height: 3.25rem;
+  border: 0;
+  border-bottom: 1px solid rgba(28, 58, 48, 0.2);
+  background: transparent;
+  color: var(--rx-black);
+  font-family: var(--font-garamond), "EB Garamond", serif;
+  font-size: 1.125rem;
+  letter-spacing: 0.01em;
+}
+
+.rx-day-held {
+  color: var(--rx-muted);
+  text-decoration: line-through;
+}
+
+.rx-day-open {
+  color: var(--rx-ink);
+}
+
+.rx-day[aria-pressed="true"] {
+  box-shadow: inset 0 -2px 0 var(--rx-brass);
+}
+
+.rx-card {
+  position: relative;
+  width: min(40rem, 100%);
+  margin: 0 auto;
+  background: rgba(244, 239, 230, 0.72);
+}
+
+.rx-card-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 0.75rem;
+}
+
+.rx-count {
+  margin-top: 0.6rem;
+  color: var(--rx-ink);
+  font-size: 2rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.rx-card h2 {
+  font-size: 1.55rem;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+@media (min-width: 640px) {
+  .rx-card h2 {
+    font-size: 2rem;
+  }
+}
+
+.rx-ribbon {
+  background: var(--rx-ink);
+  color: var(--rx-cream);
+  padding: 0.45rem 0.85rem;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0.55rem 100%, 0 calc(100% - 0.55rem));
+}
+
+.rx-fields {
+  width: 100%;
+  margin-top: 1.25rem;
+  border-collapse: collapse;
+}
+
+.rx-fields th {
+  padding: 0.45rem 0.75rem 0.45rem 0;
+  color: var(--rx-ink);
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.rx-fields td {
+  padding: 0.45rem 0;
+  font-size: 1.125rem;
+}
+
+.rx-fields td:first-of-type {
+  width: 1.5rem;
+  color: var(--rx-muted);
+}
+
+.rx-footer {
+  width: min(72rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.5rem 0 2.5rem;
+  border-top: 1px solid rgba(28, 58, 48, 0.25);
+  text-align: center;
+}
+
+.rx-signup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.rx-signup input {
+  width: min(18rem, 100%);
+}

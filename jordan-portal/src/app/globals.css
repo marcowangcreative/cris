@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #ffffff;
+  --color-paper-deep: #f2f2f2;
+  --color-ink: #000000;
+  --color-ink-soft: #000000;
+  --color-stone: #6a6a6a;
+  --color-line: #e5e7eb;
+  --color-wine: #000000;
+  --color-card: #ffffff;
+  --color-good: #000000;
+  --color-warn: #6a6a6a;
+  --color-bad: #000000;
+  --color-garden: #000000;
+  --color-leaf: #000000;
+  --color-blush: #ffffff;
+  --color-hot: #000000;
+  --color-butter: #ffffff;
+  --color-marigold: #6a6a6a;
+  --color-tangerine: #000000;
+  --color-persimmon: #000000;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-inter), Helvetica, Arial, sans-serif;
+}
+
+body {
+  background: #fff;
+  color: #000;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.35px;
+  line-height: 20px;
+}
+
+::selection {
+  background: #e5e7eb;
+  color: #000;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #000;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  font: inherit;
+  padding: 10px 0;
+}
+
+textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"] {
+  width: auto;
+  border: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.invite-card,
+.invite-dashed,
+.engraved,
+.date-chip {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.date-chip {
+  min-height: 4.25rem;
+  padding: 0.65rem 0.55rem;
+}
+
+.date-chip-open {
+  color: #000;
+  border-color: #000;
+}
+
+.date-chip-held {
+  color: #6a6a6a;
+}
+
+.apothecary-form legend {
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: #000;
+  color: #fff;
+  padding: 14px 18px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+  line-height: 12px;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.portal-shell,
+.studio-desk {
+  background: #fff;
+}

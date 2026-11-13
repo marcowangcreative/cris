@@ -1,54 +1,58 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f3efe6;
-  --color-paper-deep: #e7e1d4;
-  --color-ink: #161614;
-  --color-ink-soft: #3c3a36;
-  --color-stone: #5c5954;
-  --color-line: #d5cfc3;
-  --color-wine: #7a4550;
-  --color-card: #faf8f4;
-  --color-good: #1b3f34;
-  --color-warn: #7a5a28;
-  --color-bad: #8a3a32;
-  --color-garden: #1b3f34;
-  --color-leaf: #1b3f34;
-  --color-blush: #f3e8e6;
-  --color-hot: #7a4550;
-  --color-butter: #f3efe6;
-  --color-marigold: #7a5a28;
-  --color-tangerine: #8f4e32;
-  --color-persimmon: #161614;
-  --color-ochre: #7a5a28;
+  --color-paper: #ffffff;
+  --color-paper-deep: #f2f2f2;
+  --color-ink: #000000;
+  --color-ink-soft: #000000;
+  --color-stone: #6a6a6a;
+  --color-line: #e5e7eb;
+  --color-wine: #000000;
+  --color-card: #ffffff;
+  --color-good: #000000;
+  --color-warn: #6a6a6a;
+  --color-bad: #000000;
+  --color-garden: #000000;
+  --color-leaf: #000000;
+  --color-blush: #ffffff;
+  --color-hot: #000000;
+  --color-butter: #ffffff;
+  --color-marigold: #6a6a6a;
+  --color-tangerine: #000000;
+  --color-persimmon: #000000;
 }
 
 @theme inline {
-  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-bodoni), Didot, "Bodoni MT", Georgia, serif;
+  --font-sans: var(--font-inter), Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-inter), Helvetica, Arial, sans-serif;
 }
 
 body {
-  background-color: var(--color-paper);
-  color: var(--color-ink);
+  background: #fff;
+  color: #000;
   font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.35px;
+  line-height: 20px;
 }
 
 ::selection {
-  background: #e7e1d4;
-  color: #161614;
+  background: #e5e7eb;
+  color: #000;
 }
 
 input,
 textarea,
 select {
   width: 100%;
-  border: 1px solid var(--color-line);
+  border: 0;
+  border-bottom: 1px solid #000;
   border-radius: 0;
   background: transparent;
-  color: inherit;
+  color: #000;
   font: inherit;
-  padding: 0.75rem 0;
+  padding: 10px 0;
 }
 
 textarea {
@@ -62,54 +66,76 @@ input[type="file"] {
   width: auto;
   border: 0;
   padding: 0;
-  background: transparent;
 }
 
 :focus-visible {
-  outline: 1px solid var(--color-garden);
+  outline: 1px solid #000;
   outline-offset: 3px;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .invite-card,
 .invite-dashed,
 .engraved,
 .date-chip {
-  background: transparent;
-  border: 1px solid var(--color-line);
+  background: #fff;
+  border: 1px solid #e5e7eb;
   border-radius: 0;
   box-shadow: none;
 }
 
 .date-chip {
   min-height: 4.25rem;
-  padding: 0.65rem 0.7rem;
+  padding: 0.65rem 0.55rem;
 }
 
 .date-chip-open {
-  color: var(--color-garden);
+  color: #000;
+  border-color: #000;
 }
 
 .date-chip-held {
-  color: var(--color-stone);
+  color: #6a6a6a;
 }
 
 .apothecary-form legend {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans);
+  font-style: normal;
   font-weight: 400;
-  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
 }
 
-.apothecary-form input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
-.apothecary-form textarea,
-.apothecary-form select {
-  border: 0;
-  border-bottom: 1px solid var(--color-line);
-  background: transparent;
-  padding-left: 0;
-  padding-right: 0;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: #000;
+  color: #fff;
+  padding: 14px 18px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+  line-height: 12px;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  background: #fff;
+  color: #000;
 }
 
 .portal-shell,
 .studio-desk {
-  background: transparent;
+  background: #fff;
 }

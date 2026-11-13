@@ -28,7 +28,7 @@ export default async function AdminHome({
           <span className="sr-only">Search clients and projects</span>
           <input name="q" defaultValue={query} placeholder="Search a name, email, or Stripe reference" />
         </label>
-        <button type="submit" className="border border-ink px-5 py-3 text-[0.62rem] uppercase tracking-[0.18em]">
+        <button type="submit" className="btn">
           Search
         </button>
       </form>

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { Crest, Wordmark } from "@/components/collage";
 import { SiteFrame } from "@/components/site-frame";
-import { Flash, Kicker, SubmitButton } from "@/components/ui";
+import { Flash, SubmitButton } from "@/components/ui";
 import { IDS } from "@/lib/ids";
 import { demoSignIn, requestMagicLink } from "@/server/actions";
 
@@ -25,10 +24,8 @@ export default async function LoginPage({
   return (
     <SiteFrame>
       <article className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-8 md:grid-cols-[0.9fr_1.1fr]">
-        <section className="border border-line p-8 md:p-10">
-          <Crest className="h-16 w-16" />
-          <Kicker>Client portal</Kicker>
-          <h1 className="mt-4 font-serif text-5xl font-normal leading-[0.92]">A private link, shown here.</h1>
+        <section>
+          <h1 className="text-[24px] tracking-[0.04em]">Client portal</h1>
           <p className="mt-6 max-w-md text-sm font-light leading-6 text-ink-soft">
             In a live studio this would email a magic link. Demo mode shows the
             link on this page instead. No message is sent.
@@ -54,8 +51,7 @@ export default async function LoginPage({
           </div>
         </section>
         <section className="md:pt-8">
-          <Wordmark className="text-4xl" />
-          <Kicker>Demo profiles</Kicker>
+          <p className="text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">Demo profiles</p>
           <ul className="mt-6 space-y-3">
             {people.map(([id, name, note]) => (
               <li key={id} className="invite-card flex items-center justify-between gap-4 px-5 py-4">

@@ -1,50 +1,52 @@
 import Link from "next/link";
 import { logout } from "@/server/actions";
-import { Crest } from "./collage";
 
-const navLink =
-  "text-[0.62rem] font-light uppercase tracking-[0.22em] text-ink hover:text-garden";
+const link =
+  "text-[12px] uppercase tracking-[0.05em] text-black hover:opacity-60";
 
 export function PublicHeader() {
   return (
-    <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-b border-line px-6 py-5">
-      <Link href="/" className="flex items-center gap-3">
-        <Crest className="h-9 w-9" />
-        <span className="font-serif text-xl font-normal tracking-tight">Jordan Wang</span>
-      </Link>
-      <nav className="flex flex-wrap items-center justify-end gap-x-6 gap-y-2">
-        <Link href="/transformations" className={navLink}>
-          Transformations
+    <header className="border-b border-[#e5e7eb] bg-white">
+      <div className="grid grid-cols-3 items-center px-4 py-7 md:px-6">
+        <nav className="flex flex-wrap gap-x-4 gap-y-2">
+          <Link href="/transformations" className={link}>
+            Transformations
+          </Link>
+          <Link href="/weddings" className={`${link} hidden sm:inline`}>
+            Weddings
+          </Link>
+        </nav>
+        <Link href="/" className="text-center text-[13px] uppercase tracking-[0.22em]">
+          Jordan Wang
         </Link>
-        <Link href="/weddings" className={navLink}>
-          Weddings
-        </Link>
-        <Link href="/login" className={navLink}>
-          Portal
-        </Link>
-      </nav>
+        <div className="text-right">
+          <Link href="/login" className={link}>
+            Portal
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }
 
 export function PortalHeader({ name }: { name: string }) {
   return (
-    <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 border-b border-line px-6 py-5">
-      <div>
-        <Link href="/portal" className="font-serif text-xl font-normal tracking-tight">
+    <header className="border-b border-[#e5e7eb] bg-white">
+      <div className="grid grid-cols-3 items-center px-4 py-7 md:px-6">
+        <Link href="/portal" className={link}>
+          Record
+        </Link>
+        <Link href="/" className="text-center text-[13px] uppercase tracking-[0.22em]">
           Jordan Wang
         </Link>
-        <p className="mt-1 text-[0.62rem] uppercase tracking-[0.22em] text-stone">
-          Private client record
-        </p>
-      </div>
-      <div className="flex items-center gap-5">
-        <span className="text-[0.62rem] uppercase tracking-[0.18em] text-stone">{name}</span>
-        <form action={logout}>
-          <button type="submit" className={navLink}>
-            Log out
-          </button>
-        </form>
+        <div className="flex items-center justify-end gap-4">
+          <span className="hidden text-[12px] uppercase tracking-[0.05em] sm:inline">{name}</span>
+          <form action={logout}>
+            <button type="submit" className={link}>
+              Log out
+            </button>
+          </form>
+        </div>
       </div>
     </header>
   );
@@ -58,42 +60,45 @@ export function AdminHeader() {
     ["/admin/exceptions", "Exceptions"],
   ] as const;
   return (
-    <header className="border-b border-line">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
-        <Link href="/admin" className="flex items-center gap-3">
-          <Crest className="h-8 w-8" />
-          <span>
-            <span className="font-serif text-lg font-normal tracking-tight">Jordan Wang</span>
-            <span className="mt-0.5 block text-[0.62rem] uppercase tracking-[0.22em] text-stone">
-              Studio desk
-            </span>
-          </span>
+    <header className="border-b border-[#e5e7eb] bg-white">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-6 md:px-6">
+        <Link href="/admin" className="text-[13px] uppercase tracking-[0.22em]">
+          Jordan Wang
         </Link>
-        <nav className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <nav className="hidden flex-wrap justify-center gap-x-4 md:flex">
           {links.map(([href, label]) => (
-            <Link key={href} href={href} className={navLink}>
+            <Link key={href} href={href} className={link}>
               {label}
             </Link>
           ))}
-          <a href="/api/admin/conflicts.ics" className={navLink}>
-            Conflict feed
+        </nav>
+        <div className="flex items-center justify-end gap-4">
+          <a href="/api/admin/conflicts.ics" className={link}>
+            Feed
           </a>
           <form action={logout}>
-            <button type="submit" className={navLink}>
+            <button type="submit" className={link}>
               Log out
             </button>
           </form>
-        </nav>
+        </div>
       </div>
+      <nav className="flex gap-4 overflow-x-auto border-t border-[#e5e7eb] px-4 py-3 md:hidden">
+        {links.map(([href, label]) => (
+          <Link key={href} href={href} className={link}>
+            {label}
+          </Link>
+        ))}
+      </nav>
     </header>
   );
 }
 
 export function SiteFooter() {
   return (
-    <footer className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-t border-line px-6 py-8">
-      <p className="font-serif text-lg font-normal">Jordan Wang</p>
-      <p className="text-[0.62rem] uppercase tracking-[0.18em] text-stone">
+    <footer className="mt-16 border-t border-[#e5e7eb] px-4 py-10 md:px-6">
+      <p className="text-[12px] uppercase tracking-[0.22em]">Jordan Wang</p>
+      <p className="mt-3 text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">
         Houston · America/Chicago · jordanwangco.com
       </p>
     </footer>

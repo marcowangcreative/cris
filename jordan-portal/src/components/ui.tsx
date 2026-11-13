@@ -81,7 +81,7 @@ export function BalanceMath({
           Duplicate deposit flagged. Stop and resolve it before Boulevard checkout.
         </p>
       ) : null}
-      <p className="font-serif text-3xl text-ink">
+      <p className="text-[14px] tracking-[0.3px]">
         {rec.agreedTotalCents == null
           ? "Agreed total not set"
           : formatUsd(rec.agreedTotalCents)}

@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Crest } from "@/components/collage";
-import { Kicker, Pill } from "@/components/ui";
+import { Pill } from "@/components/ui";
 import { nextAction } from "@/lib/domain/access";
 import { readDemoDb } from "@/lib/demo/store";
 import { requireClient } from "@/server/session";
@@ -14,14 +13,11 @@ export default async function PortalHome() {
   const projects = db.projects.filter((item) => item.client_id === session.clientId);
   return (
     <section className="mx-auto w-full max-w-3xl px-6 py-4">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <Kicker>Your projects</Kicker>
-          <h1 className="mt-3 font-serif text-5xl font-normal leading-[0.92] md:text-6xl">
-            {client ? client.full_name.split(" ")[0] : "Hello"}, you are expected.
-          </h1>
-        </div>
-        <Crest className="hidden h-20 w-20 sm:block" />
+      <div>
+        <p className="text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">Private client record</p>
+        <h1 className="mt-3 text-[24px] tracking-[0.04em]">
+          {client ? client.full_name : "Client"}
+        </h1>
       </div>
       <ul className="mt-10 space-y-5">
         {projects.map((project) => {

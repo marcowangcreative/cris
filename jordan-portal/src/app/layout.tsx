@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Outfit } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 import { getConfig } from "@/lib/rules";
 import { liveSupabaseConfigured } from "@/lib/supabase/server";
 import "./globals.css";
 
-const outfit = Outfit({
+const sans = Inter_Tight({
   subsets: ["latin"],
-  variable: "--font-outfit",
-  weight: ["300", "400"],
-});
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  variable: "--font-bodoni",
-  style: ["normal", "italic"],
-  weight: ["400", "500"],
+  weight: "400",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -27,10 +20,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   const demo = getConfig().demoMode;
   return (
-    <html lang="en" className={`${outfit.variable} ${bodoni.variable} h-full`}>
-      <body className="min-h-full bg-paper text-ink antialiased">
+    <html lang="en" className={`${sans.variable} h-full`}>
+      <body className="min-h-full bg-white text-black antialiased">
         {demo ? (
-          <p className="border-b border-line px-4 py-2 text-center text-[0.62rem] uppercase tracking-[0.24em] text-stone">
+          <p className="border-b border-[#e5e7eb] px-4 py-2 text-center text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">
             Demo studio. Fictional clients. No live payments, calendars, or email.
             {liveSupabaseConfigured()
               ? " Supabase env vars are present, and this build still uses the local demo database."

@@ -1,6 +1,6 @@
-import { Portrait } from "@/components/collage";
+import { Photo } from "@/components/collage";
 import { SiteFrame } from "@/components/site-frame";
-import { Flash, Kicker } from "@/components/ui";
+import { Flash } from "@/components/ui";
 import { WeddingForm } from "@/components/wedding-form";
 import { publicCopy } from "@/lib/content";
 
@@ -15,15 +15,14 @@ export default async function WeddingsPage({
   return (
     <SiteFrame>
       <article className="mx-auto w-full max-w-6xl px-6 py-8">
-        <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <Kicker>Weddings & Bridal</Kicker>
-            <h1 className="mt-4 font-serif text-6xl font-normal leading-[0.9] md:text-7xl">
-              Planned around the celebration.
+        <div className="grid items-end md:grid-cols-2">
+          <div className="order-2 px-0 py-10 md:order-1 md:py-16 md:pr-12">
+            <h1 className="text-[32px] leading-[1.15] tracking-[0.08em] md:text-[48px] md:tracking-[0.1em]">
+              Weddings & Bridal
             </h1>
-            <p className="mt-8 max-w-xl text-base font-light leading-7 text-ink-soft">{publicCopy.weddingIntro}</p>
+            <p className="mt-6 max-w-md text-[14px] leading-[20px]">{publicCopy.weddingIntro}</p>
           </div>
-          <Portrait label="Portrait of Jordan here" />
+          <Photo label="Bridal photo" className="order-1 aspect-[4/5] md:order-2 md:aspect-auto md:min-h-[560px]" />
         </div>
         <p className="mt-10 max-w-2xl text-sm leading-6 text-stone">{publicCopy.bridalPricing}</p>
         <div className="mt-8">

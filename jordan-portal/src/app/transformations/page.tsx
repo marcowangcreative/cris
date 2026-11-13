@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
-import { Portrait } from "@/components/collage";
+import { Photo } from "@/components/collage";
 import { ReleasePicker, type ReleaseCell } from "@/components/release-picker";
 import { SiteFrame } from "@/components/site-frame";
-import { Kicker, Placeholder } from "@/components/ui";
+import { Placeholder } from "@/components/ui";
 import { evaluateReleaseDates } from "@/lib/domain/availability";
 import { readDemoDb } from "@/lib/demo/store";
 import { monthLabel } from "@/lib/domain/time";
@@ -34,19 +34,18 @@ export default function TransformationsPage() {
   return (
     <SiteFrame>
       <article className="mx-auto w-full max-w-6xl px-6 py-8">
-        <div className="grid items-end gap-12 md:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <Kicker>Private Transformations</Kicker>
-            <h1 className="mt-4 font-serif text-6xl font-normal leading-[0.9] md:text-7xl">
-              One client.
-              <span className="mt-1 block italic">One day.</span>
+        <div className="grid items-end md:grid-cols-2">
+          <div className="px-0 py-10 md:py-16 md:pr-12">
+            <h1 className="text-[32px] leading-[1.15] tracking-[0.08em] md:text-[48px] md:tracking-[0.1em]">
+              Private Transformations
             </h1>
-            <p className="mt-8 max-w-xl text-base font-light leading-7 text-ink-soft">
+            <p className="mt-6 max-w-md text-[14px] leading-[20px]">
               The minimum investment is {publicCopy.minimum}. That covers cut, color,
-              and a finished style within the scope you approve.
+              and a finished style within the scope you approve. One client each day,
+              starting at 10:00 a.m.
             </p>
           </div>
-          <Portrait label="Portrait of Jordan here" />
+          <Photo label="Transformation photo" className="aspect-[4/5] md:aspect-auto md:min-h-[560px]" />
         </div>
 
         <ol className="mt-16 border-t border-line">
@@ -73,7 +72,7 @@ export default function TransformationsPage() {
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
             href={calendly}
-            className="inline-flex border border-ink px-5 py-3 text-[0.68rem] font-light uppercase tracking-[0.2em] hover:bg-ink hover:text-paper"
+            className="btn"
           >
             Reserve a date
           </a>

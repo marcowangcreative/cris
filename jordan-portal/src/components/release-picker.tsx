@@ -23,9 +23,9 @@ export function ReleasePicker({
   const chosen = cells.find((cell) => cell?.iso === selected) ?? null;
 
   return (
-    <div className="border-t border-line pt-8">
-      <p className="text-[0.62rem] uppercase tracking-[0.22em] text-garden">Release</p>
-      <h2 className="mt-3 font-serif text-4xl font-normal italic">{title}</h2>
+    <div className="border-t border-[#e5e7eb] pt-10">
+      <p className="text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">Release</p>
+      <h2 className="mt-3 text-[24px] tracking-[0.04em]">{title}</h2>
       <p className="mt-3 max-w-xl text-sm leading-6 text-ink-soft">
         Open days are the published 10:00 a.m. starts. Held days stay with a booking
         or a commitment. Choosing one here does not reserve it.
@@ -52,9 +52,9 @@ export function ReleasePicker({
               type="button"
               aria-pressed={selected === cell.iso}
               onClick={() => setSelected(cell.iso)}
-              className={`min-h-12 border text-sm font-light ${
-                open ? "border-garden text-garden" : "border-line text-stone"
-              } ${selected === cell.iso ? "bg-paper-deep" : "bg-transparent"}`}
+              className={`min-h-12 border text-[12px] ${
+                open ? "border-black text-black" : "border-[#e5e7eb] text-[#6a6a6a]"
+              } ${selected === cell.iso ? "bg-[#f2f2f2]" : "bg-white"}`}
             >
               <span className="block font-serif text-lg leading-none">{cell.day}</span>
               <span className="mt-1 block text-[0.58rem] uppercase tracking-[0.12em]">

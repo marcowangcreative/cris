@@ -14,7 +14,7 @@ export function PendingButton({
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex items-center justify-center border border-ink bg-ink px-5 py-3 text-[0.68rem] font-light uppercase tracking-[0.2em] text-paper transition hover:bg-transparent hover:text-ink disabled:opacity-60"
+      className="btn w-full disabled:opacity-50 sm:w-auto"
     >
       {pending ? pendingLabel : children}
     </button>

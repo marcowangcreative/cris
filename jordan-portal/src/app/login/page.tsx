@@ -25,12 +25,11 @@ export default async function LoginPage({
   return (
     <SiteFrame>
       <article className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-8 md:grid-cols-[0.9fr_1.1fr]">
-        <section className="engraved bg-card p-8 md:p-10">
+        <section className="border border-line p-8 md:p-10">
           <Crest className="h-16 w-16" />
           <Kicker>Client portal</Kicker>
-          <h1 className="mt-3 font-serif text-5xl leading-[0.9]">A private link, shown here.</h1>
-          <p className="font-script text-3xl text-wine">no envelope is sent</p>
-          <p className="mt-4 max-w-md text-sm leading-6 text-ink-soft">
+          <h1 className="mt-4 font-serif text-5xl font-normal leading-[0.92]">A private link, shown here.</h1>
+          <p className="mt-6 max-w-md text-sm font-light leading-6 text-ink-soft">
             In a live studio this would email a magic link. Demo mode shows the
             link on this page instead. No message is sent.
           </p>
@@ -66,20 +65,20 @@ export default async function LoginPage({
                 </div>
                 <form action={demoSignIn}>
                   <input type="hidden" name="clientId" value={id} />
-                  <button type="submit" className="text-[0.68rem] uppercase tracking-[0.16em] text-wine">
+                  <button type="submit" className="text-[0.62rem] uppercase tracking-[0.18em] text-garden">
                     Continue
                   </button>
                 </form>
               </li>
             ))}
-            <li className="flex items-center justify-between gap-4 bg-garden px-5 py-4 text-paper">
+            <li className="flex items-center justify-between gap-4 border border-line px-5 py-4">
               <div>
-                <p className="font-serif text-2xl">Studio Admin</p>
-                <p className="text-sm text-paper/90">Schedule, releases, weddings</p>
+                <p className="font-serif text-2xl font-normal">Studio Admin</p>
+                <p className="text-sm text-stone">Schedule, releases, weddings</p>
               </div>
               <form action={demoSignIn}>
                 <input type="hidden" name="staffId" value={IDS.staff} />
-                <button type="submit" className="text-[0.68rem] uppercase tracking-[0.16em] text-butter">
+                <button type="submit" className="text-[0.62rem] uppercase tracking-[0.18em] text-garden">
                   Continue
                 </button>
               </form>

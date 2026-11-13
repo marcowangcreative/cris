@@ -18,14 +18,14 @@ export function Pill({
   tone?: "neutral" | "good" | "warn" | "bad";
 }) {
   const tones = {
-    neutral: "bg-paper-deep text-ink",
-    good: "bg-[#dceee4] text-good",
-    warn: "bg-butter text-ink",
-    bad: "bg-blush text-bad",
+    neutral: "bg-transparent text-ink",
+    good: "bg-transparent text-good",
+    warn: "bg-transparent text-warn",
+    bad: "bg-transparent text-bad",
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs tracking-wide ${tones[tone]}`}
+      className={`inline-flex items-center border border-line px-2 py-0.5 text-[0.62rem] uppercase tracking-[0.16em] ${tones[tone]}`}
     >
       {children}
     </span>

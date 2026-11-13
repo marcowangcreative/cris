@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Botanical, Crest } from "@/components/collage";
+import { Portrait } from "@/components/collage";
 import { ReleasePicker, type ReleaseCell } from "@/components/release-picker";
 import { SiteFrame } from "@/components/site-frame";
 import { Kicker, Placeholder } from "@/components/ui";
@@ -34,29 +34,26 @@ export default function TransformationsPage() {
   return (
     <SiteFrame>
       <article className="mx-auto w-full max-w-6xl px-6 py-8">
-        <div className="grid items-end gap-8 md:grid-cols-[1.3fr_0.7fr]">
+        <div className="grid items-end gap-12 md:grid-cols-[1.2fr_0.8fr]">
           <div>
             <Kicker>Private Transformations</Kicker>
-            <h1 className="mt-3 font-serif text-6xl leading-[0.88] md:text-7xl">
+            <h1 className="mt-4 font-serif text-6xl font-normal leading-[0.9] md:text-7xl">
               One client.
-              <span className="mt-2 block italic text-garden">One day.</span>
+              <span className="mt-1 block italic">One day.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-ink-soft">
+            <p className="mt-8 max-w-xl text-base font-light leading-7 text-ink-soft">
               The minimum investment is {publicCopy.minimum}. That covers cut, color,
               and a finished style within the scope you approve.
             </p>
           </div>
-          <div className="arch relative overflow-hidden border-2 border-ink bg-blush">
-            <Botanical className="h-64 w-full" />
-            <Crest className="absolute right-3 top-3 h-12 w-12" />
-          </div>
+          <Portrait label="Portrait of Jordan here" />
         </div>
 
-        <ol className="mt-14 grid gap-4 md:grid-cols-2">
+        <ol className="mt-16 border-t border-line">
           {steps.map((step, index) => (
-            <li key={step} className="engraved bg-card p-5">
-              <span className="font-serif text-3xl italic text-wine">0{index + 1}</span>
-              <p className="mt-3 text-sm leading-6 text-ink-soft">{step}</p>
+            <li key={step} className="grid grid-cols-[3rem_1fr] gap-4 border-b border-line py-6">
+              <span className="text-[0.62rem] uppercase tracking-[0.18em] text-stone">0{index + 1}</span>
+              <p className="text-sm font-light leading-6 text-ink-soft">{step}</p>
             </li>
           ))}
         </ol>
@@ -76,7 +73,7 @@ export default function TransformationsPage() {
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
             href={calendly}
-            className="inline-flex bg-persimmon px-6 py-3 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-paper hover:bg-ink"
+            className="inline-flex border border-ink px-5 py-3 text-[0.68rem] font-light uppercase tracking-[0.2em] hover:bg-ink hover:text-paper"
           >
             Reserve a date
           </a>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Great_Vibes, Outfit } from "next/font/google";
+import { Bodoni_Moda, Outfit } from "next/font/google";
 import { getConfig } from "@/lib/rules";
 import { liveSupabaseConfigured } from "@/lib/supabase/server";
 import "./globals.css";
@@ -7,18 +7,14 @@ import "./globals.css";
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
+  weight: ["300", "400"],
 });
 
 const bodoni = Bodoni_Moda({
   subsets: ["latin"],
   variable: "--font-bodoni",
   style: ["normal", "italic"],
-});
-
-const script = Great_Vibes({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-great-vibes",
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -31,13 +27,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   const demo = getConfig().demoMode;
   return (
-    <html
-      lang="en"
-      className={`${outfit.variable} ${bodoni.variable} ${script.variable} h-full`}
-    >
+    <html lang="en" className={`${outfit.variable} ${bodoni.variable} h-full`}>
       <body className="min-h-full bg-paper text-ink antialiased">
         {demo ? (
-          <p className="bg-garden px-4 py-2 text-center text-[0.68rem] uppercase tracking-[0.22em] text-paper">
+          <p className="border-b border-line px-4 py-2 text-center text-[0.62rem] uppercase tracking-[0.24em] text-stone">
             Demo studio. Fictional clients. No live payments, calendars, or email.
             {liveSupabaseConfigured()
               ? " Supabase env vars are present, and this build still uses the local demo database."

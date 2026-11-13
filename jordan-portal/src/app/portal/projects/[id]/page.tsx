@@ -30,10 +30,9 @@ export default async function PortalProjectPage({
   return (
     <article className="mx-auto w-full max-w-3xl space-y-12 px-6 py-6">
       <Flash error={query.error} saved={query.saved} />
-      <p className="font-script text-4xl text-wine">For your eyes only</p>
-      <section className="invite-card bg-blush p-6 md:p-8">
+      <section className="border-t border-line pt-8">
         <Kicker>Next</Kicker>
-        <h1 className="mt-3 font-serif text-4xl leading-tight">{view.next.title}</h1>
+        <h1 className="mt-3 font-serif text-4xl font-normal leading-tight">{view.next.title}</h1>
         <p className="mt-3 leading-7 text-ink-soft">{view.next.detail}</p>
       </section>
       {view.project.kind === "wedding" && view.wedding ? (
@@ -67,7 +66,7 @@ function TransformationView({
             Public starts are 10:00 a.m. Central. The workday is held for one client.
           </p>
         </div>
-        <div id="consultation" className="invite-card bg-butter p-6">
+        <div id="consultation" className="invite-card p-6">
           <Kicker>Consultation</Kicker>
           <p className="mt-3 font-serif text-3xl">Included</p>
           <p className="mt-2 text-sm text-ink-soft">

@@ -8,10 +8,9 @@ export default function ReceivedPage() {
   return (
     <SiteFrame>
       <article className="mx-auto w-full max-w-3xl px-6 py-16">
-        <div className="engraved bg-blush p-8 md:p-12">
+        <div className="max-w-xl border-t border-line pt-10">
           <Kicker>Inquiry received</Kicker>
-          <h1 className="mt-3 font-serif text-6xl leading-[0.9]">We have your note.</h1>
-          <p className="font-script text-4xl text-wine">the date stays open</p>
+          <h1 className="mt-4 font-serif text-6xl font-normal leading-[0.9]">We have your note.</h1>
           <p className="mt-6 max-w-xl leading-7 text-ink-soft">
             A wedding project is open. This inquiry does not reserve a date. The
             studio confirms availability, scope, and pricing later. This demo does

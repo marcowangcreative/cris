@@ -17,10 +17,9 @@ export default async function PortalHome() {
       <div className="flex items-end justify-between gap-4">
         <div>
           <Kicker>Your projects</Kicker>
-          <h1 className="mt-2 font-serif text-6xl leading-[0.9]">
+          <h1 className="mt-3 font-serif text-5xl font-normal leading-[0.92] md:text-6xl">
             {client ? client.full_name.split(" ")[0] : "Hello"}, you are expected.
           </h1>
-          <p className="font-script text-4xl text-wine">a private studio note</p>
         </div>
         <Crest className="hidden h-20 w-20 sm:block" />
       </div>

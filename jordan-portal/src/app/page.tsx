@@ -1,79 +1,56 @@
 import Link from "next/link";
-import {
-  Botanical,
-  BottleSticker,
-  BubbleSticker,
-  Crest,
-  EnvelopeSticker,
-  HouseSticker,
-  Squiggle,
-  Wordmark,
-} from "@/components/collage";
+import { Portrait } from "@/components/collage";
 import { SiteFrame } from "@/components/site-frame";
 import { publicCopy } from "@/lib/content";
 
 export default function HomePage() {
   return (
     <SiteFrame>
-      <section className="relative mx-auto w-full max-w-6xl px-6 pb-8 pt-4">
-        <p className="font-script text-4xl text-wine md:text-5xl">chaotic to chaotique</p>
-        <Wordmark as="h1" className="mt-2 whitespace-nowrap text-[clamp(2.6rem,6.4vw,6.1rem)]" />
-        <div className="mt-4 flex items-center gap-4">
-          <Squiggle className="h-6 w-28" />
-          <p className="text-[0.68rem] uppercase tracking-[0.24em] text-garden">Houston</p>
+      <section className="mx-auto grid w-full max-w-6xl items-start gap-12 px-6 py-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-20 md:py-16">
+        <Portrait />
+        <div className="flex min-h-full flex-col justify-between md:min-h-[70vh] md:py-2">
+          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-stone">Houston</p>
+          <div>
+            <h1 className="font-serif text-[clamp(4.2rem,7vw,6.6rem)] font-normal leading-[0.88] tracking-tight">
+              Jordan Wang
+            </h1>
+            <p className="mt-8 max-w-md text-base font-light leading-7 text-ink-soft">
+              Private transformations, reserved one client at a time. Weddings and
+              bridal, planned through a personal inquiry.
+            </p>
+            <p className="mt-6 text-[0.68rem] uppercase tracking-[0.2em] text-stone">
+              Minimum investment {publicCopy.minimum}
+            </p>
+          </div>
+          <div className="mt-14 border-t border-line">
+            <Link
+              href="/transformations"
+              className="grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-line py-6"
+            >
+              <span className="text-[0.62rem] uppercase tracking-[0.2em] text-stone">01</span>
+              <span>
+                <span className="block font-serif text-3xl font-normal">Private Transformations</span>
+                <span className="mt-2 block max-w-sm text-sm font-light leading-6 text-ink-soft">
+                  Cut, color, and a finished style. One client each day, at 10:00 a.m.
+                </span>
+              </span>
+              <span className="text-[0.62rem] uppercase tracking-[0.2em]">Enter</span>
+            </Link>
+            <Link
+              href="/weddings"
+              className="grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-line py-6"
+            >
+              <span className="text-[0.62rem] uppercase tracking-[0.2em] text-stone">02</span>
+              <span>
+                <span className="block font-serif text-3xl font-normal">Weddings & Bridal</span>
+                <span className="mt-2 block max-w-sm text-sm font-light leading-6 text-ink-soft">
+                  Hair, makeup, or a full bridal journey. An inquiry does not reserve a date.
+                </span>
+              </span>
+              <span className="text-[0.62rem] uppercase tracking-[0.2em]">Inquire</span>
+            </Link>
+          </div>
         </div>
-
-        <div className="relative mt-8 min-h-[34rem]">
-          <div className="stripes absolute inset-x-8 top-10 h-72 rounded-[2rem] opacity-80" />
-          <div className="relative mx-auto flex max-w-5xl flex-col items-center gap-8 md:flex-row md:items-start md:justify-center">
-            <div className="sticker arch w-64 overflow-hidden border-[3px] border-white bg-paper shadow-[8px_10px_0_rgba(20,61,46,0.18)] md:mt-10">
-              <Botanical />
-              <p className="bg-card px-3 py-2 text-center text-[0.62rem] uppercase tracking-[0.18em] text-garden">
-                Illustrated studio plate
-              </p>
-            </div>
-            <div className="relative grid w-full max-w-sm grid-cols-2 gap-4 md:mt-6">
-              <BottleSticker />
-              <BubbleSticker />
-              <HouseSticker />
-              <EnvelopeSticker />
-              <div className="sticker col-span-2 rotate-[-2deg] border-2 border-ink bg-persimmon px-4 py-3 text-center text-paper">
-                <p className="text-[0.62rem] uppercase tracking-[0.2em]">Minimum investment</p>
-                <p className="font-serif text-4xl">{publicCopy.minimum}</p>
-              </div>
-            </div>
-          </div>
-          <Crest className="absolute right-2 top-0 hidden h-20 w-20 md:block" />
-        </div>
-      </section>
-
-      <section className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-16 md:grid-cols-2 md:gap-16">
-        <Link href="/transformations" className="group block">
-          <div className="checks flex min-h-80 flex-col justify-between p-8 md:min-h-[28rem] md:p-12">
-            <p className="text-[0.68rem] uppercase tracking-[0.22em]">01 · The day</p>
-            <div>
-              <h2 className="font-serif text-5xl leading-[0.9] md:text-6xl">
-                Private Transformations
-              </h2>
-              <p className="mt-6 max-w-sm text-sm leading-6">
-                Cut, color, and a finished style. Minimum investment {publicCopy.minimum}.
-                One client each day, starting at 10:00 a.m.
-              </p>
-            </div>
-          </div>
-        </Link>
-        <Link href="/weddings" className="group block md:mt-16">
-          <div className="flex min-h-80 flex-col justify-between bg-blush p-8 md:min-h-[28rem] md:p-12">
-            <p className="text-[0.68rem] uppercase tracking-[0.22em]">02 · The celebration</p>
-            <div>
-              <h2 className="font-serif text-5xl leading-[0.9] md:text-6xl">Weddings & Bridal</h2>
-              <p className="mt-6 max-w-sm text-sm leading-6">
-                Hair, makeup, or a full bridal journey, shaped in consultation.
-                An inquiry does not reserve a date.
-              </p>
-            </div>
-          </div>
-        </Link>
       </section>
     </SiteFrame>
   );

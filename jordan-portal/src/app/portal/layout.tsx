@@ -12,7 +12,7 @@ export default async function PortalLayout({
   return (
     <>
       <PortalHeader name={client?.full_name ?? "Client"} />
-      <main id="content">{children}</main>
+      <main id="content" className="portal-shell">{children}</main>
       <SiteFooter />
     </>
   );

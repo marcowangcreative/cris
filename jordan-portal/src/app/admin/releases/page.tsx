@@ -33,7 +33,7 @@ export default async function ReleasesPage({
         const dates = evaluateReleaseDates(db, batch.id, now);
         const suggested = suggestedReleaseInstant(batch.target_year, batch.target_month);
         return (
-          <section key={batch.id} className="border border-line bg-card p-6">
+          <section key={batch.id} className="engraved bg-card p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="font-serif text-3xl">
                 {monthLabel(batch.target_year, batch.target_month)}
@@ -47,7 +47,10 @@ export default async function ReleasesPage({
             </p>
             <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {dates.map((date) => (
-                <li key={date.date} className="border border-line px-3 py-2 text-sm">
+                <li
+                  key={date.date}
+                  className={`date-chip text-sm ${date.available ? "date-chip-open" : "date-chip-held"}`}
+                >
                   <span className="block">{date.date}</span>
                   <span className="text-stone">{date.detail}</span>
                 </li>
@@ -67,7 +70,7 @@ export default async function ReleasesPage({
           </section>
         );
       })}
-      <form action={createBatchAction} className="border border-line p-6">
+      <form action={createBatchAction} className="invite-card p-6">
         <h2 className="font-serif text-3xl">New draft</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <label className="text-sm">

@@ -1,43 +1,59 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f3eee6;
-  --color-paper-deep: #e6dfd3;
-  --color-ink: #1c1714;
-  --color-ink-soft: #4f483f;
-  --color-stone: #8a8176;
-  --color-line: #ddd4c6;
-  --color-wine: #722c38;
-  --color-card: #faf7f2;
-  --color-good: #1d5a42;
-  --color-warn: #8a5a12;
-  --color-bad: #8d2f2f;
+  --color-paper: #f6f0e4;
+  --color-paper-deep: #efe2cf;
+  --color-ink: #1a1612;
+  --color-ink-soft: #3e342c;
+  --color-stone: #5c5148;
+  --color-line: #e4d5c0;
+  --color-wine: #7a1c3a;
+  --color-card: #fffaf3;
+  --color-good: #14543a;
+  --color-warn: #8a4b08;
+  --color-bad: #8f1d2c;
+  --color-garden: #143d2e;
+  --color-leaf: #1f6b45;
+  --color-blush: #f6cfc8;
+  --color-hot: #e23b6c;
+  --color-butter: #f3d15a;
+  --color-marigold: #e39b12;
+  --color-tangerine: #e25b1a;
+  --color-persimmon: #c73b22;
 }
 
 @theme inline {
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-serif: var(--font-bodoni), "Didot", "Bodoni MT", Georgia, serif;
+  --font-script: var(--font-great-vibes), "Palatino Linotype", Georgia, serif;
 }
 
 body {
-  background: var(--color-paper);
+  background-color: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  background-image:
+    radial-gradient(rgba(20, 61, 46, 0.05) 0.65px, transparent 0.65px),
+    radial-gradient(rgba(122, 28, 58, 0.035) 0.65px, transparent 0.65px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
 }
 
 ::selection {
-  background: #e7cfc8;
+  background: #f6cfc8;
+  color: #1a1612;
 }
 
 input,
 textarea,
 select {
   width: 100%;
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-garden);
   background: var(--color-card);
   color: inherit;
   font: inherit;
-  padding: 0.7rem 0.8rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0;
 }
 
 textarea {
@@ -55,6 +71,105 @@ input[type="file"] {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-wine);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-garden);
+  outline-offset: 3px;
+}
+
+.invite-card {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-ink);
+  border-radius: 1.35rem;
+  box-shadow: 6px 8px 0 rgba(20, 61, 46, 0.14);
+}
+
+.invite-dashed {
+  border: 1.5px dashed var(--color-garden);
+  background: rgba(255, 250, 243, 0.7);
+  border-radius: 1.25rem;
+}
+
+.engraved {
+  background: var(--color-card);
+  border: 1px solid var(--color-garden);
+  box-shadow:
+    inset 0 0 0 1px var(--color-garden),
+    inset 0 0 0 7px var(--color-card),
+    inset 0 0 0 8px var(--color-wine);
+  border-radius: 2px;
+}
+
+.studio-desk .invite-card,
+.studio-desk .engraved {
+  border-radius: 0.75rem;
+  box-shadow: none;
+  border-color: var(--color-line);
+}
+
+.studio-desk .engraved {
+  box-shadow: inset 0 0 0 1px var(--color-garden);
+}
+
+.stripes {
+  background-image: repeating-linear-gradient(
+    -18deg,
+    rgba(226, 59, 108, 0.18) 0 8px,
+    transparent 8px 16px
+  );
+}
+
+.checks {
+  background-color: var(--color-butter);
+  background-image:
+    linear-gradient(90deg, rgba(20, 61, 46, 0.16) 1px, transparent 1px),
+    linear-gradient(rgba(20, 61, 46, 0.16) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.scallop {
+  border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px;
+}
+
+.arch {
+  border-radius: 999px 999px 1.25rem 1.25rem;
+}
+
+.sticker {
+  filter: drop-shadow(4px 6px 0 rgba(26, 22, 18, 0.16));
+}
+
+.date-chip {
+  border: 1.5px solid var(--color-ink);
+  background: var(--color-card);
+  border-radius: 999px;
+  min-height: 4.5rem;
+  padding: 0.7rem 0.8rem;
+}
+
+.date-chip-open {
+  background: var(--color-butter);
+}
+
+.date-chip-held {
+  background: var(--color-blush);
+}
+
+.apothecary-form legend {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+}
+
+.apothecary-form input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.apothecary-form textarea,
+.apothecary-form select {
+  border: 0;
+  border-bottom: 1px solid var(--color-garden);
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.portal-shell {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(226, 59, 108, 0.14), transparent 26%),
+    radial-gradient(circle at 0% 12%, rgba(243, 209, 90, 0.28), transparent 22%);
 }

@@ -3,7 +3,7 @@ import { SubmitButton } from "./ui";
 
 export function WeddingForm() {
   return (
-    <form action={submitInquiry} className="space-y-10">
+    <form action={submitInquiry} className="apothecary-form space-y-12">
       <fieldset className="grid gap-6 md:grid-cols-2">
         <legend className="mb-6 font-serif text-3xl">About you</legend>
         <Field label="Name" name="fullName" required />

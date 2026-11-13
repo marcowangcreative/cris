@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Crest, Wordmark } from "@/components/collage";
 import { SiteFrame } from "@/components/site-frame";
 import { Flash, Kicker, SubmitButton } from "@/components/ui";
 import { IDS } from "@/lib/ids";
@@ -23,17 +24,19 @@ export default async function LoginPage({
   const magic = query.magic;
   return (
     <SiteFrame>
-      <article className="mx-auto grid w-full max-w-6xl gap-16 px-6 py-10 md:grid-cols-2">
-        <section>
+      <article className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-8 md:grid-cols-[0.9fr_1.1fr]">
+        <section className="engraved bg-card p-8 md:p-10">
+          <Crest className="h-16 w-16" />
           <Kicker>Client portal</Kicker>
-          <h1 className="mt-4 font-serif text-5xl leading-tight">A private link, shown here.</h1>
-          <p className="mt-4 leading-7 text-ink-soft">
+          <h1 className="mt-3 font-serif text-5xl leading-[0.9]">A private link, shown here.</h1>
+          <p className="font-script text-3xl text-wine">no envelope is sent</p>
+          <p className="mt-4 max-w-md text-sm leading-6 text-ink-soft">
             In a live studio this would email a magic link. Demo mode shows the
             link on this page instead. No message is sent.
           </p>
           <form action={requestMagicLink} className="mt-8 space-y-4">
             <label className="block text-sm">
-              <span className="mb-2 block text-xs uppercase tracking-[0.16em] text-stone">
+              <span className="mb-2 block text-[0.68rem] uppercase tracking-[0.18em] text-garden">
                 Email
               </span>
               <input name="email" type="email" required placeholder="avery.lin@example.com" />
@@ -51,31 +54,32 @@ export default async function LoginPage({
             <Flash error={query.error} />
           </div>
         </section>
-        <section>
+        <section className="md:pt-8">
+          <Wordmark className="text-4xl" />
           <Kicker>Demo profiles</Kicker>
-          <ul className="mt-6 divide-y divide-line border-y border-line">
+          <ul className="mt-6 space-y-3">
             {people.map(([id, name, note]) => (
-              <li key={id} className="flex items-center justify-between gap-4 py-4">
+              <li key={id} className="invite-card flex items-center justify-between gap-4 px-5 py-4">
                 <div>
                   <p className="font-serif text-2xl">{name}</p>
                   <p className="text-sm text-stone">{note}</p>
                 </div>
                 <form action={demoSignIn}>
                   <input type="hidden" name="clientId" value={id} />
-                  <button type="submit" className="text-sm text-wine hover:underline">
+                  <button type="submit" className="text-[0.68rem] uppercase tracking-[0.16em] text-wine">
                     Continue
                   </button>
                 </form>
               </li>
             ))}
-            <li className="flex items-center justify-between gap-4 py-4">
+            <li className="flex items-center justify-between gap-4 bg-garden px-5 py-4 text-paper">
               <div>
                 <p className="font-serif text-2xl">Studio Admin</p>
-                <p className="text-sm text-stone">Schedule, releases, weddings</p>
+                <p className="text-sm text-paper/90">Schedule, releases, weddings</p>
               </div>
               <form action={demoSignIn}>
                 <input type="hidden" name="staffId" value={IDS.staff} />
-                <button type="submit" className="text-sm text-wine hover:underline">
+                <button type="submit" className="text-[0.68rem] uppercase tracking-[0.16em] text-butter">
                   Continue
                 </button>
               </form>

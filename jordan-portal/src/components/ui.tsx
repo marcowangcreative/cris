@@ -4,7 +4,7 @@ import { PendingButton } from "./pending-button";
 
 export function Kicker({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[0.72rem] uppercase tracking-[0.22em] text-stone">
+    <p className="text-[0.68rem] uppercase tracking-[0.22em] text-garden">
       {children}
     </p>
   );
@@ -18,10 +18,10 @@ export function Pill({
   tone?: "neutral" | "good" | "warn" | "bad";
 }) {
   const tones = {
-    neutral: "bg-paper-deep text-ink-soft",
-    good: "bg-[#e5f2eb] text-good",
-    warn: "bg-[#f8efd8] text-warn",
-    bad: "bg-[#f8e6e4] text-bad",
+    neutral: "bg-paper-deep text-ink",
+    good: "bg-[#dceee4] text-good",
+    warn: "bg-butter text-ink",
+    bad: "bg-blush text-bad",
   };
   return (
     <span
@@ -58,8 +58,8 @@ export function Flash({
 
 export function Placeholder({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border border-dashed border-line bg-card px-5 py-4 text-sm leading-6 text-ink-soft">
-      <p className="mb-2 text-[0.72rem] uppercase tracking-[0.18em] text-wine">
+    <div className="engraved bg-card px-6 py-5 text-sm leading-6 text-ink-soft">
+      <p className="mb-2 text-[0.68rem] uppercase tracking-[0.2em] text-wine">
         Placeholder · owner decision open
       </p>
       {children}

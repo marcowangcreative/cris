@@ -10,7 +10,7 @@ export default async function AdminLayout({
   return (
     <>
       <AdminHeader />
-      <main id="content" className="mx-auto w-full max-w-6xl px-6 py-10">
+      <main id="content" className="studio-desk mx-auto w-full max-w-6xl px-6 py-10">
         {children}
       </main>
     </>

@@ -65,7 +65,7 @@ export default async function AdminProjectPage({
         </div>
       </header>
 
-      <section id="checkout" className="border border-line bg-card p-6">
+      <section id="checkout" className="engraved bg-card p-6">
         <Kicker>Boulevard checkout</Kicker>
         <div className="mt-4">
           <BalanceMath rec={rec} approved={Boolean(project.total_approved_at)} />
@@ -227,7 +227,7 @@ export default async function AdminProjectPage({
         <p className="mt-2 text-sm text-stone">Clients never see these.</p>
         <ul className="mt-4 space-y-3">
           {notes.map((note) => (
-            <li key={note.id} className="border border-line bg-card px-4 py-3 text-sm">
+            <li key={note.id} className="invite-card px-4 py-3 text-sm">
               {note.body}
             </li>
           ))}
@@ -244,7 +244,7 @@ export default async function AdminProjectPage({
         <ul className="mt-4 space-y-3">
           {tasks.length === 0 ? <li className="text-sm text-stone">No tasks.</li> : null}
           {tasks.map((task) => (
-            <li key={task.id} className="border border-line px-4 py-3 text-sm">
+            <li key={task.id} className="invite-card px-4 py-3 text-sm">
               <p>
                 {task.kind.replaceAll("_", " ")} · {task.status}
               </p>

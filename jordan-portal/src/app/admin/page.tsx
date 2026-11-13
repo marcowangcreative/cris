@@ -28,7 +28,7 @@ export default async function AdminHome({
           <span className="sr-only">Search clients and projects</span>
           <input name="q" defaultValue={query} placeholder="Search a name, email, or Stripe reference" />
         </label>
-        <button type="submit" className="bg-ink px-5 py-3 text-sm text-paper">
+        <button type="submit" className="bg-garden px-5 py-3 text-[0.72rem] uppercase tracking-[0.16em] text-paper">
           Search
         </button>
       </form>
@@ -65,7 +65,7 @@ export default async function AdminHome({
         <ul className="mt-4 grid gap-3 md:grid-cols-2">
           {attention.slice(0, 8).map((item) => (
             <li key={`${item.projectId}-${item.label}`}>
-              <Link href={item.href} className="block border border-line bg-card px-4 py-3 hover:border-ink">
+              <Link href={item.href} className="invite-card block px-4 py-3">
                 <span className="text-sm text-stone">{item.clientName}</span>
                 <span className="mt-1 block">{item.label}</span>
               </Link>

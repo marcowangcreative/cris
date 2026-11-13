@@ -30,7 +30,8 @@ export default async function PortalProjectPage({
   return (
     <article className="mx-auto w-full max-w-3xl space-y-12 px-6 py-6">
       <Flash error={query.error} saved={query.saved} />
-      <section className="border border-wine/30 bg-card p-6">
+      <p className="font-script text-4xl text-wine">For your eyes only</p>
+      <section className="invite-card bg-blush p-6 md:p-8">
         <Kicker>Next</Kicker>
         <h1 className="mt-3 font-serif text-4xl leading-tight">{view.next.title}</h1>
         <p className="mt-3 leading-7 text-ink-soft">{view.next.detail}</p>
@@ -53,7 +54,7 @@ function TransformationView({
   return (
     <>
       <section id="day" className="grid gap-6 md:grid-cols-2">
-        <div className="border border-line p-6">
+        <div className="invite-card p-6">
           <Kicker>Transformation day</Kicker>
           <p className="mt-3 font-serif text-3xl leading-tight">
             {view.appointment ? view.appointment.when : "No date yet"}
@@ -66,7 +67,7 @@ function TransformationView({
             Public starts are 10:00 a.m. Central. The workday is held for one client.
           </p>
         </div>
-        <div id="consultation" className="border border-line p-6">
+        <div id="consultation" className="invite-card bg-butter p-6">
           <Kicker>Consultation</Kicker>
           <p className="mt-3 font-serif text-3xl">Included</p>
           <p className="mt-2 text-sm text-ink-soft">
@@ -80,7 +81,7 @@ function TransformationView({
           </p>
         </div>
       </section>
-      <section id="balance" className="border border-line bg-card p-6">
+      <section id="balance" className="engraved bg-card p-6 md:p-8">
         <Kicker>Deposit and balance</Kicker>
         <div className="mt-4">
           <BalanceMath
@@ -144,7 +145,7 @@ function TransformationView({
         <h2 className="mt-2 font-serif text-3xl">Current hair and inspiration</h2>
         <ul className="mt-6 grid gap-4 sm:grid-cols-2">
           {view.assets.map((asset) => (
-            <li key={asset.id} className="border border-line bg-card p-3">
+            <li key={asset.id} className="invite-card p-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`/api/assets/${asset.id}`}
@@ -172,7 +173,7 @@ function TransformationView({
           </label>
           <SubmitButton>Upload</SubmitButton>
         </form>
-        <form action={consentAction} className="mt-6 border border-dashed border-line p-4">
+        <form action={consentAction} className="invite-dashed mt-6 p-4">
           <input type="hidden" name="projectId" value={view.project.id} />
           <label className="flex items-start gap-3 text-sm">
             <input type="checkbox" name="marketing" defaultChecked={view.marketingConsent} />
@@ -192,7 +193,7 @@ function TransformationView({
           <p className="text-ink-soft">No proposal yet.</p>
         ) : (
           view.proposals.map((proposal) => (
-            <article key={proposal.id} className="border border-line bg-card p-6">
+            <article key={proposal.id} className="invite-card p-6 md:p-8">
               <p className="text-xs uppercase tracking-[0.16em] text-stone">
                 Version {proposal.version}
               </p>
@@ -241,7 +242,7 @@ function WeddingView({
   return (
     <section className="space-y-6">
       <Placeholder>{publicCopy.bridalPricing}</Placeholder>
-      <dl className="grid gap-4 border border-line bg-card p-6 text-sm md:grid-cols-2">
+      <dl className="invite-card grid gap-4 p-6 text-sm md:grid-cols-2">
         <Item label="Status" value={view.project.status.replaceAll("_", " ")} />
         <Item label="Wedding date" value={wedding.wedding_date} />
         <Item label="Date confirmed by you" value={wedding.date_confirmed ? "Yes" : "Not yet"} />

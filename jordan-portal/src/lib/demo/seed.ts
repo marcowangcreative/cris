@@ -1,7 +1,7 @@
 import { IDS, PRIVATE_NOTE, SAMPLE_VENUE } from "@/lib/ids";
 import type { Database } from "@/lib/types";
 
-export const SEED_VERSION = 1;
+export const SEED_VERSION = 2;
 const SEEDED = "2026-11-02T15:00:00.000Z";
 
 export function createSeedDatabase(): Database {
@@ -220,15 +220,36 @@ export function createSeedDatabase(): Database {
         submitted_at: "2026-11-10T16:00:00.000Z",
       },
     ],
+    // Placeholder files copied from public/images. Swap for the client's real photos.
     assets: [
       {
         id: IDS.averyAsset,
         project_id: IDS.averyProject,
         client_id: IDS.avery,
         kind: "current_hair",
-        storage_path: `${IDS.avery}/${IDS.averyAsset}.svg`,
-        content_type: "image/svg+xml",
-        file_name: "sample-current-hair.svg",
+        storage_path: `${IDS.avery}/${IDS.averyAsset}.webp`,
+        content_type: "image/webp",
+        file_name: "sample-current-hair.webp",
+        created_at: SEEDED,
+      },
+      {
+        id: IDS.averyAssetBraid,
+        project_id: IDS.averyProject,
+        client_id: IDS.avery,
+        kind: "inspiration",
+        storage_path: `${IDS.avery}/${IDS.averyAssetBraid}.webp`,
+        content_type: "image/webp",
+        file_name: "sample-inspiration-braid.webp",
+        created_at: SEEDED,
+      },
+      {
+        id: IDS.averyAssetBlonde,
+        project_id: IDS.averyProject,
+        client_id: IDS.avery,
+        kind: "inspiration",
+        storage_path: `${IDS.avery}/${IDS.averyAssetBlonde}.webp`,
+        content_type: "image/webp",
+        file_name: "sample-inspiration-blonde.webp",
         created_at: SEEDED,
       },
     ],

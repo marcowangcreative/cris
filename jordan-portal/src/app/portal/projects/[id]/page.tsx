@@ -142,6 +142,7 @@ function TransformationView({
       <section id="photos">
         <Kicker>Photos</Kicker>
         <h2 className="mt-2 font-serif text-3xl">Current hair and inspiration</h2>
+        {/* Seeded photos are placeholders. Swap them for the client's real images. */}
         <ul className="mt-6 grid gap-4 sm:grid-cols-2">
           {view.assets.map((asset) => (
             <li key={asset.id} className="invite-card p-3">

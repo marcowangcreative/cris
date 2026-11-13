@@ -45,6 +45,6 @@ No green, rose, ochre, or orange in the system.
 
 - Wordmark: “Jordan Wang”, centered, same grotesque, tracked uppercase.
 - The two offerings are collection tiles: image, category, name, then price the way a product price is shown (12px, under the name). Weddings have no published price, so that line reads “Inquire”.
-- Imagery is a flat gray field (`#f2f2f2`) with a 12px caption such as “Jordan portrait” or “Transformation photo”. No drawings, crests, or ornaments.
+- Imagery is full-bleed photography inside the tile, `object-cover`, with no caption on the picture. The gray field (`#f2f2f2`) only shows while a photo loads. The files in `public/images` are stock stand-ins; swap them for photographs of Jordan. Credits are in `IMAGE_CREDITS.md`. No drawings, crests, or ornaments.
 - The release calendar uses the same 12px face, hairline cells, black for an open day and gray for a held day.
 - The client record and the studio desk stay on this type scale. They read as a receipt and a list, not a dashboard.

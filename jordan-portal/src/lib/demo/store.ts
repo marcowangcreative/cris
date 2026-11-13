@@ -29,10 +29,25 @@ export function safeUploadPath(storagePath: string): string {
   return full;
 }
 
+// Placeholder stand-ins. Swap for real client photos. See IMAGE_CREDITS.md.
+const seedPhotoFiles: Record<string, string> = {
+  "sample-current-hair.webp": "waves-1600.webp",
+  "sample-inspiration-braid.webp": "braid-1600.webp",
+  "sample-inspiration-blonde.webp": "blonde-1600.webp",
+};
+
 function writeSeedFiles(db: Database): void {
   for (const asset of db.assets) {
     const full = safeUploadPath(asset.storage_path);
     fs.mkdirSync(path.dirname(full), { recursive: true });
+    const sourceName = seedPhotoFiles[asset.file_name];
+    if (sourceName) {
+      const source = path.join(process.cwd(), "public", "images", sourceName);
+      if (fs.existsSync(source)) {
+        fs.copyFileSync(source, full);
+        continue;
+      }
+    }
     if (!fs.existsSync(full)) {
       fs.writeFileSync(full, sampleSvg(asset.kind));
     }

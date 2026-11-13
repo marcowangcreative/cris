@@ -22,7 +22,7 @@ export default async function WeddingsPage({
             </h1>
             <p className="mt-6 max-w-md text-[14px] leading-[20px]">{publicCopy.weddingIntro}</p>
           </div>
-          <Photo label="Bridal photo" className="order-1 aspect-[4/5] md:order-2 md:aspect-auto md:min-h-[560px]" />
+          <Photo name="gown" className="order-1 aspect-[4/5] md:order-2 md:aspect-auto md:min-h-[560px]" />
         </div>
         <p className="mt-10 max-w-2xl text-sm leading-6 text-stone">{publicCopy.bridalPricing}</p>
         <div className="mt-8">

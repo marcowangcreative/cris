@@ -45,8 +45,26 @@ export default function TransformationsPage() {
               starting at 10:00 a.m.
             </p>
           </div>
-          <Photo label="Transformation photo" className="aspect-[4/5] md:aspect-auto md:min-h-[560px]" />
+          <Photo name="salon" className="aspect-[4/5] md:aspect-auto md:min-h-[560px]" />
         </div>
+
+        {/* Placeholder pair. These two frames are unrelated stock, not one client. Swap for Jordan's own before and after. */}
+        <section className="mt-16 grid grid-cols-1 gap-px bg-[#e5e7eb] sm:grid-cols-2">
+          <div className="bg-white">
+            <Photo name="before" sizes="(min-width: 640px) 36rem, 100vw" />
+            <div className="px-4 py-4">
+              <p className="text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">Color</p>
+              <p className="mt-1 text-[12px] uppercase tracking-[0.05em]">Before</p>
+            </div>
+          </div>
+          <div className="bg-white">
+            <Photo name="after" sizes="(min-width: 640px) 36rem, 100vw" />
+            <div className="px-4 py-4">
+              <p className="text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">Color</p>
+              <p className="mt-1 text-[12px] uppercase tracking-[0.05em]">After</p>
+            </div>
+          </div>
+        </section>
 
         <ol className="mt-16 border-t border-line">
           {steps.map((step, index) => (

@@ -16,11 +16,11 @@ export default function HomePage() {
             bridal, planned through a personal inquiry.
           </p>
         </div>
-        <Photo label="Jordan portrait" className="aspect-[4/5] md:aspect-auto md:min-h-[70vh]" />
+        <Photo name="hero" className="aspect-[4/5] md:aspect-auto md:min-h-[70vh]" />
       </section>
       <section className="grid grid-cols-1 gap-px bg-[#e5e7eb] sm:grid-cols-2">
         <Link href="/transformations" className="bg-white">
-          <Photo label="Transformation photo" />
+          <Photo name="blonding" />
           <div className="px-4 py-4">
             <p className="text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">Studio</p>
             <p className="mt-1 text-[12px] uppercase tracking-[0.05em]">Private Transformations</p>
@@ -28,7 +28,7 @@ export default function HomePage() {
           </div>
         </Link>
         <Link href="/weddings" className="bg-white">
-          <Photo label="Bridal photo" />
+          <Photo name="bridal" />
           <div className="px-4 py-4">
             <p className="text-[12px] uppercase tracking-[0.05em] text-[#6a6a6a]">Studio</p>
             <p className="mt-1 text-[12px] uppercase tracking-[0.05em]">Weddings & Bridal</p>

@@ -117,9 +117,9 @@ describe("date selection handoff", () => {
     expect(live.mode).toBe("live");
     if (live.mode !== "live") return;
     expect(live.url).toContain("2027-01-05T10:00:00");
-    expect(live.url).toContain("primary_color=4a0e14");
-    expect(live.url).toContain("background_color=f4efe6");
-    expect(live.url).toContain("text_color=1a1612");
+    expect(live.url).toContain("primary_color=d7261e");
+    expect(live.url).toContain("background_color=f3f0e7");
+    expect(live.url).toContain("text_color=161513");
     expect(live.summary.depositCents).toBe(60_000);
   });
 });

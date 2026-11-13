@@ -15,7 +15,7 @@ export default function EditorialHome() {
           <DashedFigure />
           <Star className="zine-mark" style={{ top: "8%", right: "8%", width: "1.6rem" }} />
         </figure>
-        <div className="zine-block zine-block-forest">
+        <div className="zine-block zine-block-cobalt">
           <p className="zine-kicker">One client<br />a day</p>
         </div>
         <figure className="zine-card">
@@ -25,26 +25,26 @@ export default function EditorialHome() {
             blonding
           </p>
         </figure>
-        <div className="zine-block zine-block-oxblood">
+        <div className="zine-block zine-block-tomato">
           <p className="zine-kicker">10:00 a.m.<br />Central</p>
         </div>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/salon-1600.webp" alt="Blow-dry in a bright salon" />
-          <Cross className="zine-mark" style={{ top: "10%", left: "8%", width: "1.4rem", color: "#c08a2e" }} />
+          <Cross className="zine-mark" style={{ top: "10%", left: "8%", width: "1.4rem", color: "#d7261e" }} />
         </figure>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/braid-1600.webp" alt="Glossy braid" style={{ objectPosition: "60% 40%" }} />
         </figure>
-        <div className="zine-block zine-block-sage">
+        <div className="zine-block zine-block-marigold">
           <p className="zine-kicker">Houston<br />studio</p>
-          <Arrow className="zine-mark" style={{ top: "18%", right: "8%", width: "4rem", color: "#c08a2e" }} />
+          <Arrow className="zine-mark" style={{ top: "18%", right: "8%", width: "4rem", color: "#161513" }} />
         </div>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/blonde-1600.webp" alt="Long glossy blonde hair" style={{ objectPosition: "70% 40%" }} />
-          <Star className="zine-mark" style={{ bottom: "12%", left: "8%", width: "1.3rem", color: "#8a5e1a" }} />
+          <Star className="zine-mark" style={{ bottom: "12%", left: "8%", width: "1.3rem", color: "#d7261e" }} />
         </figure>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -61,6 +61,9 @@ export default function EditorialHome() {
             gloss
           </p>
         </figure>
+        <div className="zine-block zine-block-pink">
+          <p className="zine-kicker">The whole<br />day</p>
+        </div>
         <p className="zine-script">Jordan</p>
       </div>
       <div className="zine-columns">

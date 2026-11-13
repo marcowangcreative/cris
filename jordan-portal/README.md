@@ -84,7 +84,7 @@ To read live availability instead:
 2. Set `CALENDLY_EVENT_TYPE_URI` to that event type’s API URI (`https://api.calendly.com/event_types/...`).
 3. Set `CALENDLY_TOKEN` to a personal access token. Keep it server-only. Do not commit it, and do not put it in a `NEXT_PUBLIC_` variable.
 4. Set `NEXT_PUBLIC_CALENDLY_TRANSFORMATION_URL` to the same event’s public link.
-5. Restart the server. `/api/availability` and the Editorial poster then use the Calendly adapter. An open time opens the Calendly popup, or the direct slot link, with bone, ink, and oxblood colors. The other concepts are unchanged.
+5. Restart the server. `/api/availability` and the Editorial poster then use the Calendly adapter. An open time opens the Calendly popup, or the direct slot link, with newsprint, ink, and tomato colors. The other concepts are unchanged.
 
 If either `CALENDLY_TOKEN` or `CALENDLY_EVENT_TYPE_URI` is missing, the fake adapter stays on.
 

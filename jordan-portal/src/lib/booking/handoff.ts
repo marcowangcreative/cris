@@ -7,9 +7,9 @@ export const FAKE_CONFIRMATION =
 
 /** Editorial palette, without the leading hash, for a Calendly embed. */
 export const EDITORIAL_CALENDLY_COLORS = {
-  background: "f4efe6",
-  text: "1a1612",
-  primary: "4a0e14",
+  background: "f3f0e7",
+  text: "161513",
+  primary: "d7261e",
 } as const;
 
 export function chooseOpenDate(

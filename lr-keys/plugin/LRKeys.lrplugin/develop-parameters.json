@@ -1,0 +1,41 @@
+{
+  "sdkVersion": "16.0",
+  "sdkMinimumVersion": "6.0",
+  "temperatureNote": "Lightroom Classic 16 lowered the Temperature minimum to 1500 for raw photos and -150 for non-raw photos (previously 2000 and -100). This note is documentation only. The plugin clamps with the live LrDevelopController.getRange for the open photo.",
+  "parameters": [
+    {"canonical": "Exposure2012", "displayName": "Exposure", "defaultStep": 0.1, "kind": "adjust", "sdkName": "Exposure", "maskSDKName": "local_Exposure", "probe": "value", "aliases": []},
+    {"canonical": "Contrast2012", "displayName": "Contrast", "defaultStep": 5, "kind": "adjust", "sdkName": "Contrast", "maskSDKName": "local_Contrast", "probe": "value", "aliases": []},
+    {"canonical": "Highlights2012", "displayName": "Highlights", "defaultStep": 5, "kind": "adjust", "sdkName": "Highlights", "maskSDKName": "local_Highlights", "probe": "value", "aliases": []},
+    {"canonical": "Shadows2012", "displayName": "Shadows", "defaultStep": 5, "kind": "adjust", "sdkName": "Shadows", "maskSDKName": "local_Shadows", "probe": "value", "aliases": []},
+    {"canonical": "Whites2012", "displayName": "Whites", "defaultStep": 5, "kind": "adjust", "sdkName": "Whites", "maskSDKName": "local_Whites", "probe": "value", "aliases": []},
+    {"canonical": "Blacks2012", "displayName": "Blacks", "defaultStep": 5, "kind": "adjust", "sdkName": "Blacks", "maskSDKName": "local_Blacks", "probe": "value", "aliases": []},
+    {"canonical": "Temperature", "displayName": "Temp", "defaultStep": 100, "kind": "adjust", "sdkName": "Temperature", "maskSDKName": "local_Temperature", "probe": "value", "aliases": ["Color Temperature"], "note": "Raw and non-raw photos use different live ranges. Do not assume 1500 or -150."},
+    {"canonical": "Tint", "displayName": "Tint", "defaultStep": 5, "kind": "adjust", "sdkName": "Tint", "maskSDKName": "local_Tint", "probe": "value", "aliases": []},
+    {"canonical": "Saturation", "displayName": "Saturation", "defaultStep": 5, "kind": "adjust", "sdkName": "Saturation", "maskSDKName": "local_Saturation", "probe": "value", "aliases": []},
+    {"canonical": "Texture", "displayName": "Texture", "defaultStep": 5, "kind": "adjust", "sdkName": "Texture", "maskSDKName": "local_Texture", "probe": "value", "aliases": []},
+    {"canonical": "Clarity", "displayName": "Clarity", "defaultStep": 5, "kind": "adjust", "sdkName": "Clarity", "maskSDKName": "local_Clarity", "probe": "value", "aliases": []},
+    {"canonical": "Dehaze", "displayName": "Dehaze", "defaultStep": 5, "kind": "adjust", "sdkName": "Dehaze", "maskSDKName": "local_Dehaze", "probe": "value", "aliases": []},
+    {"canonical": "Vibrance", "displayName": "Vibrance", "defaultStep": 5, "kind": "adjust", "sdkName": "Vibrance", "maskSDKName": "local_Vibrance", "probe": "value", "aliases": []},
+    {"canonical": "EnableProfileCorrections", "displayName": "Profile Corrections", "defaultStep": 0, "kind": "toggle", "sdkName": "LensProfileEnable", "probe": "value", "aliases": ["Lens Corrections", "Enable Lens Corrections"]},
+    {"canonical": "ChromaticAberration", "displayName": "Chromatic Aberration", "defaultStep": 0, "kind": "toggle", "sdkName": "AutoLateralCA", "probe": "value", "aliases": ["Remove Chromatic Aberration"]},
+    {"canonical": "ConstrainCrop", "displayName": "Constrain Crop", "defaultStep": 0, "kind": "toggle", "sdkName": "CropConstrainToWarp", "probe": "value", "aliases": ["Constrained Crop"]},
+    {"canonical": "AutoStraighten", "displayName": "Auto Straighten", "defaultStep": 0, "kind": "run", "sdkName": "PerspectiveUpright", "probe": "value", "aliases": ["Straighten", "Level"]},
+    {"canonical": "InvertMask", "displayName": "Invert Mask", "defaultStep": 0, "kind": "run", "sdkName": "invertMask", "probe": "function", "aliases": []},
+    {"canonical": "GoToMasking", "displayName": "Go to Masking", "defaultStep": 0, "kind": "run", "sdkName": "goToMasking", "probe": "function", "aliases": []},
+    {"canonical": "GoToRemove", "displayName": "Go to Remove", "defaultStep": 0, "kind": "run", "sdkName": "goToRemove", "probe": "function", "aliases": []}
+  ],
+  "functions": [
+    {"name": "getValue", "since": "6.0"},
+    {"name": "getRange", "since": "6.0"},
+    {"name": "setValue", "since": "6.0"},
+    {"name": "increment", "since": "6.0"},
+    {"name": "decrement", "since": "6.0"},
+    {"name": "startTracking", "since": "6.0"},
+    {"name": "stopTracking", "since": "6.0"},
+    {"name": "getSelectedTool", "since": "6.0"},
+    {"name": "getSelectedMask", "since": "11.0"},
+    {"name": "invertMask", "since": "11.4"},
+    {"name": "goToMasking", "since": "11.0"},
+    {"name": "goToRemove", "since": "14.1"}
+  ]
+}

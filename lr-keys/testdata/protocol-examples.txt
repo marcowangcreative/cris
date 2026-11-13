@@ -1,0 +1,10 @@
+inc Exposure2012 0.1
+inc Shadows2012 5
+inc Shadows2012 -5
+dec Shadows2012 5
+toggle EnableProfileCorrections
+toggle ChromaticAberration
+toggle ConstrainCrop
+run AutoStraighten
+run InvertMask
+ping 7

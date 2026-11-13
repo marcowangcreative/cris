@@ -1,0 +1,25 @@
+{
+  "name": "Power Keys MWP Map",
+  "version": "3.2.2",
+  "adjustments": [
+    {"name": "Exposure", "decreaseKey": "q", "increaseKey": "w", "amount": 0.1},
+    {"name": "Contrast", "decreaseKey": "e", "increaseKey": "r", "amount": 5},
+    {"name": "Highlights", "decreaseKey": "t", "increaseKey": "y", "amount": 5},
+    {"name": "Shadows", "decreaseKey": "a", "increaseKey": "s", "amount": 5},
+    {"name": "Whites", "decreaseKey": "d", "increaseKey": "f", "amount": 5},
+    {"name": "Blacks", "decreaseKey": "g", "increaseKey": "h", "amount": 5},
+    {"name": "Temp", "decreaseKey": "z", "increaseKey": "x", "amount": 100},
+    {"name": "Tint", "decreaseKey": "c", "increaseKey": "v", "amount": 5},
+    {"name": "Saturation", "decreaseKey": "b", "increaseKey": "n", "amount": 5}
+  ],
+  "toggles": [
+    {"name": "Profile Corrections", "key": "["},
+    {"name": "Chromatic Aberration", "shortcut": "]"},
+    {"name": "Constrain Crop", "key": "'"}
+  ],
+  "buttons": [
+    {"name": "Auto Straighten", "key": ";"},
+    {"name": "Invert Mask", "key": "/"}
+  ],
+  "editorNote": {"unused": true}
+}

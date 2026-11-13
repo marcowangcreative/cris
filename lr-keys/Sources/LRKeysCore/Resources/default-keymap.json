@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "name": "LR Keys Default",
+  "port": 58421,
+  "multipliers": {"option": 0.5, "shift": 2},
+  "steps": {
+    "Exposure2012": {"base": 0.1, "displayName": "Exposure"},
+    "Contrast2012": {"base": 5, "displayName": "Contrast"},
+    "Highlights2012": {"base": 5, "displayName": "Highlights"},
+    "Shadows2012": {"base": 5, "displayName": "Shadows"},
+    "Whites2012": {"base": 5, "displayName": "Whites"},
+    "Blacks2012": {"base": 5, "displayName": "Blacks"},
+    "Temperature": {"base": 100, "displayName": "Temp"},
+    "Tint": {"base": 5, "displayName": "Tint"},
+    "Saturation": {"base": 5, "displayName": "Saturation"}
+  },
+  "bindings": [
+    {"id": "00000000-0000-4000-8000-000000000001", "key": "q", "keyCode": 12, "kind": "adjust", "parameter": "Exposure2012", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-000000000002", "key": "w", "keyCode": 13, "kind": "adjust", "parameter": "Exposure2012", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-000000000003", "key": "e", "keyCode": 14, "kind": "adjust", "parameter": "Contrast2012", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-000000000004", "key": "r", "keyCode": 15, "kind": "adjust", "parameter": "Contrast2012", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-000000000005", "key": "t", "keyCode": 17, "kind": "adjust", "parameter": "Highlights2012", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-000000000006", "key": "y", "keyCode": 16, "kind": "adjust", "parameter": "Highlights2012", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-000000000007", "key": "a", "keyCode": 0, "kind": "adjust", "parameter": "Shadows2012", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-000000000008", "key": "s", "keyCode": 1, "kind": "adjust", "parameter": "Shadows2012", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-000000000009", "key": "d", "keyCode": 2, "kind": "adjust", "parameter": "Whites2012", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-00000000000a", "key": "f", "keyCode": 3, "kind": "adjust", "parameter": "Whites2012", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-00000000000b", "key": "g", "keyCode": 5, "kind": "adjust", "parameter": "Blacks2012", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-00000000000c", "key": "h", "keyCode": 4, "kind": "adjust", "parameter": "Blacks2012", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-00000000000d", "key": "z", "keyCode": 6, "kind": "adjust", "parameter": "Temperature", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-00000000000e", "key": "x", "keyCode": 7, "kind": "adjust", "parameter": "Temperature", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-00000000000f", "key": "c", "keyCode": 8, "kind": "adjust", "parameter": "Tint", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-000000000010", "key": "v", "keyCode": 9, "kind": "adjust", "parameter": "Tint", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-000000000011", "key": "b", "keyCode": 11, "kind": "adjust", "parameter": "Saturation", "direction": "decrease"},
+    {"id": "00000000-0000-4000-8000-000000000012", "key": "n", "keyCode": 45, "kind": "adjust", "parameter": "Saturation", "direction": "increase"},
+    {"id": "00000000-0000-4000-8000-000000000013", "key": "[", "keyCode": 33, "kind": "toggle", "parameter": "EnableProfileCorrections"},
+    {"id": "00000000-0000-4000-8000-000000000014", "key": "]", "keyCode": 30, "kind": "toggle", "parameter": "ChromaticAberration"},
+    {"id": "00000000-0000-4000-8000-000000000015", "key": ";", "keyCode": 41, "kind": "run", "parameter": "AutoStraighten"},
+    {"id": "00000000-0000-4000-8000-000000000016", "key": "'", "keyCode": 39, "kind": "toggle", "parameter": "ConstrainCrop"},
+    {"id": "00000000-0000-4000-8000-000000000017", "key": "/", "keyCode": 44, "kind": "run", "parameter": "InvertMask"}
+  ]
+}

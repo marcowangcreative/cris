@@ -37,7 +37,7 @@ export function DashedFigure() {
       <path
         d="M28 14 C 40 6, 62 8, 74 20 C 90 36, 88 70, 80 96 C 72 124, 48 142, 30 132 C 10 120, 8 78, 16 48 C 20 30, 18 20, 28 14"
         fill="none"
-        stroke="#e2186a"
+        stroke="#4a0e14"
         strokeWidth="1.4"
         strokeDasharray="3.2 2.4"
         strokeLinecap="round"

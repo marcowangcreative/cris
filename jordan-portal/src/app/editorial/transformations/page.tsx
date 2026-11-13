@@ -77,7 +77,7 @@ export default function EditorialTransformations() {
           {publicCopy.bookingTerms}
         </p>
         <p className="zine-kicker" style={{ marginTop: "0.8rem" }}>
-          <Link href="/editorial/weddings">Weddings, by inquiry</Link>
+          <Link href="/editorial/weddings">Weddings & Bridal — inquire</Link>
         </p>
       </section>
     </ZineFrame>

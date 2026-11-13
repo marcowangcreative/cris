@@ -15,7 +15,7 @@ export default function EditorialHome() {
           <DashedFigure />
           <Star className="zine-mark" style={{ top: "8%", right: "8%", width: "1.6rem" }} />
         </figure>
-        <div className="zine-block zine-block-cobalt">
+        <div className="zine-block zine-block-forest">
           <p className="zine-kicker">One client<br />a day</p>
         </div>
         <figure className="zine-card">
@@ -25,30 +25,30 @@ export default function EditorialHome() {
             blonding
           </p>
         </figure>
-        <div className="zine-block zine-block-tomato">
+        <div className="zine-block zine-block-oxblood">
           <p className="zine-kicker">10:00 a.m.<br />Central</p>
         </div>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/salon-1600.webp" alt="Blow-dry in a bright salon" />
-          <Cross className="zine-mark" style={{ top: "10%", left: "8%", width: "1.4rem", color: "#d7261e" }} />
+          <Cross className="zine-mark" style={{ top: "10%", left: "8%", width: "1.4rem", color: "#c08a2e" }} />
         </figure>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/braid-1600.webp" alt="Glossy braid" style={{ objectPosition: "60% 40%" }} />
         </figure>
-        <div className="zine-block zine-block-marigold">
+        <div className="zine-block zine-block-sage">
           <p className="zine-kicker">Houston<br />studio</p>
-          <Arrow className="zine-mark" style={{ top: "18%", right: "8%", width: "4rem", color: "#161513" }} />
+          <Arrow className="zine-mark" style={{ top: "18%", right: "8%", width: "4rem", color: "#c08a2e" }} />
         </div>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/blonde-1600.webp" alt="Long glossy blonde hair" style={{ objectPosition: "70% 40%" }} />
-          <Star className="zine-mark" style={{ bottom: "12%", left: "8%", width: "1.3rem", color: "#d7261e" }} />
+          <Star className="zine-mark" style={{ bottom: "12%", left: "8%", width: "1.3rem", color: "#8a5e1a" }} />
         </figure>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/gown-1600.webp" alt="Bridal hair down the back of a pale gown" style={{ objectPosition: "50% 15%" }} />
+          <img src="/images/after-1600.webp" alt="Close-up of glossy straight hair" style={{ objectPosition: "50% 40%" }} />
         </figure>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -56,27 +56,20 @@ export default function EditorialHome() {
         </figure>
         <figure className="zine-card">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/bridal-1600.webp" alt="Bridal updo with a pearl vine" style={{ objectPosition: "50% 25%" }} />
-          <p className="zine-note" style={{ right: "6%", bottom: "14%", transform: "rotate(8deg)", color: "#d7261e" }}>
-            bridal
+          <img src="/images/before-1600.webp" alt="Close-up of brunette waves" style={{ objectPosition: "50% 30%" }} />
+          <p className="zine-note" style={{ right: "6%", bottom: "14%", transform: "rotate(8deg)" }}>
+            gloss
           </p>
-        </figure>
-        <figure className="zine-card">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/before-1600.webp" alt="Close-up of brunette waves" />
         </figure>
         <p className="zine-script">Jordan</p>
       </div>
       <div className="zine-columns">
         <p className="zine-kicker">JW SS/27</p>
-        <p>
-          Private transformations, reserved one client at a time. Weddings and bridal,
-          planned through a personal inquiry.
-        </p>
+        <p>Private transformations, reserved one client at a time.</p>
         <p className="zine-kicker">
-          Houston, TX
+          <Link href="/editorial/weddings">Weddings & Bridal — inquire</Link>
           <br />
-          America/Chicago
+          Houston, TX
           <br />
           <Link href="/editorial/transformations">The drop</Link>
         </p>

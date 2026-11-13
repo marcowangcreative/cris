@@ -1,4 +1,4 @@
-import { Barlow, Great_Vibes, Permanent_Marker } from "next/font/google";
+import { Barlow, Berkshire_Swash, Permanent_Marker } from "next/font/google";
 import "./zine.css";
 
 const sans = Barlow({
@@ -7,7 +7,7 @@ const sans = Barlow({
   variable: "--font-zine-sans",
 });
 
-const script = Great_Vibes({
+const script = Berkshire_Swash({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-script",
